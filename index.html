@@ -20,12 +20,22 @@
     text-align: center;
   }
   header h1 { font-size: 2.2rem; margin-bottom: 10px; }
-  header p { font-size: 1.1rem; opacity: 0.9; }
+  header p { font-size: 1.05rem; opacity: 0.92; }
   .container {
     max-width: 1200px;
     margin: 30px auto;
     padding: 0 20px;
   }
+  .alert {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    color: #7a5c00;
+    font-size: 0.95rem;
+  }
+  .alert strong { color: #b37700; }
   .card {
     background: white;
     border-radius: 12px;
@@ -50,10 +60,19 @@
     border-left: 5px solid #2a5298;
     padding: 15px;
     border-radius: 8px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .stat .label { font-size: 0.85rem; color: #555; }
-  .stat .value { font-size: 1.5rem; font-weight: bold; color: #1e3c72; }
-  canvas { max-height: 400px; }
+  .stat .value {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #b8c4d4;
+    font-style: italic;
+  }
+  canvas { max-height: 380px; }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -63,27 +82,31 @@
   th, td {
     padding: 10px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e0e0e0;
   }
   th {
     background: #1e3c72;
     color: white;
   }
-  tr:hover { background: #f1f5fb; }
+  td.empty {
+    color: #b8c4d4;
+    font-style: italic;
+    text-align: center;
+  }
   footer {
     text-align: center;
-    padding: 20px;
+    padding: 25px;
     color: #777;
     font-size: 0.9rem;
   }
-  .badge {
-    display: inline-block;
-    background: #ff6b6b;
-    color: white;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    margin-left: 8px;
+  .empty-chart {
+    background: #f9fafc;
+    border: 2px dashed #cfd8e3;
+    border-radius: 10px;
+    padding: 60px 20px;
+    text-align: center;
+    color: #8a97a8;
+    font-size: 1rem;
   }
 </style>
 </head>
@@ -92,10 +115,17 @@
 <header>
   <h1>🏨 Turismo y Ocupación Hotelera en Risaralda</h1>
   <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
-  <p style="font-size:0.95rem; margin-top:8px;">Datos: DANE — Encuesta Mensual de Alojamiento (2019 – julio 2026)</p>
+  <p style="font-size:0.9rem; margin-top:8px;">Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</p>
 </header>
 
 <div class="container">
+
+  <!-- Aviso -->
+  <div class="alert">
+    <strong>⏳ Pendiente de datos y validaciones.</strong>
+    Las cifras de este tablero se completarán cuando finalicemos la limpieza y validación
+    de las fuentes (EMA-DANE y RNT). Los espacios en blanco se llenarán en la próxima entrega.
+  </div>
 
   <!-- Pregunta de decisión -->
   <div class="card">
@@ -106,44 +136,50 @@
     para priorizar la reactivación tras el terremoto de agosto de 2026?</p>
   </div>
 
-  <!-- Indicadores clave -->
+  <!-- Indicadores clave (vacíos) -->
   <div class="card">
-    <h2>📊 Indicadores clave del sector (últimos datos)</h2>
+    <h2>📊 Indicadores clave del sector</h2>
     <div class="grid">
       <div class="stat">
-        <div class="label">Ocupación Nacional (jul 2026)</div>
-        <div class="value">50.58%</div>
+        <div class="label">Ocupación nacional</div>
+        <div class="value">— Pendiente —</div>
       </div>
       <div class="stat">
-        <div class="label">Ocupación Eje Cafetero (jul 2026)</div>
-        <div class="value">42.08%</div>
+        <div class="label">Ocupación Eje Cafetero</div>
+        <div class="value">— Pendiente —</div>
       </div>
       <div class="stat">
-        <div class="label">Ingresos reales Eje Cafetero (var. anual)</div>
-        <div class="value">+0.35%</div>
+        <div class="label">Var. ingresos reales Eje Cafetero</div>
+        <div class="value">— Pendiente —</div>
       </div>
       <div class="stat">
         <div class="label">Personal ocupado Eje Cafetero</div>
-        <div class="value">-2.1%</div>
+        <div class="value">— Pendiente —</div>
       </div>
     </div>
   </div>
 
-  <!-- Gráfico de ocupación -->
+  <!-- Gráfico ocupación (placeholder) -->
   <div class="card">
-    <h2>📈 Ocupación hotelera mensual — Eje Cafetero vs Nacional (2026)</h2>
-    <canvas id="graficoOcupacion"></canvas>
+    <h2>📈 Ocupación hotelera mensual — Eje Cafetero vs Nacional</h2>
+    <div class="empty-chart">
+      Gráfico pendiente de datos.<br>
+      Se construirá con la serie mensual 2019–julio 2026.
+    </div>
   </div>
 
-  <!-- Gráfico de ingresos -->
+  <!-- Gráfico ingresos (placeholder) -->
   <div class="card">
-    <h2>💰 Variación anual de ingresos reales (2020–2026)</h2>
-    <canvas id="graficoIngresos"></canvas>
+    <h2>💰 Variación anual de ingresos reales</h2>
+    <div class="empty-chart">
+      Gráfico pendiente de datos.<br>
+      Se construirá con las variaciones anuales por región.
+    </div>
   </div>
 
-  <!-- Tabla de datos -->
+  <!-- Tabla (vacía) -->
   <div class="card">
-    <h2>📋 Datos destacados por región (julio 2026)</h2>
+    <h2>📋 Datos por región</h2>
     <table>
       <thead>
         <tr>
@@ -154,24 +190,21 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>Total nacional</td><td>50.58</td><td>-7.40</td><td>-4.67</td></tr>
-        <tr><td>Bogotá D.C.</td><td>58.45</td><td>-11.48</td><td>-3.94</td></tr>
-        <tr><td>Cartagena</td><td>62.67</td><td>-8.56</td><td>-3.86</td></tr>
-        <tr><td>Central</td><td>40.34</td><td>+6.09</td><td>-3.60</td></tr>
-        <tr><td>Caribe</td><td>51.09</td><td>-3.96</td><td>-6.89</td></tr>
-        <tr><td>Eje Cafetero</td><td>44.47</td><td>+2.78</td><td>-3.74</td></tr>
-        <tr><td>Antioquia</td><td>50.91</td><td>-14.61</td><td>-5.66</td></tr>
-        <tr><td>San Andrés y Providencia</td><td>70.92</td><td>-8.38</td><td>-10.52</td></tr>
-        <tr><td>Pacífico</td><td>39.02</td><td>-10.85</td><td>-6.86</td></tr>
-        <tr><td>Santanderes</td><td>40.20</td><td>+3.67</td><td>-1.18</td></tr>
-        <tr><td>Llanos Orinoquía</td><td>38.10</td><td>-3.08</td><td>-1.86</td></tr>
-        <tr><td>Golfo Morrosquillo y Sabana</td><td>38.36</td><td>-2.79</td><td>-0.74</td></tr>
-        <tr><td>Amazonía</td><td>50.72</td><td>+10.92</td><td>-11.71</td></tr>
+        <tr><td>Total nacional</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Bogotá D.C.</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Cartagena</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Central</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Caribe</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Eje Cafetero (Risaralda)</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Antioquia</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>San Andrés y Providencia</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Pacífico</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Santanderes</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Llanos Orinoquía</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Golfo Morrosquillo y Sabana</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Amazonía</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
       </tbody>
     </table>
-    <p style="margin-top:10px; font-size:0.85rem; color:#777;">
-      <span class="badge">Datos provisionales</span> Cifras de 2026 publicadas por DANE, actualizado el 15/09/2026.
-    </p>
   </div>
 
   <!-- Fuentes -->
@@ -181,6 +214,9 @@
       <li><strong>EMA – DANE:</strong> Encuesta Mensual de Alojamiento, enero 2019 – julio 2026.</li>
       <li><strong>RNT:</strong> Registro Nacional de Turismo (establecimientos, categorías, habitaciones, camas).</li>
     </ul>
+    <p style="margin-top:12px; font-size:0.85rem; color:#777;">
+      Estado: ⏳ datos crudos cargados, pendientes de limpieza y validación.
+    </p>
   </div>
 
 </div>
@@ -189,78 +225,6 @@
   Proyecto académico — Minería de Datos · 2026 · Risaralda, Colombia
 </footer>
 
-<script>
-// Datos de ejemplo (puedes reemplazarlos con los reales extraídos del Excel)
-const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul'];
-const ocupacionEje = [45.81, 39.20, 41.35, 39.31, 36.09, 39.61, 44.46];
-const ocupacionNacional = [49.65, 49.30, 48.40, 46.24, 45.17, 45.38, 50.57];
-
-new Chart(document.getElementById('graficoOcupacion'), {
-  type: 'line',
-  data: {
-    labels: meses,
-    datasets: [
-      {
-        label: 'Eje Cafetero (Risaralda)',
-        data: ocupacionEje,
-        borderColor: '#ff6b6b',
-        backgroundColor: 'rgba(255,107,107,0.1)',
-        tension: 0.3,
-        fill: true
-      },
-      {
-        label: 'Total nacional',
-        data: ocupacionNacional,
-        borderColor: '#2a5298',
-        backgroundColor: 'rgba(42,82,152,0.1)',
-        tension: 0.3,
-        fill: true
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: { display: false }
-    },
-    scales: {
-      y: { beginAtZero: false, title: { display: true, text: 'Ocupación (%)' } }
-    }
-  }
-});
-
-// Ingresos reales (variación anual %)
-const años = ['2020','2021','2022','2023','2024','2025','2026'];
-const ingresosEje = [-45.22, -52.24, 68.80, -2.83, -5.37, 1.30, -5.38];
-const ingresosNac = [-44.40, -56.37, 95.09, -4.10, -4.71, 6.79, -5.38];
-
-new Chart(document.getElementById('graficoIngresos'), {
-  type: 'bar',
-  data: {
-    labels: años,
-    datasets: [
-      {
-        label: 'Eje Cafetero',
-        data: ingresosEje,
-        backgroundColor: '#ff6b6b'
-      },
-      {
-        label: 'Total nacional',
-        data: ingresosNac,
-        backgroundColor: '#2a5298'
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { position: 'top' } },
-    scales: {
-      y: { title: { display: true, text: 'Variación anual (%)' } }
-    }
-  }
-});
-</script>
-
+<!-- Sin gráficos activos todavía. Cuando tengan los datos, se activan. -->
 </body>
 </html>
