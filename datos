@@ -1,0 +1,7 @@
+# Notas
+
+Análisis paso a paso:
+- `01_exploracion.ipynb` — carga y exploración inicial
+- `02_limpieza.ipynb` — limpieza de datos EMA y RNT
+- `03_analisis_risaralda.ipynb` — análisis del Eje Cafetero
+- `04_modelo_predictivo.ipynb` — modelo de predicción
