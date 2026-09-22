@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto Minería de Datos — Turismo Risaralda</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6f9;
+    color: #2c3e50;
+    line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  header h1 { font-size: 2.2rem; margin-bottom: 10px; }
+  header p { font-size: 1.1rem; opacity: 0.9; }
+  .container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  .card h2 {
+    color: #1e3c72;
+    border-bottom: 3px solid #2a5298;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+  }
+  .stat {
+    background: #eaf1fb;
+    border-left: 5px solid #2a5298;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  .stat .label { font-size: 0.85rem; color: #555; }
+  .stat .value { font-size: 1.5rem; font-weight: bold; color: #1e3c72; }
+  canvas { max-height: 400px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.9rem;
+  }
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background: #1e3c72;
+    color: white;
+  }
+  tr:hover { background: #f1f5fb; }
+  footer {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-size: 0.9rem;
+  }
+  .badge {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏨 Turismo y Ocupación Hotelera en Risaralda</h1>
+  <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
+  <p style="font-size:0.95rem; margin-top:8px;">Datos: DANE — Encuesta Mensual de Alojamiento (2019 – julio 2026)</p>
+</header>
+
+<div class="container">
+
+  <!-- Pregunta de decisión -->
+  <div class="card">
+    <h2>🎯 Pregunta de decisión</h2>
+    <p>¿Qué meses del año y qué segmentos de establecimientos de alojamiento en
+    <strong>Risaralda / Eje Cafetero</strong> presentan la mayor vulnerabilidad
+    (caídas de ocupación e ingresos reales) según los datos históricos 2019–julio 2026,
+    para priorizar la reactivación tras el terremoto de agosto de 2026?</p>
+  </div>
+
+  <!-- Indicadores clave -->
+  <div class="card">
+    <h2>📊 Indicadores clave del sector (últimos datos)</h2>
+    <div class="grid">
+      <div class="stat">
+        <div class="label">Ocupación Nacional (jul 2026)</div>
+        <div class="value">50.58%</div>
+      </div>
+      <div class="stat">
+        <div class="label">Ocupación Eje Cafetero (jul 2026)</div>
+        <div class="value">42.08%</div>
+      </div>
+      <div class="stat">
+        <div class="label">Ingresos reales Eje Cafetero (var. anual)</div>
+        <div class="value">+0.35%</div>
+      </div>
+      <div class="stat">
+        <div class="label">Personal ocupado Eje Cafetero</div>
+        <div class="value">-2.1%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico de ocupación -->
+  <div class="card">
+    <h2>📈 Ocupación hotelera mensual — Eje Cafetero vs Nacional (2026)</h2>
+    <canvas id="graficoOcupacion"></canvas>
+  </div>
+
+  <!-- Gráfico de ingresos -->
+  <div class="card">
+    <h2>💰 Variación anual de ingresos reales (2020–2026)</h2>
+    <canvas id="graficoIngresos"></canvas>
+  </div>
+
+  <!-- Tabla de datos -->
+  <div class="card">
+    <h2>📋 Datos destacados por región (julio 2026)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Región</th>
+          <th>Ocupación (%)</th>
+          <th>Var. ingresos reales (%)</th>
+          <th>Personal ocupado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Total nacional</td><td>50.58</td><td>-7.40</td><td>-4.67</td></tr>
+        <tr><td>Bogotá D.C.</td><td>58.45</td><td>-11.48</td><td>-3.94</td></tr>
+        <tr><td>Cartagena</td><td>62.67</td><td>-8.56</td><td>-3.86</td></tr>
+        <tr><td>Central</td><td>40.34</td><td>+6.09</td><td>-3.60</td></tr>
+        <tr><td>Caribe</td><td>51.09</td><td>-3.96</td><td>-6.89</td></tr>
+        <tr><td>Eje Cafetero</td><td>44.47</td><td>+2.78</td><td>-3.74</td></tr>
+        <tr><td>Antioquia</td><td>50.91</td><td>-14.61</td><td>-5.66</td></tr>
+        <tr><td>San Andrés y Providencia</td><td>70.92</td><td>-8.38</td><td>-10.52</td></tr>
+        <tr><td>Pacífico</td><td>39.02</td><td>-10.85</td><td>-6.86</td></tr>
+        <tr><td>Santanderes</td><td>40.20</td><td>+3.67</td><td>-1.18</td></tr>
+        <tr><td>Llanos Orinoquía</td><td>38.10</td><td>-3.08</td><td>-1.86</td></tr>
+        <tr><td>Golfo Morrosquillo y Sabana</td><td>38.36</td><td>-2.79</td><td>-0.74</td></tr>
+        <tr><td>Amazonía</td><td>50.72</td><td>+10.92</td><td>-11.71</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px; font-size:0.85rem; color:#777;">
+      <span class="badge">Datos provisionales</span> Cifras de 2026 publicadas por DANE, actualizado el 15/09/2026.
+    </p>
+  </div>
+
+  <!-- Fuentes -->
+  <div class="card">
+    <h2>📚 Fuentes de datos</h2>
+    <ul style="margin-left:20px;">
+      <li><strong>EMA – DANE:</strong> Encuesta Mensual de Alojamiento, enero 2019 – julio 2026.</li>
+      <li><strong>RNT:</strong> Registro Nacional de Turismo (establecimientos, categorías, habitaciones, camas).</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  Proyecto académico — Minería de Datos · 2026 · Risaralda, Colombia
+</footer>
+
+<script>
+// Datos de ejemplo (puedes reemplazarlos con los reales extraídos del Excel)
+const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul'];
+const ocupacionEje = [45.81, 39.20, 41.35, 39.31, 36.09, 39.61, 44.46];
+const ocupacionNacional = [49.65, 49.30, 48.40, 46.24, 45.17, 45.38, 50.57];
+
+new Chart(document.getElementById('graficoOcupacion'), {
+  type: 'line',
+  data: {
+    labels: meses,
+    datasets: [
+      {
+        label: 'Eje Cafetero (Risaralda)',
+        data: ocupacionEje,
+        borderColor: '#ff6b6b',
+        backgroundColor: 'rgba(255,107,107,0.1)',
+        tension: 0.3,
+        fill: true
+      },
+      {
+        label: 'Total nacional',
+        data: ocupacionNacional,
+        borderColor: '#2a5298',
+        backgroundColor: 'rgba(42,82,152,0.1)',
+        tension: 0.3,
+        fill: true
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' },
+      title: { display: false }
+    },
+    scales: {
+      y: { beginAtZero: false, title: { display: true, text: 'Ocupación (%)' } }
+    }
+  }
+});
+
+// Ingresos reales (variación anual %)
+const años = ['2020','2021','2022','2023','2024','2025','2026'];
+const ingresosEje = [-45.22, -52.24, 68.80, -2.83, -5.37, 1.30, -5.38];
+const ingresosNac = [-44.40, -56.37, 95.09, -4.10, -4.71, 6.79, -5.38];
+
+new Chart(document.getElementById('graficoIngresos'), {
+  type: 'bar',
+  data: {
+    labels: años,
+    datasets: [
+      {
+        label: 'Eje Cafetero',
+        data: ingresosEje,
+        backgroundColor: '#ff6b6b'
+      },
+      {
+        label: 'Total nacional',
+        data: ingresosNac,
+        backgroundColor: '#2a5298'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { title: { display: true, text: 'Variación anual (%)' } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
