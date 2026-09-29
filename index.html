@@ -3,182 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Proyecto Minería de Datos — Turismo Risaralda</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Turismo y Ocupación Hotelera en Risaralda</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --azul: #1a3a5c;
+    --azul-claro: #2c5f8a;
+    --gris: #f4f6f8;
+    --borde: #d9e2ec;
+    --texto: #2d3748;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f4f6f9;
-    color: #2c3e50;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--texto);
+    background: #fff;
     line-height: 1.6;
   }
-  header {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    padding: 40px 20px;
+
+  /* ===== Barra de navegación ===== */
+  nav {
+    background: var(--azul);
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 0.25rem;
+  }
+  nav button {
+    background: transparent;
+    border: none;
+    color: #cbd5e0;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+  nav button:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+  nav button.active {
+    color: #fff;
+    border-bottom-color: #63b3ed;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* ===== Contenido ===== */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fade 0.3s ease; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  header.page-header {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%);
+    color: #fff;
+    padding: 2.5rem 1.5rem;
     text-align: center;
   }
-  header h1 { font-size: 2.2rem; margin-bottom: 10px; }
-  header p { font-size: 1.05rem; opacity: 0.92; }
-  .container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 20px;
+  header.page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  header.page-header p { opacity: 0.9; font-size: 0.95rem; }
+  header.page-header .contexto {
+    display: inline-block;
+    margin-top: 0.75rem;
+    background: rgba(255,255,255,0.15);
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
   }
-  .alert {
-    background: #fff8e1;
-    border-left: 5px solid #ffb300;
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    color: #7a5c00;
+
+  h2 { color: var(--azul); margin: 2rem 0 1rem; font-size: 1.35rem; }
+  h3 { color: var(--azul-claro); margin: 1.5rem 0 0.75rem; font-size: 1.1rem; }
+
+  .aviso {
+    background: #fffaf0;
+    border-left: 4px solid #ed8936;
+    padding: 1rem 1.25rem;
+    border-radius: 4px;
+    margin: 1.5rem 0;
     font-size: 0.95rem;
   }
-  .alert strong { color: #b37700; }
-  .card {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  }
-  .card h2 {
-    color: #1e3c72;
-    border-bottom: 3px solid #2a5298;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
-  .grid {
+
+  .grid-indicadores {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
+    gap: 1rem;
+    margin: 1.5rem 0;
   }
-  .stat {
-    background: #eaf1fb;
-    border-left: 5px solid #2a5298;
-    padding: 15px;
+  .card-indicador {
+    background: var(--gris);
+    border: 1px solid var(--borde);
     border-radius: 8px;
-    min-height: 90px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
   }
-  .stat .label { font-size: 0.85rem; color: #555; }
-  .stat .value {
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #b8c4d4;
-    font-style: italic;
+  .card-indicador .label { font-size: 0.85rem; color: #718096; margin-bottom: 0.5rem; }
+  .card-indicador .valor { font-size: 1.3rem; font-weight: 600; color: #a0aec0; }
+
+  .placeholder {
+    background: var(--gris);
+    border: 2px dashed var(--borde);
+    border-radius: 8px;
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #a0aec0;
+    margin: 1rem 0;
   }
-  canvas { max-height: 380px; }
+
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 0.9rem;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
   }
   th, td {
-    padding: 10px;
+    padding: 0.75rem 1rem;
     text-align: left;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--borde);
   }
-  th {
-    background: #1e3c72;
-    color: white;
+  th { background: var(--azul); color: #fff; font-weight: 600; }
+  tr:hover td { background: var(--gris); }
+  td.pendiente { color: #a0aec0; font-style: italic; }
+
+  ul.fuentes { padding-left: 1.5rem; margin: 1rem 0; }
+  ul.fuentes li { margin-bottom: 0.5rem; }
+
+  /* ===== Lista de documentos ===== */
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
   }
-  td.empty {
-    color: #b8c4d4;
-    font-style: italic;
+  .doc-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    text-decoration: none;
+    color: var(--texto);
+    transition: all 0.2s ease;
+  }
+  .doc-card:hover {
+    border-color: var(--azul-claro);
+    box-shadow: 0 4px 12px rgba(26,58,92,0.12);
+    transform: translateY(-2px);
+  }
+  .doc-icon {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    background: var(--gris);
+  }
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-info .nombre {
+    font-weight: 600;
+    font-size: 0.95rem;
+    word-break: break-word;
+    margin-bottom: 0.15rem;
+  }
+  .doc-info .meta { font-size: 0.8rem; color: #718096; }
+
+  .buscador {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    margin-bottom: 0.5rem;
+  }
+  .buscador:focus {
+    outline: none;
+    border-color: var(--azul-claro);
+    box-shadow: 0 0 0 3px rgba(44,95,138,0.15);
+  }
+
+  .estado-carga {
     text-align: center;
+    color: #718096;
+    padding: 2rem;
+    font-style: italic;
   }
+
   footer {
     text-align: center;
-    padding: 25px;
-    color: #777;
-    font-size: 0.9rem;
-  }
-  .empty-chart {
-    background: #f9fafc;
-    border: 2px dashed #cfd8e3;
-    border-radius: 10px;
-    padding: 60px 20px;
-    text-align: center;
-    color: #8a97a8;
-    font-size: 1rem;
+    padding: 2rem 1rem;
+    color: #718096;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--borde);
+    margin-top: 3rem;
   }
 </style>
 </head>
 <body>
 
-<header>
+<!-- ===== NAVEGACIÓN ===== -->
+<nav>
+  <ul>
+    <li><button class="tab-btn active" data-tab="datos">Datos</button></li>
+    <li><button class="tab-btn" data-tab="documentos"> Documentos</button></li>
+  </ul>
+</nav>
+
+<header class="page-header">
   <h1>Turismo y Ocupación Hotelera en Risaralda</h1>
   <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
-  <p style="font-size:0.9rem; margin-top:8px;">Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</p>
+  <span class="contexto">Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</span>
 </header>
 
-<div class="container">
+<main>
 
-  <!-- Aviso -->
-  <div class="alert">
-    <strong> Pendiente de datos y validaciones.</strong>
-    Las cifras de este tablero se completarán cuando finalicemos la limpieza y validación
-    de las fuentes (EMA-DANE y RNT). Los espacios en blanco se llenarán en la próxima entrega.
-  </div>
+  <!-- ==================== PESTAÑA 1: DATOS ==================== -->
+  <section id="tab-datos" class="tab-panel active">
+    <div class="aviso">
+      <strong>Pendiente de datos y validaciones.</strong> Las cifras de este tablero se completarán cuando finalicemos la limpieza y validación de las fuentes (EMA-DANE y RNT). Los espacios en blanco se llenarán en la próxima entrega.
+    </div>
 
-  <!-- Pregunta de decisión -->
-  <div class="card">
     <h2>Pregunta de decisión</h2>
-    <p>¿Qué meses del año y qué segmentos de establecimientos de alojamiento en
-    <strong>Risaralda / Eje Cafetero</strong> presentan la mayor vulnerabilidad
-    (caídas de ocupación e ingresos reales) según los datos históricos 2019–julio 2026,
-    para priorizar la reactivación tras el terremoto de agosto de 2026?</p>
-  </div>
+    <p>¿Qué meses del año y qué segmentos de establecimientos de alojamiento en Risaralda / Eje Cafetero presentan la mayor vulnerabilidad (caídas de ocupación e ingresos reales) según los datos históricos 2025–julio 2026, para priorizar la reactivación tras el terremoto de agosto de 2026?</p>
 
-  <!-- Indicadores clave (vacíos) -->
-  <div class="card">
     <h2>Indicadores clave del sector</h2>
-    <div class="grid">
-      <div class="stat">
+    <div class="grid-indicadores">
+      <div class="card-indicador">
         <div class="label">Ocupación nacional</div>
-        <div class="value">— Pendiente —</div>
+        <div class="valor">— Pendiente —</div>
       </div>
-      <div class="stat">
+      <div class="card-indicador">
         <div class="label">Ocupación Eje Cafetero</div>
-        <div class="value">— Pendiente —</div>
+        <div class="valor">— Pendiente —</div>
       </div>
-      <div class="stat">
+      <div class="card-indicador">
         <div class="label">Var. ingresos reales Eje Cafetero</div>
-        <div class="value">— Pendiente —</div>
+        <div class="valor">— Pendiente —</div>
       </div>
-      <div class="stat">
+      <div class="card-indicador">
         <div class="label">Personal ocupado Eje Cafetero</div>
-        <div class="value">— Pendiente —</div>
+        <div class="valor">— Pendiente —</div>
       </div>
     </div>
-  </div>
 
-  <!-- Gráfico ocupación (placeholder) -->
-  <div class="card">
     <h2>Ocupación hotelera mensual — Eje Cafetero vs Nacional</h2>
-    <div class="empty-chart">
+    <div class="placeholder">
       Gráfico pendiente de datos.<br>
-      Se construirá con la serie mensual 2019–julio 2026.
+      <small>Se construirá con la serie mensual 2019–julio 2026.</small>
     </div>
-  </div>
 
-  <!-- Gráfico ingresos (placeholder) -->
-  <div class="card">
     <h2>Variación anual de ingresos reales</h2>
-    <div class="empty-chart">
+    <div class="placeholder">
       Gráfico pendiente de datos.<br>
-      Se construirá con las variaciones anuales por región.
+      <small>Se construirá con las variaciones anuales por región.</small>
     </div>
-  </div>
 
-  <!-- Tabla (vacía) -->
-  <div class="card">
     <h2>Datos por región</h2>
     <table>
       <thead>
@@ -190,41 +284,177 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>Total nacional</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Bogotá D.C.</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Cartagena</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Central</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Caribe</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Eje Cafetero (Risaralda)</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Antioquia</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>San Andrés y Providencia</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Pacífico</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Santanderes</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Llanos Orinoquía</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Golfo Morrosquillo y Sabana</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
-        <tr><td>Amazonía</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td><td class="empty">Pendiente</td></tr>
+        <tr><td>Total nacional</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Bogotá D.C.</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Cartagena</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Central</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Caribe</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td><strong>Eje Cafetero (Risaralda)</strong></td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Antioquia</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>San Andrés y Providencia</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Pacífico</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Santanderes</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Llanos Orinoquía</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Golfo Morrosquillo y Sabana</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
+        <tr><td>Amazonía</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td><td class="pendiente">Pendiente</td></tr>
       </tbody>
     </table>
-  </div>
 
-  <!-- Fuentes -->
-  <div class="card">
     <h2>Fuentes de datos</h2>
-    <ul style="margin-left:20px;">
+    <ul class="fuentes">
       <li><strong>EMA – DANE:</strong> Encuesta Mensual de Alojamiento, enero 2019 – julio 2026.</li>
       <li><strong>RNT:</strong> Registro Nacional de Turismo (establecimientos, categorías, habitaciones, camas).</li>
     </ul>
-    <p style="margin-top:12px; font-size:0.85rem; color:#777;">
-      Estado: datos crudos cargados, pendientes de limpieza y validación.
-    </p>
-  </div>
+    <p><em>Estado: datos crudos cargados, pendientes de limpieza y validación.</em></p>
+  </section>
 
-</div>
+  <!-- ==================== PESTAÑA 2: DOCUMENTOS ==================== -->
+  <section id="tab-documentos" class="tab-panel">
+    <h2> Documentos del proyecto</h2>
+    <p>Archivos y documentos cargados en el repositorio, ordenados por tipo y fecha.</p>
+
+    <input type="text" class="buscador" id="buscador" placeholder="🔍 Buscar documento por nombre...">
+
+    <div id="lista-docs">
+      <div class="estado-carga">Cargando documentos desde el repositorio...</div>
+    </div>
+  </section>
+
+</main>
 
 <footer>
-  Proyecto académico — Minería de Datos · 2026 · Risaralda, Colombia
+  Proyecto de Minería de Datos · Turismo y Ocupación Hotelera en Risaralda · 2026
 </footer>
 
-<!-- Sin gráficos activos todavía. Cuando tengan los datos, se activan. -->
+<script>
+/* ========== CAMBIO DE PESTAÑAS ========== */
+const botones = document.querySelectorAll('.tab-btn');
+const paneles = document.querySelectorAll('.tab-panel');
+
+botones.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+
+    botones.forEach(b => b.classList.remove('active'));
+    paneles.forEach(p => p.classList.remove('active'));
+
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+  });
+});
+
+/* ========== CARGA DE DOCUMENTOS DESDE GITHUB API ========== */
+const USUARIO = 'edutruj';
+const REPO = 'mineria-de-datos-terremoto';
+const RAMA = 'main'; // cambia a 'master' si tu rama principal se llama así
+const API = `https://api.github.com/repos/${USUARIO}/${REPO}/git/trees/${RAMA}?recursive=1`;
+
+const contenedor = document.getElementById('lista-docs');
+const buscador = document.getElementById('buscador');
+let todosLosDocs = [];
+
+// Iconos según extensión
+function iconoArchivo(nombre) {
+  const ext = nombre.split('.').pop().toLowerCase();
+  const mapa = {
+    pdf: '📕', xlsx: '📗', xls: '📗', csv: '📊',
+    doc: '📘', docx: '📘', ppt: '📙', pptx: '📙',
+    ipynb: '📓', md: '📝', txt: '📄',
+    png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️',
+    zip: '🗜️', rar: '🗜️', json: '⚙️', html: '🌐'
+  };
+  return mapa[ext] || '📎';
+}
+
+// Formato de fecha
+function formatearFecha(iso) {
+  const f = new Date(iso);
+  return f.toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// Formato de tamaño
+function formatearTamano(bytes) {
+  if (!bytes) return '';
+  const u = ['B', 'KB', 'MB', 'GB'];
+  let i = 0;
+  while (bytes >= 1024 && i < u.length - 1) { bytes /= 1024; i++; }
+  return bytes.toFixed(1) + ' ' + u[i];
+}
+
+// Renderizar tarjetas
+function renderizarDocs(lista) {
+  if (!lista.length) {
+    contenedor.innerHTML = '<div class="estado-carga">No se encontraron documentos.</div>';
+    return;
+  }
+
+  // Ordenar: primero por tipo (carpeta/archivo), luego por nombre
+  lista.sort((a, b) => {
+    if (a.type !== b.type) return a.type === 'tree' ? -1 : 1;
+    return a.path.localeCompare(b.path);
+  });
+
+  contenedor.innerHTML = '<div class="docs-grid">' + lista.map(doc => {
+    const nombre = doc.path.split('/').pop();
+    const esCarpeta = doc.type === 'tree';
+    const url = esCarpeta
+      ? `https://github.com/${USUARIO}/${REPO}/tree/${RAMA}/${doc.path}`
+      : `https://github.com/${USUARIO}/${REPO}/blob/${RAMA}/${doc.path}`;
+    const urlRaw = `https://raw.githubusercontent.com/${USUARIO}/${REPO}/${RAMA}/${doc.path}`;
+    const icono = esCarpeta ? '📁' : iconoArchivo(nombre);
+    const tamano = doc.size ? formatearTamano(doc.size) : '';
+
+    return `
+      <a class="doc-card" href="${esCarpeta ? url : urlRaw}" target="_blank" rel="noopener">
+        <div class="doc-icon">${icono}</div>
+        <div class="doc-info">
+          <div class="nombre">${nombre}</div>
+          <div class="meta">${doc.path}${tamano ? ' · ' + tamano : ''}</div>
+        </div>
+      </a>
+    `;
+  }).join('') + '</div>';
+}
+
+// Filtrar por búsqueda
+buscador.addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  const filtrados = todosLosDocs.filter(d =>
+    d.path.toLowerCase().includes(q)
+  );
+  renderizarDocs(filtrados);
+});
+
+// Cargar desde GitHub API
+async function cargarDocumentos() {
+  try {
+    const resp = await fetch(API);
+    if (!resp.ok) throw new Error('Error al consultar GitHub');
+    const data = await resp.json();
+
+    // Filtrar: excluir .git, .github, node_modules, y archivos muy internos
+    todosLosDocs = (data.tree || []).filter(item => {
+      const p = item.path;
+      if (p.startsWith('.git') || p.startsWith('node_modules')) return false;
+      if (p === '.github' || p.startsWith('.github/')) return false;
+      return true;
+    });
+
+    renderizarDocs(todosLosDocs);
+  } catch (err) {
+    console.error(err);
+    contenedor.innerHTML = `
+      <div class="estado-carga">
+         No se pudieron cargar los documentos automáticamente.<br>
+        <small>${err.message}</small><br><br>
+        <a href="https://github.com/${USUARIO}/${REPO}" target="_blank">Ver repositorio en GitHub →</a>
+      </div>
+    `;
+  }
+}
+
+cargarDocumentos();
+</script>
+
 </body>
 </html>
