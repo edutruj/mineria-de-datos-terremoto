@@ -1,1 +1,123 @@
+UNIVERSIDAD CIAF
+PEREIRA
+
+
+
+
+MINERÍA DE DATOS 
+
+
+
+PROFESOR:
+Andrea Ortiz 
+
+
+
+ALUMNO:
+Jose Luis Brito H
+Luis Eduardo Trujillo
+
+
+
+
+
+
+TRABAJO:
+ Terremoto de Pereira (Risaralda) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.Objetivo del proyecto 
+
+
+    ¿Qué meses del año y qué segmentos de establecimientos de alojamiento en Risaralda / Eje Cafetero presentan la mayor vulnerabilidad (caídas de ocupación e ingresos reales) según los datos históricos 2019–julio 2026, para que la Secretaría de Turismo de Risaralda y COTELCO prioricen la reactivación tras el terremoto de agosto de 2026?
+
+    Organización / contexto: Sector hotelero y turístico de Risaralda (Eje Cafetero), afectado por el terremoto del 10 de agosto de 2026.
+
+    Quién decide: El Secretario de Turismo de Risaralda y el gremio hotelero COTELCO Risaralda.
+
+    Acción concreta: Asignar el presupuesto de recuperación a los meses y tipos de establecimiento con mayor riesgo histórico, en lugar de repartirlo por igual.
+
+    ¿Se puede responder con los datos? Sí: la EMA del DANE trae ocupación, ingresos reales y personal por región desde enero 2019 hasta julio 2026 (justo antes del terremoto).
+
+2. Alcance 
+
+    Este proyecto analiza los datos mensuales de la Encuesta Mensual de Alojamiento (EMA) del DANE para el periodo enero 2026 – julio 2026, cubriendo ocupación hotelera, ingresos reales, personal ocupado y salarios reales de 12 regiones de Colombia (con foco en Risaralda / Eje Cafetero), y NO cubre:
+
+        Datos posteriores a julio de 2026 (el terremoto fue en agosto de 2026 y aún no hay cifras EMA publicadas).
+
+        Establecimientos informales ni plataformas tipo Airbnb.
+
+        Daños estructurales ni pérdidas físicas causadas directamente por el terremoto.
+
+        Análisis a nivel municipal (solo regional / departamental).
+
+        Causas climáticas, políticas o de seguridad.
+
+Tipo de proyecto: Descriptivo + predictivo (se describe la evolución 2026–2026 y se anticipan meses de baja ocupación para priorizar la recuperación). 
+3. Hipótesis inicial
+
+
+    Creemos que la ocupación hotelera y los ingresos reales en Risaralda / Eje Cafetero están fuertemente relacionados con la temporada vacacional (junio-julio y diciembre-enero), porque la región depende del turismo de ocio y de fin de semana; por lo tanto, los meses intermedios (febrero-abril) mostrarán las caídas más fuertes y serán los más vulnerables ante un evento como el terremoto de agosto de 2026.
+
+Hipótesis secundaria:
+
+    La pandemia (2020-2021) dejó una caída estructural en los ingresos reales del sector en Risaralda que aún no se recupera del todo en 2026 comparado con regiones como Bogotá o Cartagena, lo que agrava el impacto del terremoto.
+
+4. Indicadores de éxito
+
+•	Identificar al menos 3 meses del año con caída sostenida de ocupación en Risaralda / Eje Cafetero entre 2019 y 2026.
+
+•	Construir un ranking de las 12 regiones por recuperación de ingresos reales (2026 vs 2019), ubicando claramente a Risaralda.
+
+•	Modelo predictivo simple (regresión o serie de tiempo) con un Error Porcentual Absoluto Medio (MAPE) igual o inferior al 15 % para anticipar la ocupación del próximo trimestre.
+
+•	Entregar un tablero visual (gráficos) que el secretario de Turismo pueda leer sin saber minería de datos.
+
+•	Que las conclusiones sean accionables: no solo "bajó la ocupación", sino "en febrero y septiembre, en Risaralda, priorizar X tipo de establecimiento".
+
+5. Fuentes de datos
+
+Fuente 1:
+Encuesta Mensual de Alojamiento (EMA) – DANE. Archivo anex-EMA-jul2026.xlsx. Datos mensuales de ocupación, ingresos reales, personal y salarios por región, enero 2019 – julio 2026. Disponible en: https://www.dane.gov.co (Turismo – EMA).
+Fuente 2:
+Registro Nacional de Turismo (RNT) – thwd-ivmp.csv. Contiene código, razón social, departamento, municipio, categoría, subcategoría, número de habitaciones, camas y empleados por establecimiento. Disponible en: datos.gov.co.
+Cruce: Ambas fuentes se cruzan por departamento / región y por categoría de establecimiento (hotel, apartahotel, hostal, etc.).
+
+6. Riesgos identificados
+
+
+•	No hay datos posteriores al terremoto: la EMA llega hasta julio 2026 y el terremoto fue en agosto. El proyecto se enfoca en la vulnerabilidad previa para priorizar la recuperación, no en medir el daño.
+
+•	Datos provisionales: las cifras de 2026 están marcadas con "p" (provisional) y pueden cambiar.
+
+•	Sesgo de muestra: la EMA solo cubre establecimientos formales, no Airbnb ni hospedajes informales, muy relevantes hoy en Risaralda.
+
+•	RNT desactualizado: la base RNT puede no reflejar la oferta actual (posiblemente solo 2026 o 2025).
+
+•	Riesgo de sobreinterpretar correlación como causalidad (ej. clima vs ocupación).
+
+
+7. Repositorio del proyecto en GitHub
+
+Pagina publicada
+https://edutruj.github.io/mineria-de-datos-terremoto/
+
+repositorio 
+https://github.com/edutruj/mineria-de-datos-terremoto
 
