@@ -182,6 +182,18 @@
   }
   .doc-info .meta { font-size: 0.8rem; color: #718096; }
 
+  .badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-left: 0.35rem;
+    vertical-align: middle;
+  }
+  .badge-cdn { background: #e6fffa; color: #234e52; }
+  .badge-directo { background: #fffaf0; color: #7b341e; }
+
   .buscador {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -204,6 +216,24 @@
     font-style: italic;
   }
 
+  /* ===== Sección releases ===== */
+  .seccion-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--borde);
+    color: var(--azul);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .seccion-desc {
+    font-size: 0.85rem;
+    color: #718096;
+    margin: 0.5rem 0 0.75rem;
+  }
+
   footer {
     text-align: center;
     padding: 2rem 1rem;
@@ -220,7 +250,7 @@
 <nav>
   <ul>
     <li><button class="tab-btn active" data-tab="datos">Datos</button></li>
-    <li><button class="tab-btn" data-tab="documentos"> Documentos</button></li>
+    <li><button class="tab-btn" data-tab="documentos">Documentos</button></li>
   </ul>
 </nav>
 
@@ -310,7 +340,7 @@
 
   <!-- ==================== PESTAÑA 2: DOCUMENTOS ==================== -->
   <section id="tab-documentos" class="tab-panel">
-    <h2> Documentos del proyecto</h2>
+    <h2>Documentos del proyecto</h2>
     <p>Archivos y documentos cargados en el repositorio, ordenados por tipo y fecha.</p>
 
     <input type="text" class="buscador" id="buscador" placeholder="🔍 Buscar documento por nombre...">
@@ -343,15 +373,21 @@ botones.forEach(btn => {
   });
 });
 
-/* ========== CARGA DE DOCUMENTOS DESDE GITHUB API ========== */
+/* ========== CARGA DE DOCUMENTOS ========== */
+/* - Archivos normales: GitHub API (tree)
+   - Archivos pesados: GitHub Releases + jsDelivr CDN
+*/
 const USUARIO = 'edutruj';
 const REPO = 'mineria-de-datos-terremoto';
 const RAMA = 'main'; // cambia a 'master' si tu rama principal se llama así
-const API = `https://api.github.com/repos/${USUARIO}/${REPO}/git/trees/${RAMA}?recursive=1`;
+const API_TREE = `https://api.github.com/repos/${USUARIO}/${REPO}/git/trees/${RAMA}?recursive=1`;
+const API_RELEASES = `https://api.github.com/repos/${USUARIO}/${REPO}/releases`;
+const UMBRAL_CDN = 20 * 1024 * 1024; // 20 MB
 
 const contenedor = document.getElementById('lista-docs');
 const buscador = document.getElementById('buscador');
-let todosLosDocs = [];
+let docsRepo = [];
+let docsReleases = [];
 
 // Iconos según extensión
 function iconoArchivo(nombre) {
@@ -366,12 +402,6 @@ function iconoArchivo(nombre) {
   return mapa[ext] || '📎';
 }
 
-// Formato de fecha
-function formatearFecha(iso) {
-  const f = new Date(iso);
-  return f.toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' });
-}
-
 // Formato de tamaño
 function formatearTamano(bytes) {
   if (!bytes) return '';
@@ -381,78 +411,162 @@ function formatearTamano(bytes) {
   return bytes.toFixed(1) + ' ' + u[i];
 }
 
-// Renderizar tarjetas
+// Formato de fecha
+function formatearFecha(iso) {
+  const f = new Date(iso);
+  return f.toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// Renderizar una tarjeta
+function renderizarDocCard(doc) {
+  const nombre = doc.path.split('/').pop();
+  const esCarpeta = doc.type === 'tree';
+  const url = esCarpeta
+    ? `https://github.com/${USUARIO}/${REPO}/tree/${RAMA}/${doc.path}`
+    : (doc.url || `https://raw.githubusercontent.com/${USUARIO}/${REPO}/${RAMA}/${doc.path}`);
+  const icono = esCarpeta ? '' : iconoArchivo(nombre);
+  const tamano = doc.size ? formatearTamano(doc.size) : '';
+
+  let badge = '';
+  if (doc.esRelease) {
+    badge = doc.usandoCDN
+      ? '<span class="badge badge-cdn">CDN jsDelivr</span>'
+      : '<span class="badge badge-directo">GitHub directo</span>';
+  }
+
+  const meta = doc.ruta || doc.path;
+
+  return `
+    <a class="doc-card" href="${url}" target="_blank" rel="noopener">
+      <div class="doc-icon">${icono}</div>
+      <div class="doc-info">
+        <div class="nombre">${nombre}${badge}</div>
+        <div class="meta">${meta}${tamano ? ' · ' + tamano : ''}</div>
+      </div>
+    </a>
+  `;
+}
+
+// Renderizar lista completa
 function renderizarDocs(lista) {
   if (!lista.length) {
     contenedor.innerHTML = '<div class="estado-carga">No se encontraron documentos.</div>';
     return;
   }
 
-  // Ordenar: primero por tipo (carpeta/archivo), luego por nombre
-  lista.sort((a, b) => {
-    if (a.type !== b.type) return a.type === 'tree' ? -1 : 1;
-    return a.path.localeCompare(b.path);
-  });
+  const normales = lista.filter(d => !d.esRelease);
+  const releases = lista.filter(d => d.esRelease);
 
-  contenedor.innerHTML = '<div class="docs-grid">' + lista.map(doc => {
-    const nombre = doc.path.split('/').pop();
-    const esCarpeta = doc.type === 'tree';
-    const url = esCarpeta
-      ? `https://github.com/${USUARIO}/${REPO}/tree/${RAMA}/${doc.path}`
-      : `https://github.com/${USUARIO}/${REPO}/blob/${RAMA}/${doc.path}`;
-    const urlRaw = `https://raw.githubusercontent.com/${USUARIO}/${REPO}/${RAMA}/${doc.path}`;
-    const icono = esCarpeta ? '📁' : iconoArchivo(nombre);
-    const tamano = doc.size ? formatearTamano(doc.size) : '';
+  let html = '';
 
-    return `
-      <a class="doc-card" href="${esCarpeta ? url : urlRaw}" target="_blank" rel="noopener">
-        <div class="doc-icon">${icono}</div>
-        <div class="doc-info">
-          <div class="nombre">${nombre}</div>
-          <div class="meta">${doc.path}${tamano ? ' · ' + tamano : ''}</div>
-        </div>
-      </a>
-    `;
-  }).join('') + '</div>';
+  if (releases.length) {
+    html += `<div class="seccion-titulo"> Archivos pesados (GitHub Releases)</div>`;
+    html += `<div class="seccion-desc">Archivos subidos a Releases y servidos desde la CDN de jsDelivr. Los archivos &gt;20 MB se enlazan directo a GitHub.</div>`;
+    html += '<div class="docs-grid">' + releases.map(renderizarDocCard).join('') + '</div>';
+  }
+
+  if (normales.length) {
+    html += `<div class="seccion-titulo"> Archivos del repositorio</div>`;
+    html += `<div class="seccion-desc">Documentos y datos cargados directamente al repositorio.</div>`;
+    html += '<div class="docs-grid">' + normales.map(renderizarDocCard).join('') + '</div>';
+  }
+
+  contenedor.innerHTML = html;
 }
 
-// Filtrar por búsqueda
-buscador.addEventListener('input', e => {
-  const q = e.target.value.toLowerCase().trim();
-  const filtrados = todosLosDocs.filter(d =>
-    d.path.toLowerCase().includes(q)
-  );
-  renderizarDocs(filtrados);
-});
-
-// Cargar desde GitHub API
-async function cargarDocumentos() {
+// Cargar archivos del repo
+async function cargarDocsTree() {
   try {
-    const resp = await fetch(API);
-    if (!resp.ok) throw new Error('Error al consultar GitHub');
+    const resp = await fetch(API_TREE);
+    if (!resp.ok) throw new Error('Error ' + resp.status);
     const data = await resp.json();
-
-    // Filtrar: excluir .git, .github, node_modules, y archivos muy internos
-    todosLosDocs = (data.tree || []).filter(item => {
+    docsRepo = (data.tree || []).filter(item => {
       const p = item.path;
       if (p.startsWith('.git') || p.startsWith('node_modules')) return false;
       if (p === '.github' || p.startsWith('.github/')) return false;
       return true;
-    });
-
-    renderizarDocs(todosLosDocs);
+    }).map(item => ({ ...item, esRelease: false }));
   } catch (err) {
-    console.error(err);
-    contenedor.innerHTML = `
-      <div class="estado-carga">
-         No se pudieron cargar los documentos automáticamente.<br>
-        <small>${err.message}</small><br><br>
-        <a href="https://github.com/${USUARIO}/${REPO}" target="_blank">Ver repositorio en GitHub →</a>
-      </div>
-    `;
+    console.error('Error tree:', err);
+    docsRepo = [];
   }
 }
 
+// Cargar archivos de Releases
+async function cargarDocsReleases() {
+  try {
+    const resp = await fetch(API_RELEASES);
+    if (!resp.ok) throw new Error('Error ' + resp.status);
+    const releases = await resp.json();
+
+    docsReleases = [];
+
+    for (const release of releases) {
+      const assetsResp = await fetch(release.assets_url);
+      if (!assetsResp.ok) continue;
+      const assets = await assetsResp.json();
+
+      for (const asset of assets) {
+        const tag = release.tag_name;
+        const nombre = asset.name;
+        const tamano = asset.size || 0;
+
+        let url, usandoCDN;
+        if (tamano > 0 && tamano <= UMBRAL_CDN) {
+          url = `https://cdn.jsdelivr.net/gh/${USUARIO}/${REPO}@${tag}/${nombre}`;
+          usandoCDN = true;
+        } else {
+          url = asset.browser_download_url;
+          usandoCDN = false;
+        }
+
+        docsReleases.push({
+          path: nombre,
+          ruta: `${release.name || release.tag_name} / ${nombre}`,
+          type: 'blob',
+          size: tamano,
+          url: url,
+          esRelease: true,
+          tag: tag,
+          usandoCDN: usandoCDN
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Error releases:', err);
+    docsReleases = [];
+  }
+}
+
+// Cargar todo (paralelo)
+async function cargarDocumentos() {
+  contenedor.innerHTML = '<div class="estado-carga">Cargando documentos desde el repositorio...</div>';
+  await Promise.all([cargarDocsTree(), cargarDocsReleases()]);
+
+  const todos = [...docsRepo, ...docsReleases];
+  todos.sort((a, b) => {
+    if (a.esRelease !== b.esRelease) return a.esRelease ? -1 : 1;
+    return a.path.localeCompare(b.path);
+  });
+
+  renderizarDocs(todos);
+}
+
+// Buscador
+buscador.addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  const todos = [...docsRepo, ...docsReleases];
+  if (!q) return renderizarDocs(todos);
+
+  const filtrados = todos.filter(d => {
+    const nombre = d.path.toLowerCase();
+    const ruta = (d.ruta || '').toLowerCase();
+    return nombre.includes(q) || ruta.includes(q);
+  });
+  renderizarDocs(filtrados);
+});
+
+// Iniciar
 cargarDocumentos();
 </script>
 
