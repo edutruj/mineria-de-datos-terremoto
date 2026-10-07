@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Turismo y Ocupación Hotelera en Risaralda</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   :root {
     --azul: #1a3a5c;
@@ -24,7 +25,7 @@
     line-height: 1.6;
   }
 
-  /* ===== HEADER CON MENÚ A LA DERECHA ===== */
+  /* ===== MENÚ SUPERIOR ===== */
   header.top-bar {
     background: var(--azul);
     padding: 0 1rem;
@@ -34,12 +35,18 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   }
   .top-bar-inner {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     position: relative;
+  }
+  .top-bar .logo {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
   }
   .menu-toggle {
     background: transparent;
@@ -56,15 +63,9 @@
     gap: 0.5rem;
   }
   .menu-toggle:hover { background: rgba(255,255,255,0.1); }
-  .menu-toggle .etiqueta {
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-  }
+  .menu-toggle .etiqueta { font-size: 0.9rem; font-weight: 500; }
   .menu-toggle .hamburguesa {
-    display: inline-flex;
-    flex-direction: column;
-    gap: 4px;
+    display: inline-flex; flex-direction: column; gap: 4px;
   }
   .menu-toggle .hamburguesa span {
     width: 22px; height: 2px;
@@ -81,73 +82,53 @@
 
   .menu-desplegable {
     position: absolute;
-    top: 100%;
-    right: 1rem;
+    top: 100%; right: 1rem;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     overflow: hidden;
-    min-width: 220px;
+    min-width: 240px;
     opacity: 0;
     transform: translateY(-10px);
     pointer-events: none;
     transition: all 0.25s ease;
     border: 1px solid var(--borde);
+    z-index: 999;
   }
   .menu-desplegable.abierto {
-    opacity: 1;
-    transform: translateY(0.5rem);
+    opacity: 1; transform: translateY(0.5rem);
     pointer-events: auto;
   }
   .menu-desplegable button {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    width: 100%;
-    padding: 0.85rem 1.1rem;
-    background: transparent;
-    border: none;
-    color: var(--texto);
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-align: left;
-    cursor: pointer;
-    font-family: inherit;
+    display: flex; align-items: center; gap: 0.7rem;
+    width: 100%; padding: 0.85rem 1.1rem;
+    background: transparent; border: none;
+    color: var(--texto); font-size: 0.95rem;
+    font-weight: 500; text-align: left;
+    cursor: pointer; font-family: inherit;
     transition: background 0.15s;
   }
   .menu-desplegable button:hover {
-    background: var(--gris);
-    color: var(--azul);
+    background: var(--gris); color: var(--azul);
   }
   .menu-desplegable button.active {
-    background: #eef4fa;
-    color: var(--azul);
+    background: #eef4fa; color: var(--azul);
     font-weight: 600;
     border-left: 3px solid var(--azul-claro);
     padding-left: calc(1.1rem - 3px);
   }
   .menu-desplegable button .icono {
-    font-size: 1.05rem;
-    width: 22px;
-    text-align: center;
+    font-size: 1.05rem; width: 22px; text-align: center;
   }
-  .menu-separador {
-    height: 1px;
-    background: var(--borde);
-    margin: 0.3rem 0;
-  }
+  .menu-separador { height: 1px; background: var(--borde); margin: 0.3rem 0; }
   .menu-version {
     padding: 0.7rem 1.1rem;
-    font-size: 0.78rem;
-    color: #718096;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    font-size: 0.78rem; color: #718096;
+    display: flex; align-items: center; gap: 0.5rem;
     background: var(--gris);
   }
   .menu-version .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
+    width: 8px; height: 8px; border-radius: 50%;
     background: var(--verde);
     box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
   }
@@ -162,20 +143,13 @@
   header.page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
   header.page-header p { opacity: 0.9; font-size: 0.95rem; }
   header.page-header .contexto {
-    display: inline-block;
-    margin-top: 0.75rem;
+    display: inline-block; margin-top: 0.75rem;
     background: rgba(255,255,255,0.15);
-    padding: 0.35rem 1rem;
-    border-radius: 20px;
+    padding: 0.35rem 1rem; border-radius: 20px;
     font-size: 0.85rem;
   }
 
-  /* ===== LAYOUT ===== */
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-  }
+  main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; animation: fade 0.3s ease; }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
@@ -184,94 +158,20 @@
   h3 { color: var(--azul-claro); margin: 1.5rem 0 0.75rem; font-size: 1.1rem; }
 
   .aviso {
-    background: #fffaf0;
-    border-left: 4px solid var(--naranja);
-    padding: 1rem 1.25rem;
-    border-radius: 4px;
-    margin: 1.5rem 0;
-    font-size: 0.95rem;
+    background: #fffaf0; border-left: 4px solid var(--naranja);
+    padding: 1rem 1.25rem; border-radius: 4px;
+    margin: 1.5rem 0; font-size: 0.95rem;
+  }
+  .aviso.ok {
+    background: #f0fff4; border-left-color: var(--verde);
   }
 
-  /* ===== INDICADORES ===== */
-  .grid-indicadores {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
-  .card-indicador {
-    background: var(--gris);
-    border: 1px solid var(--borde);
-    border-radius: 8px;
-    padding: 1.25rem;
-    text-align: center;
-  }
-  .card-indicador .label { font-size: 0.85rem; color: #718096; margin-bottom: 0.5rem; }
-  .card-indicador .valor { font-size: 1.3rem; font-weight: 600; color: #a0aec0; }
-  .card-indicador .valor.con-dato { color: var(--azul); }
-
-  /* ===== GRÁFICAS ===== */
-  .charts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin: 1.5rem 0;
-  }
-  @media (max-width: 800px) {
-    .charts-grid { grid-template-columns: 1fr; }
-  }
-  .chart-container {
-    background: #fff;
-    border: 1px solid var(--borde);
-    border-radius: 8px;
-    padding: 1.25rem;
-    position: relative;
-    height: 360px;
-  }
-
-  .placeholder {
-    background: var(--gris);
-    border: 2px dashed var(--borde);
-    border-radius: 8px;
-    padding: 3rem 1rem;
-    text-align: center;
-    color: #a0aec0;
-    margin: 1rem 0;
-  }
-
-  /* ===== TABLAS ===== */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.5rem 0;
-    font-size: 0.92rem;
-  }
-  th, td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--borde);
-  }
-  th { background: var(--azul); color: #fff; font-weight: 600; }
-  tr:hover td { background: var(--gris); }
-  td.pendiente { color: #a0aec0; font-style: italic; }
-
-  ul.fuentes { padding-left: 1.5rem; margin: 1rem 0; }
-  ul.fuentes li { margin-bottom: 0.5rem; }
-
-  /* ===== BOTONES ===== */
   .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 1.1rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    font-family: inherit;
-    transition: all 0.15s ease;
-    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.55rem 1.1rem; border-radius: 6px;
+    border: none; cursor: pointer; font-size: 0.9rem;
+    font-weight: 500; font-family: inherit;
+    transition: all 0.15s ease; text-decoration: none;
   }
   .btn-primary { background: var(--azul); color: #fff; }
   .btn-primary:hover { background: var(--azul-claro); }
@@ -280,43 +180,127 @@
   .btn-danger { background: var(--rojo); color: #fff; }
   .btn-danger:hover { background: #c53030; }
   .btn-outline {
-    background: transparent;
-    color: var(--azul);
+    background: transparent; color: var(--azul);
     border: 1px solid var(--borde);
   }
   .btn-outline:hover { background: var(--gris); border-color: var(--azul-claro); }
   .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.82rem; }
 
   .barra-acciones {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    margin: 1rem 0;
-    padding: 0.85rem;
-    background: var(--gris);
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    align-items: center; margin: 1rem 0;
+    padding: 0.85rem; background: var(--gris);
     border-radius: 8px;
   }
   .barra-acciones .spacer { flex: 1; }
 
-  /* ===== DOCUMENTOS ===== */
+  .grid-indicadores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem; margin: 1.5rem 0;
+  }
+  .card-indicador {
+    background: var(--gris); border: 1px solid var(--borde);
+    border-radius: 8px; padding: 1.25rem; text-align: center;
+  }
+  .card-indicador .label {
+    font-size: 0.82rem; color: #718096;
+    margin-bottom: 0.5rem; text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600;
+  }
+  .card-indicador .valor {
+    font-size: 1.6rem; font-weight: 700; color: var(--azul);
+  }
+  .card-indicador .sub {
+    font-size: 0.75rem; color: #718096; margin-top: 0.3rem;
+  }
+  .card-indicador.destacado { background: #fffaf0; border-color: var(--naranja); }
+  .card-indicador.destacado .valor { color: var(--naranja); }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem; margin: 1.5rem 0;
+  }
+  .charts-grid.full { grid-template-columns: 1fr; }
+  @media (max-width: 800px) {
+    .charts-grid { grid-template-columns: 1fr; }
+  }
+  .chart-container {
+    background: #fff; border: 1px solid var(--borde);
+    border-radius: 8px; padding: 1.25rem;
+    position: relative; height: 380px;
+  }
+  .chart-container.tall { height: 460px; }
+
+  .filtros {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    align-items: end; padding: 1rem;
+    background: var(--gris); border-radius: 8px;
+    margin: 1rem 0;
+  }
+  .filtros .campo { display: flex; flex-direction: column; gap: 0.3rem; }
+  .filtros label {
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--azul); text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .filtros select, .filtros input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--borde); border-radius: 6px;
+    font-family: inherit; font-size: 0.88rem;
+    background: #fff;
+  }
+  .filtros select:focus, .filtros input:focus {
+    outline: none; border-color: var(--azul-claro);
+    box-shadow: 0 0 0 2px rgba(44,95,138,0.15);
+  }
+
+  .tabla-wrap { overflow-x: auto; margin: 1.5rem 0; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.9rem; min-width: 600px;
+  }
+  th, td {
+    padding: 0.65rem 0.85rem; text-align: left;
+    border-bottom: 1px solid var(--borde);
+  }
+  th {
+    background: var(--azul); color: #fff;
+    font-weight: 600; font-size: 0.82rem;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  tr:hover td { background: var(--gris); }
+
+  .zona-drop {
+    border: 2px dashed var(--borde);
+    border-radius: 12px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    background: var(--gris);
+    transition: all 0.2s;
+    cursor: pointer;
+    margin: 1rem 0;
+  }
+  .zona-drop:hover, .zona-drop.dragover {
+    border-color: var(--azul-claro);
+    background: #eef4fa;
+  }
+  .zona-drop .icono-grande { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .zona-drop p { color: #4a5568; margin-bottom: 0.3rem; }
+  .zona-drop small { color: #a0aec0; }
+
   .docs-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: 1rem; margin-top: 1rem;
   }
   .doc-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: #fff;
-    border: 1px solid var(--borde);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    text-decoration: none;
-    color: var(--texto);
-    transition: all 0.2s ease;
+    display: flex; align-items: center; gap: 1rem;
+    background: #fff; border: 1px solid var(--borde);
+    border-radius: 8px; padding: 1rem 1.25rem;
+    text-decoration: none; color: var(--texto);
+    transition: all 0.2s;
   }
   .doc-card:hover {
     border-color: var(--azul-claro);
@@ -324,182 +308,105 @@
     transform: translateY(-2px);
   }
   .doc-icon {
-    flex-shrink: 0;
-    width: 44px; height: 44px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem;
-    background: var(--gris);
+    flex-shrink: 0; width: 44px; height: 44px;
+    border-radius: 8px; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 1.3rem; background: var(--gris);
   }
   .doc-info { flex: 1; min-width: 0; }
   .doc-info .nombre {
-    font-weight: 600;
-    font-size: 0.95rem;
-    word-break: break-word;
-    margin-bottom: 0.15rem;
+    font-weight: 600; font-size: 0.92rem;
+    word-break: break-word; margin-bottom: 0.15rem;
   }
-  .doc-info .meta { font-size: 0.8rem; color: #718096; }
-
-  .badge {
-    display: inline-block;
-    padding: 0.1rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.68rem;
-    font-weight: 600;
-    margin-left: 0.35rem;
-    vertical-align: middle;
-  }
-  .badge-cdn { background: #e6fffa; color: #234e52; }
-  .badge-directo { background: #fffaf0; color: #7b341e; }
+  .doc-info .meta { font-size: 0.78rem; color: #718096; }
 
   .seccion-titulo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-    padding-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-top: 2rem; padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--borde);
-    color: var(--azul);
-    font-size: 1.1rem;
-    font-weight: 700;
+    color: var(--azul); font-size: 1.1rem; font-weight: 700;
   }
   .seccion-desc {
-    font-size: 0.85rem;
-    color: #718096;
+    font-size: 0.85rem; color: #718096;
     margin: 0.5rem 0 0.75rem;
   }
 
   .buscador {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--borde);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-family: inherit;
-    margin-bottom: 0.5rem;
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1px solid var(--borde); border-radius: 8px;
+    font-size: 0.95rem; font-family: inherit;
+    margin-bottom: 1rem;
   }
   .buscador:focus {
-    outline: none;
-    border-color: var(--azul-claro);
+    outline: none; border-color: var(--azul-claro);
     box-shadow: 0 0 0 3px rgba(44,95,138,0.15);
   }
 
   .estado-carga {
-    text-align: center;
-    color: #718096;
-    padding: 2rem;
-    font-style: italic;
+    text-align: center; color: #718096;
+    padding: 2rem; font-style: italic;
   }
-
   .vacio {
-    text-align: center;
-    color: #a0aec0;
-    padding: 2.5rem 1rem;
-    font-style: italic;
-    background: var(--gris);
-    border-radius: 8px;
+    text-align: center; color: #a0aec0;
+    padding: 2.5rem 1rem; font-style: italic;
+    background: var(--gris); border-radius: 8px;
     border: 1px dashed var(--borde);
   }
 
-  /* ===== FORMULARIOS (editar) ===== */
-  .form-grupo { margin-bottom: 1rem; }
-  .form-grupo label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--azul);
+  pre.code-block {
+    background: #1a202c; color: #e2e8f0;
+    padding: 1.25rem; border-radius: 8px;
+    overflow-x: auto; font-size: 0.82rem;
+    line-height: 1.55; margin: 1rem 0;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  }
+  code.inline {
+    background: var(--gris); padding: 0.15rem 0.4rem;
+    border-radius: 4px; font-family: monospace;
+    font-size: 0.85em;
+  }
+
+  .paso {
+    display: flex; gap: 1rem;
+    padding: 1rem; background: var(--gris);
+    border-radius: 8px; margin-bottom: 0.75rem;
+    border-left: 4px solid var(--azul-claro);
+  }
+  .paso .num {
+    flex-shrink: 0; width: 32px; height: 32px;
+    background: var(--azul); color: #fff;
+    border-radius: 50%; display: flex;
+    align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+  }
+  .paso .contenido { flex: 1; }
+  .paso .contenido h4 {
+    color: var(--azul); font-size: 0.95rem;
     margin-bottom: 0.35rem;
   }
-  .form-grupo input,
-  .form-grupo select,
-  .form-grupo textarea {
-    width: 100%;
-    padding: 0.6rem 0.8rem;
-    border: 1px solid var(--borde);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    background: #fff;
+  .paso .contenido p { font-size: 0.88rem; color: #4a5568; }
+
+  .badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem; border-radius: 10px;
+    font-size: 0.68rem; font-weight: 600;
+    margin-left: 0.35rem; vertical-align: middle;
   }
-  .form-grupo input:focus,
-  .form-grupo select:focus,
-  .form-grupo textarea:focus {
-    outline: none;
-    border-color: var(--azul-claro);
-    box-shadow: 0 0 0 3px rgba(44,95,138,0.15);
-  }
-  .form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-  }
-  .form-seccion {
-    background: #fff;
-    border: 1px solid var(--borde);
-    border-radius: 10px;
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-  .form-seccion > h3 {
-    margin-top: 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--borde);
-    margin-bottom: 1rem;
+  .badge-cdn { background: #e6fffa; color: #234e52; }
+  .badge-directo { background: #fffaf0; color: #7b341e; }
+
+  footer {
+    text-align: center; padding: 2rem 1rem;
+    color: #718096; font-size: 0.85rem;
+    border-top: 1px solid var(--borde); margin-top: 3rem;
   }
 
-  .fila-editable {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
-    gap: 0.5rem;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    background: var(--gris);
-    border-radius: 6px;
-  }
-  @media (max-width: 700px) {
-    .fila-editable {
-      grid-template-columns: 1fr 1fr;
-    }
-    .fila-editable input:nth-child(1) { grid-column: 1 / -1; }
-  }
-  .fila-editable input {
-    padding: 0.45rem 0.6rem;
-    border: 1px solid var(--borde);
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    background: #fff;
-    width: 100%;
-  }
-  .fila-editable input:focus {
-    outline: none;
-    border-color: var(--azul-claro);
-    box-shadow: 0 0 0 2px rgba(44,95,138,0.15);
-  }
-  .fila-editable .btn-borrar {
-    background: var(--rojo);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    width: 32px; height: 32px;
-    cursor: pointer;
-    font-size: 0.85rem;
-  }
-  .fila-editable .btn-borrar:hover { background: #c53030; }
-
-  /* ===== TOAST ===== */
   .toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--azul);
-    color: #fff;
-    padding: 0.9rem 1.2rem;
-    border-radius: 8px;
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--azul); color: #fff;
+    padding: 0.9rem 1.2rem; border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    z-index: 2000;
-    font-size: 0.9rem;
+    z-index: 2000; font-size: 0.9rem;
     transform: translateY(120%);
     transition: transform 0.3s ease;
     max-width: 340px;
@@ -507,282 +414,356 @@
   .toast.activo { transform: translateY(0); }
   .toast.exito { background: var(--verde); }
   .toast.error { background: var(--rojo); }
-
-  /* ===== VERSIÓN ===== */
-  .version-card {
-    background: #fff;
-    border: 1px solid var(--borde);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin: 1rem 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  }
-  .version-card h3 {
-    margin-top: 0;
-    color: var(--azul);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .version-tag {
-    display: inline-block;
-    background: var(--azul);
-    color: #fff;
-    padding: 0.2rem 0.7rem;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  .version-lista {
-    list-style: none;
-    margin: 1rem 0 0;
-    padding: 0;
-  }
-  .version-lista li {
-    display: flex;
-    gap: 0.75rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--borde);
-    font-size: 0.9rem;
-  }
-  .version-lista li:last-child { border-bottom: none; }
-  .version-lista .tag {
-    flex-shrink: 0;
-    background: var(--gris);
-    color: var(--azul);
-    padding: 0.15rem 0.55rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-  .version-lista .tag.nueva { background: #e6fffa; color: #234e52; }
-  .version-lista .tag.mejora { background: #ebf8ff; color: #2a4365; }
-  .version-lista .tag.fix { background: #fff5f5; color: #742a2a; }
-
-  footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    color: #718096;
-    font-size: 0.85rem;
-    border-top: 1px solid var(--borde);
-    margin-top: 3rem;
-  }
 </style>
 </head>
 <body>
 
-<!-- ===== TOP BAR CON MENÚ A LA DERECHA ===== -->
 <header class="top-bar">
   <div class="top-bar-inner">
+    <div class="logo"> Minería de Datos · Risaralda</div>
     <button class="menu-toggle" id="menuToggle" aria-label="Menú">
       <span class="etiqueta">Menú</span>
       <span class="hamburguesa">
         <span></span><span></span><span></span>
       </span>
     </button>
-
     <div class="menu-desplegable" id="menuDesplegable">
-      <button class="tab-btn active" data-tab="datos">
-        <span class="icono"></span> Datos
-      </button>
-      <button class="tab-btn" data-tab="documentos">
-        <span class="icono"></span> Documentos
-      </button>
-      <button class="tab-btn" data-tab="editar">
-        <span class="icono"></span> Editar
-      </button>
+      <button class="tab-btn active" data-tab="datos"><span class="icono"></span> Datos</button>
+      <button class="tab-btn" data-tab="documentos"><span class="icono"></span> Documentos</button>
+      <button class="tab-btn" data-tab="codigos"><span class="icono"></span> Códigos cruces</button>
+      <button class="tab-btn" data-tab="subir"><span class="icono"></span> Subir dataset</button>
       <div class="menu-separador"></div>
       <div class="menu-version">
         <span class="dot"></span>
-        <span>Versión <strong>1.0.0</strong></span>
+        <span>Versión <strong>2.0.0</strong></span>
       </div>
     </div>
   </div>
 </header>
 
 <header class="page-header">
-  <h1 id="tituloPrincipal">Turismo y Ocupación Hotelera en Risaralda</h1>
-  <p id="subtituloPrincipal">Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
-  <span class="contexto" id="contextoPrincipal">Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</span>
+  <h1>Turismo y Ocupación Hotelera en Risaralda</h1>
+  <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
+  <span class="contexto">Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</span>
 </header>
 
 <main>
 
-  <!-- ==================== PESTAÑA 1: DATOS ==================== -->
   <section id="tab-datos" class="tab-panel active">
-    <div class="aviso" id="avisoDatos">
-      <strong>Pendiente de datos y validaciones.</strong> Las cifras de este tablero se completarán cuando finalicemos la limpieza y validación de las fuentes (EMA-DANE y RNT). Los espacios en blanco se llenarán en la próxima entrega.
+    <div class="aviso ok" id="avisoEstado">
+      <strong> Datos cargados:</strong> <span id="infoDataset"></span>
     </div>
 
-    <h2>Pregunta de decisión</h2>
-    <p id="preguntaDecision"></p>
-
-    <h2>Indicadores clave del sector</h2>
+    <h2>Indicadores clave</h2>
     <div class="grid-indicadores" id="gridIndicadores"></div>
 
-    <h2>Ocupación hotelera mensual — Eje Cafetero vs Nacional</h2>
-    <div class="charts-grid">
-      <div class="chart-container">
-        <canvas id="chartOcupacion"></canvas>
+    <h2>Filtros interactivos</h2>
+    <div class="filtros">
+      <div class="campo">
+        <label>Año</label>
+        <select id="filtroAnio"><option value="">Todos los años</option></select>
       </div>
-    </div>
-
-    <h2>Variación anual de ingresos reales</h2>
-    <div class="charts-grid">
-      <div class="chart-container">
-        <canvas id="chartIngresos"></canvas>
+      <div class="campo">
+        <label>Región</label>
+        <select id="filtroRegion"><option value="">Todas las regiones</option></select>
       </div>
-    </div>
-
-    <h2>Datos por región</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Región</th>
-          <th>Ocupación (%)</th>
-          <th>Var. ingresos reales (%)</th>
-          <th>Personal ocupado</th>
-        </tr>
-      </thead>
-      <tbody id="tbodyRegiones"></tbody>
-    </table>
-
-    <h2>Fuentes de datos</h2>
-    <ul class="fuentes" id="listaFuentes"></ul>
-    <p><em id="estadoDatos"></em></p>
-  </section>
-
-  <!-- ==================== PESTAÑA 2: DOCUMENTOS ==================== -->
-  <section id="tab-documentos" class="tab-panel">
-    <h2>Documentos del proyecto</h2>
-    <p>Archivos y documentos cargados en el repositorio, ordenados por tipo y fecha.</p>
-
-    <input type="text" class="buscador" id="buscador" placeholder=" Buscar documento por nombre...">
-
-    <div id="lista-docs">
-      <div class="estado-carga">Cargando documentos desde el repositorio...</div>
-    </div>
-  </section>
-
-  <!-- ==================== PESTAÑA 3: EDITAR ==================== -->
-  <section id="tab-editar" class="tab-panel">
-    <h2>✏️ Modo edición</h2>
-    <p>Aquí puedes modificar todos los datos del tablero. Los cambios se guardan automáticamente en tu navegador y se reflejan en la pestaña <strong>Datos</strong>.</p>
-
-    <div class="barra-acciones">
-      <button class="btn btn-success" id="btnGuardar"> Guardar cambios</button>
-      <button class="btn btn-outline" id="btnExportar">Exportar JSON</button>
-      <button class="btn btn-outline" id="btnImportar"> Importar JSON</button>
-      <input type="file" id="inputImportar" accept=".json" hidden>
+      <div class="campo">
+        <label>Mes</label>
+        <select id="filtroMes"><option value="">Todos los meses</option></select>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btnLimpiarFiltros"> Limpiar</button>
       <div class="spacer"></div>
-      <button class="btn btn-danger" id="btnReset"> Restaurar valores por defecto</button>
+      <button class="btn btn-primary btn-sm" id="btnRecalcular"> Recalcular todo</button>
     </div>
 
-    <!-- Encabezado -->
-    <div class="form-seccion">
-      <h3>Encabezado y contexto</h3>
-      <div class="form-grupo">
-        <label>Título principal</label>
-        <input type="text" id="editTitulo">
+    <h2>Evolución mensual de ocupación</h2>
+    <div class="charts-grid">
+      <div class="chart-container tall">
+        <canvas id="chartEvolucion"></canvas>
       </div>
-      <div class="form-grupo">
-        <label>Subtítulo (autores)</label>
-        <input type="text" id="editSubtitulo">
-      </div>
-      <div class="form-grupo">
-        <label>Contexto</label>
-        <input type="text" id="editContexto">
-      </div>
-      <div class="form-grupo">
-        <label>Aviso superior (texto completo)</label>
-        <textarea id="editAviso" rows="3"></textarea>
+      <div class="chart-container tall">
+        <canvas id="chartRegiones"></canvas>
       </div>
     </div>
 
-    <!-- Pregunta de decisión -->
-    <div class="form-seccion">
-      <h3>Pregunta de decisión</h3>
-      <div class="form-grupo">
-        <label>Texto de la pregunta</label>
-        <textarea id="editPregunta" rows="4"></textarea>
+    <h2>Comparación anual por región</h2>
+    <div class="charts-grid full">
+      <div class="chart-container tall">
+        <canvas id="chartAnual"></canvas>
       </div>
     </div>
 
-    <!-- Indicadores -->
-    <div class="form-seccion">
-      <h3>Indicadores clave</h3>
-      <div id="editIndicadores"></div>
-      <button class="btn btn-outline btn-sm" id="btnAddIndicador" style="margin-top:0.5rem;">➕ Agregar indicador</button>
-    </div>
-
-    <!-- Regiones -->
-    <div class="form-seccion">
-      <h3>Datos por región</h3>
-      <div id="editRegiones"></div>
-      <button class="btn btn-outline btn-sm" id="btnAddRegion" style="margin-top:0.5rem;">➕ Agregar región</button>
-    </div>
-
-    <!-- Fuentes -->
-    <div class="form-seccion">
-      <h3>Fuentes de datos</h3>
-      <div id="editFuentes"></div>
-      <button class="btn btn-outline btn-sm" id="btnAddFuente" style="margin-top:0.5rem;">➕ Agregar fuente</button>
-    </div>
-
-    <!-- Estado -->
-    <div class="form-seccion">
-      <h3>Estado del proyecto</h3>
-      <div class="form-grupo">
-        <label>Texto de estado (aparece al final de la pestaña Datos)</label>
-        <input type="text" id="editEstado">
+    <h2>Ocupación promedio por región</h2>
+    <div class="charts-grid full">
+      <div class="chart-container">
+        <canvas id="chartPromedios"></canvas>
       </div>
+    </div>
+
+    <h2>Tabla resumen por región</h2>
+    <div class="tabla-wrap">
+      <table id="tablaResumen">
+        <thead>
+          <tr>
+            <th>Región</th>
+            <th>Ocupación promedio (%)</th>
+            <th>Ocupación máxima (%)</th>
+            <th>Ocupación mínima (%)</th>
+            <th>Establecimientos</th>
+            <th>Habitaciones</th>
+            <th>Registros</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyResumen"></tbody>
+      </table>
+    </div>
+
+    <h2>Detalle de datos</h2>
+    <p style="font-size:0.88rem;color:#718096;">Mostrando <span id="contadorFilas">0</span> registros filtrados.</p>
+    <div class="tabla-wrap">
+      <table id="tablaDetalle">
+        <thead>
+          <tr>
+            <th>Año</th>
+            <th>Mes</th>
+            <th>Región</th>
+            <th>Ocupación (%)</th>
+            <th>Establecimientos</th>
+            <th>Habitaciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyDetalle"></tbody>
+      </table>
     </div>
   </section>
 
-  <!-- ==================== PESTAÑA 4: VERSIÓN ==================== -->
-  <section id="tab-version" class="tab-panel">
-    <h2> Información de versión</h2>
+  <section id="tab-documentos" class="tab-panel">
+    <h2> Documentos del proyecto</h2>
+    <p>Archivos del repositorio y archivos pesados subidos a Releases de GitHub.</p>
+    <input type="text" class="buscador" id="buscadorRepo" placeholder="🔍 Buscar documento...">
+    <div id="listaDocsRepo">
+      <div class="estado-carga">Cargando documentos desde GitHub...</div>
+    </div>
+  </section>
 
-    <div class="version-card">
-      <h3>Versión actual <span class="version-tag">v1.0.0</span></h3>
-      <p style="color:#718096;font-size:0.9rem;margin-top:0.5rem;">
-        Proyecto de Minería de Datos — Turismo y Ocupación Hotelera en Risaralda
-      </p>
-      <ul class="version-lista">
-        <li><span class="tag nueva">NUEVO</span><span>Menú expandible con pestañas Datos, Documentos, Editar y Versión.</span></li>
-        <li><span class="tag nueva">NUEVO</span><span>Modo edición completo: encabezado, indicadores, regiones, fuentes y estado.</span></li>
-        <li><span class="tag nueva">NUEVO</span><span>Integración con GitHub Releases + jsDelivr CDN para archivos pesados.</span></li>
-        <li><span class="tag mejora">MEJORA</span><span>Gráficas generadas automáticamente con Chart.js.</span></li>
-        <li><span class="tag fix">FIX</span><span>Persistencia local de datos con localStorage.</span></li>
-      </ul>
+  <section id="tab-codigos" class="tab-panel">
+    <h2> Códigos del cruce de datos</h2>
+    <p>Documentación del proceso de minería de datos aplicado al dataset cruzado (EMA-DANE + RNT).</p>
+
+    <div class="aviso">
+      <strong>Objetivo:</strong> Unir la <em>Encuesta Mensual de Alojamiento (EMA)</em> del DANE con el <em>Registro Nacional de Turismo (RNT)</em> para analizar la ocupación hotelera por región en el período 2019–2026.
     </div>
 
-    <div class="version-card">
-      <h3> Historial</h3>
-      <ul class="version-lista">
-        <li><span class="tag">v1.0.0</span><span>Versión inicial con menú, edición completa y documentos.</span></li>
-      </ul>
+    <h3> Pasos del proceso</h3>
+
+    <div class="paso">
+      <div class="num">1</div>
+      <div class="contenido">
+        <h4>Carga de datos crudos</h4>
+        <p>Se cargan los dos archivos Excel: <code class="inline">anex-EMA-jul2026.xlsx</code> (ocupación) y <code class="inline">thwd-ivmp.xlsx</code> (RNT). Se leen 25 hojas del archivo EMA.</p>
+      </div>
     </div>
 
-    <div class="version-card">
-      <h3>Tecnologías</h3>
-      <ul class="version-lista">
-        <li><span class="tag">HTML5</span><span>Estructura semántica.</span></li>
-        <li><span class="tag">CSS3</span><span>Diseño responsive con variables CSS.</span></li>
-        <li><span class="tag">JS</span><span>Vanilla JavaScript (sin frameworks).</span></li>
-        <li><span class="tag">Chart.js</span><span>Gráficas interactivas vía CDN.</span></li>
-        <li><span class="tag">GitHub API</span><span>Listado de archivos del repositorio y releases.</span></li>
-      </ul>
+    <div class="paso">
+      <div class="num">2</div>
+      <div class="contenido">
+        <h4>Limpieza de la hoja de ocupación</h4>
+        <p>Se extrae la hoja <code class="inline">"4.2 Porc Mens Ocupación.reg"</code>, se ajustan los encabezados (fila 10), se eliminan columnas vacías y se rellenan los años con <code class="inline">ffill()</code>.</p>
+      </div>
     </div>
 
-    <div class="version-card">
-      <h3>👥 Autores</h3>
-      <ul class="version-lista">
-        <li><span class="tag">DEV</span><span>José Luis Brito Henao</span></li>
-        <li><span class="tag">DEV</span><span>Luis Eduardo Trujillo Agudelo</span></li>
-      </ul>
+    <div class="paso">
+      <div class="num">3</div>
+      <div class="contenido">
+        <h4>Transformación a formato largo (melt)</h4>
+        <p>Se pasa de formato ancho (una columna por región) a formato largo con <code class="inline">pd.melt()</code>, obteniendo columnas: <code class="inline">Año</code>, <code class="inline">Meses</code>, <code class="inline">region</code>, <code class="inline">ocupacion</code>.</p>
+      </div>
     </div>
+
+    <div class="paso">
+      <div class="num">4</div>
+      <div class="contenido">
+        <h4>Procesamiento del RNT</h4>
+        <p>Se limpia el archivo del Registro Nacional de Turismo (separar por comas, quitar comillas), se filtran solo los <em>establecimientos de alojamiento turístico</em> y se agrupa por región.</p>
+      </div>
+    </div>
+
+    <div class="paso">
+      <div class="num">5</div>
+      <div class="contenido">
+        <h4>Mapeo de departamentos a regiones</h4>
+        <p>Se crea un diccionario que agrupa los 33 departamentos de Colombia en las 12 regiones del DANE (ej: Risaralda, Caldas, Quindío → "Eje Cafetero").</p>
+      </div>
+    </div>
+
+    <div class="paso">
+      <div class="num">6</div>
+      <div class="contenido">
+        <h4>Cruce de datasets (merge)</h4>
+        <p>Se unen ambos DataFrames por la columna <code class="inline">region</code> con <code class="inline">how="left"</code>, obteniendo un dataset final de <strong>1188 filas × 7 columnas</strong> (12 regiones × 99 meses).</p>
+      </div>
+    </div>
+
+    <div class="paso">
+      <div class="num">7</div>
+      <div class="contenido">
+        <h4>Exportación</h4>
+        <p>El resultado se guarda como <code class="inline">dataset_cruzado.xlsx</code> listo para análisis y visualización.</p>
+      </div>
+    </div>
+
+    <h3> Código Python completo</h3>
+    <pre class="code-block"># 1. Carga de librerías
+import pandas as pd
+import numpy as np
+
+# 2. Carga de datos crudos
+rnt = pd.read_excel("../data/thwd-ivmp.xlsx")
+rnt = rnt.iloc[:,0].str.split(",", expand=True)
+rnt.columns = [
+    "codigo_rnt", "estado_rnt", "razon_social_establecimiento",
+    "departamento", "cod_dpto", "municipio", "cod_mun", "nit",
+    "categoria", "sub_categoria", "habitaciones", "camas",
+    "num_emp1", "ano"
+]
+
+# 3. Carga EMA (25 hojas)
+ema = pd.read_excel("../data/anex-EMA-jul2026 (1).xlsx", sheet_name=None)
+
+# 4. Limpieza de la hoja de ocupación mensual
+ocupacion = ema["4.2 Porc Mens Ocupación.reg"]
+ocupacion_limpia = ocupacion.copy()
+ocupacion_limpia.columns = ocupacion_limpia.iloc[10]
+ocupacion_limpia = ocupacion_limpia.iloc[11:]
+ocupacion_limpia.columns = ocupacion_limpia.columns.astype(str).str.strip()
+ocupacion_limpia = ocupacion_limpia.loc[:, ocupacion_limpia.columns.notna()]
+ocupacion_limpia["Año"] = ocupacion_limpia["Año"].ffill()
+ocupacion_limpia["Año"] = ocupacion_limpia["Año"].astype(str).str.replace("p", "", regex=False)
+ocupacion_limpia["Año"] = pd.to_numeric(ocupacion_limpia["Año"], errors="coerce")
+
+# 5. Melt: ancho -> largo
+columnas_regiones = list(ocupacion_limpia.columns[3:15])
+ocupacion_long = pd.melt(
+    ocupacion_limpia,
+    id_vars=["Año", "Meses"],
+    value_vars=columnas_regiones,
+    var_name="region",
+    value_name="ocupacion"
+)
+
+# 6. Filtrar alojamientos del RNT
+rnt_hoteles = rnt[rnt["categoria"].str.contains("ALOJAMIENTO", case=False, na=False)]
+for col in rnt_hoteles.columns:
+    rnt_hoteles[col] = rnt_hoteles[col].astype(str).str.replace('"', '', regex=False).str.strip()
+
+# 7. Mapeo de departamentos -> regiones DANE
+mapa_region = {
+    "ANTIOQUIA": "Antioquia",
+    "ATLANTICO": "Caribe", "CESAR": "Caribe", "MAGDALENA": "Caribe", "LA GUAJIRA": "Caribe",
+    "CALDAS": "Eje Cafetero", "QUINDIO": "Eje Cafetero", "RISARALDA": "Eje Cafetero",
+    "VALLE DEL CAUCA": "Pacífico", "CAUCA": "Pacífico", "NARIÑO": "Pacífico", "CHOCO": "Pacífico",
+    "SANTANDER": "Santanderes", "NORTE DE SANTANDER": "Santanderes",
+    "META": "Llanos Orinoquía", "ARAUCA": "Llanos Orinoquía",
+    "CASANARE": "Llanos Orinoquía", "VICHADA": "Llanos Orinoquía",
+    "AMAZONAS": "Amazonía", "CAQUETA": "Amazonía", "PUTUMAYO": "Amazonía",
+    "GUAINIA": "Amazonía", "GUAVIARE": "Amazonía", "VAUPES": "Amazonía",
+    "BOGOTA": "Bogotá D.C.",
+    "CUNDINAMARCA": "Central", "BOYACA": "Central", "HUILA": "Central", "TOLIMA": "Central",
+    "CORDOBA": "Golfo Morrosquillo y Sabana", "SUCRE": "Golfo Morrosquillo y Sabana",
+    "SAN ANDRES Y PROVIDENCIA": "San Andrés y Providencia",
+    "BOLIVAR": "Cartagena"
+}
+
+rnt_hoteles["region"] = rnt_hoteles["departamento"].str.upper().map(mapa_region)
+
+# 8. Agrupar RNT por región
+rnt_resumen = (
+    rnt_hoteles
+    .groupby("region", as_index=False)
+    .agg(
+        establecimientos=("codigo_rnt", "count"),
+        habitaciones=("habitaciones", "count")
+    )
+)
+
+# 9. CRUCE FINAL: EMA + RNT
+dataset_final = pd.merge(
+    ocupacion_long,
+    rnt_resumen,
+    on="region",
+    how="left",
+    indicator=True
+)
+
+# 10. Verificación y exportación
+print(dataset_final["_merge"].value_counts())
+dataset_final.to_excel("../data/dataset_cruzado.xlsx", index=False)
+print("Dataset guardado correctamente")</pre>
+
+    <h3> Resultado del cruce</h3>
+    <div class="grid-indicadores">
+      <div class="card-indicador">
+        <div class="label">Registros totales</div>
+        <div class="valor">1,188</div>
+        <div class="sub">12 regiones × 99 meses</div>
+      </div>
+      <div class="card-indicador">
+        <div class="label">Cobertura</div>
+        <div class="valor">100%</div>
+        <div class="sub">Sin valores huérfanos</div>
+      </div>
+      <div class="card-indicador">
+        <div class="label">Período</div>
+        <div class="valor">2019–2026</div>
+        <div class="sub">7 años y 3 meses</div>
+      </div>
+      <div class="card-indicador">
+        <div class="label">Columnas finales</div>
+        <div class="valor">7</div>
+        <div class="sub">Año, Mes, Región, Ocupación, etc.</div>
+      </div>
+    </div>
+
+    <h3> Hallazgos clave</h3>
+    <ul style="padding-left:1.5rem; margin:1rem 0; font-size:0.92rem;">
+      <li><strong>2020:</strong> Caída drástica de ocupación por pandemia (mínimo: abril, 8.77% en Bogotá).</li>
+      <li><strong>Eje Cafetero (Risaralda):</strong> Ocupación promedio ~44%, con recuperación gradual post-2020.</li>
+      <li><strong>Cartagena y San Andrés:</strong> Ocupaciones más altas del país (60-75%).</li>
+      <li><strong>Recuperación 2022–2026:</strong> Retorno a niveles pre-pandemia en la mayoría de regiones.</li>
+      <li><strong>2026 (terremoto):</strong> Se espera caída en Eje Cafetero, especialmente en meses post-agosto.</li>
+    </ul>
+
+    <h3> Descargar código</h3>
+    <p>
+      <a class="btn btn-primary" href="https://github.com/edutruj/mineria-de-datos-terremoto/blob/main/notebooks/Notebook_Adquisicion_FINAL.ipynb" target="_blank" rel="noopener">
+         Ver notebook completo en GitHub
+      </a>
+    </p>
+  </section>
+
+  <section id="tab-subir" class="tab-panel">
+    <h2> Subir nuevo dataset</h2>
+    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code class="inline">dataset_cruzado.xlsx</code>. La página procesará el cruce automáticamente y actualizará todas las gráficas.</p>
+
+    <div class="aviso">
+      <strong>Columnas esperadas:</strong> <code class="inline">Año</code>, <code class="inline">Meses</code>, <code class="inline">region</code>, <code class="inline">ocupacion</code>, <code class="inline">establecimientos</code>, <code class="inline">habitaciones</code>.
+    </div>
+
+    <div class="zona-drop" id="zonaDrop">
+      <div class="icono-grande"></div>
+      <p><strong>Arrastra tu archivo aquí</strong> o haz clic para seleccionar</p>
+      <small>Soportado: .xlsx, .xls, .csv</small>
+      <input type="file" id="inputDataset" accept=".xlsx,.xls,.csv" hidden>
+    </div>
+
+    <h3>Archivos cargados</h3>
+    <div id="listaDatasetsCargados">
+      <div class="vacio">Aún no has subido datasets.</div>
+    </div>
+
+    <h3>Restaurar dataset original</h3>
+    <p style="font-size:0.88rem;color:#718096;">Vuelve a los datos de <code class="inline">dataset_cruzado.xlsx</code> precargados.</p>
+    <button class="btn btn-danger" id="btnRestaurar"> Restaurar datos originales</button>
   </section>
 
 </main>
@@ -795,86 +776,128 @@
 
 <script>
 /* ============================================================
-   UTILIDADES
+   DATASET PRECARGADO
 ============================================================ */
+const DATASET_PRECARGADO = {
+  meta: {
+    archivo: 'dataset_cruzado.xlsx',
+    filas: 1188,
+    regiones: 12,
+    periodo: '2019-2026',
+    fuente: 'EMA-DANE + RNT'
+  },
+  datos: [
+    { anio: 2019, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 44.80, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Febrero', region: 'Bogotá D.C.', ocupacion: 58.73, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Marzo', region: 'Bogotá D.C.', ocupacion: 55.61, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Abril', region: 'Bogotá D.C.', ocupacion: 53.26, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Mayo', region: 'Bogotá D.C.', ocupacion: 58.28, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Junio', region: 'Bogotá D.C.', ocupacion: 57.04, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 59.19, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Agosto', region: 'Bogotá D.C.', ocupacion: 59.71, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Septiembre', region: 'Bogotá D.C.', ocupacion: 61.86, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Octubre', region: 'Bogotá D.C.', ocupacion: 60.80, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Noviembre', region: 'Bogotá D.C.', ocupacion: 64.87, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 48.83, establecimientos: 49, habitaciones: 49 },
+    { anio: 2020, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 47.25, establecimientos: 49, habitaciones: 49 },
+    { anio: 2020, mes: 'Abril', region: 'Bogotá D.C.', ocupacion: 8.78, establecimientos: 49, habitaciones: 49 },
+    { anio: 2020, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 10.05, establecimientos: 49, habitaciones: 49 },
+    { anio: 2020, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 26.02, establecimientos: 49, habitaciones: 49 },
+    { anio: 2021, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 20.77, establecimientos: 49, habitaciones: 49 },
+    { anio: 2021, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 34.13, establecimientos: 49, habitaciones: 49 },
+    { anio: 2021, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 46.58, establecimientos: 49, habitaciones: 49 },
+    { anio: 2022, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 41.55, establecimientos: 49, habitaciones: 49 },
+    { anio: 2022, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 62.83, establecimientos: 49, habitaciones: 49 },
+    { anio: 2022, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 56.70, establecimientos: 49, habitaciones: 49 },
+    { anio: 2023, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 52.17, establecimientos: 49, habitaciones: 49 },
+    { anio: 2023, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 61.87, establecimientos: 49, habitaciones: 49 },
+    { anio: 2023, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 53.42, establecimientos: 49, habitaciones: 49 },
+    { anio: 2024, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 50.19, establecimientos: 49, habitaciones: 49 },
+    { anio: 2024, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 60.58, establecimientos: 49, habitaciones: 49 },
+    { anio: 2024, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 54.33, establecimientos: 49, habitaciones: 49 },
+    { anio: 2025, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 48.99, establecimientos: 49, habitaciones: 49 },
+    { anio: 2025, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 60.91, establecimientos: 49, habitaciones: 49 },
+    { anio: 2025, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 51.02, establecimientos: 49, habitaciones: 49 },
+    { anio: 2026, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 46.11, establecimientos: 49, habitaciones: 49 },
+    { anio: 2026, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 58.45, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Enero', region: 'Cartagena', ocupacion: 67.44, establecimientos: 16, habitaciones: 16 },
+    { anio: 2019, mes: 'Julio', region: 'Cartagena', ocupacion: 58.62, establecimientos: 16, habitaciones: 16 },
+    { anio: 2020, mes: 'Abril', region: 'Cartagena', ocupacion: 5.60, establecimientos: 16, habitaciones: 16 },
+    { anio: 2020, mes: 'Diciembre', region: 'Cartagena', ocupacion: 35.19, establecimientos: 16, habitaciones: 16 },
+    { anio: 2021, mes: 'Julio', region: 'Cartagena', ocupacion: 55.92, establecimientos: 16, habitaciones: 16 },
+    { anio: 2022, mes: 'Enero', region: 'Cartagena', ocupacion: 76.98, establecimientos: 16, habitaciones: 16 },
+    { anio: 2022, mes: 'Julio', region: 'Cartagena', ocupacion: 76.73, establecimientos: 16, habitaciones: 16 },
+    { anio: 2023, mes: 'Julio', region: 'Cartagena', ocupacion: 73.24, establecimientos: 16, habitaciones: 16 },
+    { anio: 2024, mes: 'Julio', region: 'Cartagena', ocupacion: 66.37, establecimientos: 16, habitaciones: 16 },
+    { anio: 2025, mes: 'Julio', region: 'Cartagena', ocupacion: 67.44, establecimientos: 16, habitaciones: 16 },
+    { anio: 2026, mes: 'Julio', region: 'Cartagena', ocupacion: 62.67, establecimientos: 16, habitaciones: 16 },
+    { anio: 2019, mes: 'Enero', region: 'Eje Cafetero', ocupacion: 49.56, establecimientos: 38, habitaciones: 38 },
+    { anio: 2019, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 43.73, establecimientos: 38, habitaciones: 38 },
+    { anio: 2020, mes: 'Abril', region: 'Eje Cafetero', ocupacion: 11.84, establecimientos: 38, habitaciones: 38 },
+    { anio: 2020, mes: 'Diciembre', region: 'Eje Cafetero', ocupacion: 35.75, establecimientos: 38, habitaciones: 38 },
+    { anio: 2021, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 41.13, establecimientos: 38, habitaciones: 38 },
+    { anio: 2022, mes: 'Enero', region: 'Eje Cafetero', ocupacion: 51.77, establecimientos: 38, habitaciones: 38 },
+    { anio: 2022, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 52.54, establecimientos: 38, habitaciones: 38 },
+    { anio: 2023, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 49.16, establecimientos: 38, habitaciones: 38 },
+    { anio: 2024, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 42.74, establecimientos: 38, habitaciones: 38 },
+    { anio: 2025, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 42.26, establecimientos: 38, habitaciones: 38 },
+    { anio: 2026, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 44.47, establecimientos: 38, habitaciones: 38 },
+    { anio: 2019, mes: 'Enero', region: 'Central', ocupacion: 38.75, establecimientos: 123, habitaciones: 123 },
+    { anio: 2020, mes: 'Abril', region: 'Central', ocupacion: 7.02, establecimientos: 123, habitaciones: 123 },
+    { anio: 2022, mes: 'Julio', region: 'Central', ocupacion: 44.60, establecimientos: 123, habitaciones: 123 },
+    { anio: 2026, mes: 'Julio', region: 'Central', ocupacion: 40.34, establecimientos: 123, habitaciones: 123 },
+    { anio: 2019, mes: 'Enero', region: 'Caribe', ocupacion: 51.01, establecimientos: 38, habitaciones: 38 },
+    { anio: 2020, mes: 'Abril', region: 'Caribe', ocupacion: 9.31, establecimientos: 38, habitaciones: 38 },
+    { anio: 2022, mes: 'Julio', region: 'Caribe', ocupacion: 60.56, establecimientos: 38, habitaciones: 38 },
+    { anio: 2026, mes: 'Julio', region: 'Caribe', ocupacion: 51.09, establecimientos: 38, habitaciones: 38 },
+    { anio: 2019, mes: 'Enero', region: 'Antioquia', ocupacion: 46.54, establecimientos: 32, habitaciones: 32 },
+    { anio: 2020, mes: 'Abril', region: 'Antioquia', ocupacion: 9.68, establecimientos: 32, habitaciones: 32 },
+    { anio: 2022, mes: 'Julio', region: 'Antioquia', ocupacion: 63.32, establecimientos: 32, habitaciones: 32 },
+    { anio: 2026, mes: 'Julio', region: 'Antioquia', ocupacion: 50.91, establecimientos: 32, habitaciones: 32 },
+    { anio: 2019, mes: 'Enero', region: 'San Andrés y Providencia', ocupacion: 72.01, establecimientos: 15, habitaciones: 15 },
+    { anio: 2020, mes: 'Abril', region: 'San Andrés y Providencia', ocupacion: 0, establecimientos: 15, habitaciones: 15 },
+    { anio: 2022, mes: 'Julio', region: 'San Andrés y Providencia', ocupacion: 71.66, establecimientos: 15, habitaciones: 15 },
+    { anio: 2026, mes: 'Julio', region: 'San Andrés y Providencia', ocupacion: 70.92, establecimientos: 15, habitaciones: 15 },
+    { anio: 2019, mes: 'Enero', region: 'Pacífico', ocupacion: 35.00, establecimientos: 49, habitaciones: 49 },
+    { anio: 2020, mes: 'Abril', region: 'Pacífico', ocupacion: 7.74, establecimientos: 49, habitaciones: 49 },
+    { anio: 2022, mes: 'Julio', region: 'Pacífico', ocupacion: 51.22, establecimientos: 49, habitaciones: 49 },
+    { anio: 2026, mes: 'Julio', region: 'Pacífico', ocupacion: 39.02, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Enero', region: 'Santanderes', ocupacion: 38.21, establecimientos: 49, habitaciones: 49 },
+    { anio: 2020, mes: 'Abril', region: 'Santanderes', ocupacion: 12.25, establecimientos: 49, habitaciones: 49 },
+    { anio: 2022, mes: 'Julio', region: 'Santanderes', ocupacion: 47.62, establecimientos: 49, habitaciones: 49 },
+    { anio: 2026, mes: 'Julio', region: 'Santanderes', ocupacion: 40.20, establecimientos: 49, habitaciones: 49 },
+    { anio: 2019, mes: 'Enero', region: 'Llanos Orinoquía', ocupacion: 37.99, establecimientos: 16, habitaciones: 16 },
+    { anio: 2020, mes: 'Abril', region: 'Llanos Orinoquía', ocupacion: 9.50, establecimientos: 16, habitaciones: 16 },
+    { anio: 2022, mes: 'Julio', region: 'Llanos Orinoquía', ocupacion: 44.64, establecimientos: 16, habitaciones: 16 },
+    { anio: 2026, mes: 'Julio', region: 'Llanos Orinoquía', ocupacion: 38.10, establecimientos: 16, habitaciones: 16 },
+    { anio: 2019, mes: 'Enero', region: 'Golfo Morrosquillo y Sabana', ocupacion: 31.53, establecimientos: 19, habitaciones: 19 },
+    { anio: 2020, mes: 'Abril', region: 'Golfo Morrosquillo y Sabana', ocupacion: 8.46, establecimientos: 19, habitaciones: 19 },
+    { anio: 2022, mes: 'Julio', region: 'Golfo Morrosquillo y Sabana', ocupacion: 46.16, establecimientos: 19, habitaciones: 19 },
+    { anio: 2026, mes: 'Julio', region: 'Golfo Morrosquillo y Sabana', ocupacion: 38.36, establecimientos: 19, habitaciones: 19 },
+    { anio: 2019, mes: 'Enero', region: 'Amazonía', ocupacion: 39.59, establecimientos: 7, habitaciones: 7 },
+    { anio: 2020, mes: 'Abril', region: 'Amazonía', ocupacion: 24.34, establecimientos: 7, habitaciones: 7 },
+    { anio: 2022, mes: 'Julio', region: 'Amazonía', ocupacion: 53.21, establecimientos: 7, habitaciones: 7 },
+    { anio: 2026, mes: 'Julio', region: 'Amazonía', ocupacion: 50.72, establecimientos: 7, habitaciones: 7 }
+  ]
+};
+
+let datosActuales = JSON.parse(JSON.stringify(DATASET_PRECARGADO));
+let charts = {};
+
+const MESES_ORDEN = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
 function toast(msg, tipo = 'info') {
   const t = $('#toast');
+  if (!t) return;
   t.textContent = msg;
   t.className = 'toast activo ' + tipo;
-  setTimeout(() => t.classList.remove('activo'), 2800);
+  setTimeout(() => t.classList.remove('activo'), 3000);
 }
 
-function formatearTamano(bytes) {
-  if (!bytes) return '';
-  const u = ['B', 'KB', 'MB', 'GB'];
-  let i = 0;
-  while (bytes >= 1024 && i < u.length - 1) { bytes /= 1024; i++; }
-  return bytes.toFixed(1) + ' ' + u[i];
-}
-
-function iconoArchivo(nombre) {
-  const ext = nombre.split('.').pop().toLowerCase();
-  const mapa = {
-    pdf: '📕', xlsx: '📗', xls: '📗', csv: '📊',
-    doc: '📘', docx: '📘', ppt: '📙', pptx: '📙',
-    ipynb: '📓', md: '📝', txt: '📄',
-    png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️',
-    zip: '🗜️', rar: '🗜️', json: '⚙️', html: '🌐'
-  };
-  return mapa[ext] || '📎';
-}
-
-/* ============================================================
-   ESTADO POR DEFECTO
-============================================================ */
-const STORAGE_KEY = 'risaralda_datos_v2';
-
-const POR_DEFECTO = {
-  titulo: 'Turismo y Ocupación Hotelera en Risaralda',
-  subtitulo: 'Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo',
-  contexto: 'Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026',
-  aviso: '<strong>Pendiente de datos y validaciones.</strong> Las cifras de este tablero se completarán cuando finalicemos la limpieza y validación de las fuentes (EMA-DANE y RNT). Los espacios en blanco se llenarán en la próxima entrega.',
-  pregunta: '¿Qué meses del año y qué segmentos de establecimientos de alojamiento en Risaralda / Eje Cafetero presentan la mayor vulnerabilidad (caídas de ocupación e ingresos reales) según los datos históricos 2025–julio 2026, para priorizar la reactivación tras el terremoto de agosto de 2026?',
-  estado: 'Estado: datos crudos cargados, pendientes de limpieza y validación.',
-  indicadores: [
-    { id: 'i1', label: 'Ocupación nacional', valor: '' },
-    { id: 'i2', label: 'Ocupación Eje Cafetero', valor: '' },
-    { id: 'i3', label: 'Var. ingresos reales Eje Cafetero', valor: '' },
-    { id: 'i4', label: 'Personal ocupado Eje Cafetero', valor: '' }
-  ],
-  regiones: [
-    { id: 'r1',  nombre: 'Total nacional',            ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r2',  nombre: 'Bogotá D.C.',               ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r3',  nombre: 'Cartagena',                 ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r4',  nombre: 'Central',                   ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r5',  nombre: 'Caribe',                    ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r6',  nombre: 'Eje Cafetero (Risaralda)',  ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r7',  nombre: 'Antioquia',                 ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r8',  nombre: 'San Andrés y Providencia',  ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r9',  nombre: 'Pacífico',                  ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r10', nombre: 'Santanderes',               ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r11', nombre: 'Llanos Orinoquía',          ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r12', nombre: 'Golfo Morrosquillo y Sabana', ocupacion: '', ingresos: '', personal: '' },
-    { id: 'r13', nombre: 'Amazonía',                  ocupacion: '', ingresos: '', personal: '' }
-  ],
-  fuentes: [
-    { id: 'f1', texto: '<strong>EMA – DANE:</strong> Encuesta Mensual de Alojamiento, enero 2019 – julio 2026.' },
-    { id: 'f2', texto: '<strong>RNT:</strong> Registro Nacional de Turismo (establecimientos, categorías, habitaciones, camas).' }
-  ]
-};
-
-let datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || JSON.parse(JSON.stringify(POR_DEFECTO));
-
-function guardarDatos() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
-}
-
-/* ============================================================
-   MENÚ DESPLEGABLE
-============================================================ */
+/* ===== MENÚ ===== */
 const menuToggle = $('#menuToggle');
 const menuDesp = $('#menuDesplegable');
 
@@ -891,9 +914,7 @@ document.addEventListener('click', e => {
   }
 });
 
-/* ============================================================
-   PESTAÑAS
-============================================================ */
+/* ===== PESTAÑAS ===== */
 $$('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     $$('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -902,302 +923,384 @@ $$('.tab-btn').forEach(btn => {
     $('#tab-' + btn.dataset.tab).classList.add('active');
     menuToggle.classList.remove('abierto');
     menuDesp.classList.remove('abierto');
-    if (btn.dataset.tab === 'datos') actualizarGraficas();
-    if (btn.dataset.tab === 'editar') renderizarEditor();
+    if (btn.dataset.tab === 'datos') setTimeout(renderizarTodo, 50);
   });
 });
 
-/* ============================================================
-   RENDERIZAR PESTAÑA "DATOS"
-============================================================ */
-function renderizarDatos() {
-  $('#tituloPrincipal').textContent = datos.titulo;
-  $('#subtituloPrincipal').textContent = datos.subtitulo;
-  $('#contextoPrincipal').textContent = datos.contexto;
-  $('#avisoDatos').innerHTML = datos.aviso;
-  $('#preguntaDecision').textContent = datos.pregunta;
-  $('#estadoDatos').textContent = datos.estado;
+/* ===== INDICADORES ===== */
+function calcularIndicadores() {
+  const d = datosActuales.datos;
+  const ocupaciones = d.map(x => x.ocupacion).filter(v => v > 0);
+  const prom = ocupaciones.length ? ocupaciones.reduce((a,b) => a+b, 0) / ocupaciones.length : 0;
+  const max = Math.max(...ocupaciones);
+  const min = Math.min(...ocupaciones.filter(v => v > 0));
+  const regiones = [...new Set(d.map(x => x.region))].length;
+  const anios = [...new Set(d.map(x => x.anio))].length;
+  const establecimientos = d.reduce((s, x) => s + (x.establecimientos || 0), 0);
+  const habitaciones = d.reduce((s, x) => s + (x.habitaciones || 0), 0);
+  const ejeCaf = d.filter(x => x.region === 'Eje Cafetero');
+  const promEje = ejeCaf.length ? ejeCaf.reduce((s, x) => s + x.ocupacion, 0) / ejeCaf.length : 0;
+  return { prom, max, min, regiones, anios, establecimientos, habitaciones, promEje, total: d.length };
+}
 
-  // Indicadores
-  $('#gridIndicadores').innerHTML = datos.indicadores.map(ind => `
+function renderizarIndicadores() {
+  const ind = calcularIndicadores();
+  $('#gridIndicadores').innerHTML = `
     <div class="card-indicador">
-      <div class="label">${ind.label}</div>
-      <div class="valor ${ind.valor ? 'con-dato' : ''}">${ind.valor || '— Pendiente —'}</div>
+      <div class="label">Registros totales</div>
+      <div class="valor">${ind.total.toLocaleString('es-CO')}</div>
+      <div class="sub">${ind.regiones} regiones × ${ind.anios} años</div>
     </div>
-  `).join('');
-
-  // Tabla regiones
-  $('#tbodyRegiones').innerHTML = datos.regiones.map(r => {
-    const oc = r.ocupacion !== '' ? r.ocupacion : '<span class="pendiente">Pendiente</span>';
-    const ing = r.ingresos !== '' ? r.ingresos : '<span class="pendiente">Pendiente</span>';
-    const per = r.personal !== '' ? r.personal : '<span class="pendiente">Pendiente</span>';
-    return `<tr><td>${r.nombre}</td><td>${oc}</td><td>${ing}</td><td>${per}</td></tr>`;
-  }).join('');
-
-  // Fuentes
-  $('#listaFuentes').innerHTML = datos.fuentes.map(f => `<li>${f.texto}</li>`).join('');
-
-  actualizarGraficas();
+    <div class="card-indicador">
+      <div class="label">Ocupación promedio</div>
+      <div class="valor">${ind.prom.toFixed(1)}%</div>
+      <div class="sub">Nacional</div>
+    </div>
+    <div class="card-indicador destacado">
+      <div class="label">Eje Cafetero</div>
+      <div class="valor">${ind.promEje.toFixed(1)}%</div>
+      <div class="sub">Ocupación promedio</div>
+    </div>
+    <div class="card-indicador">
+      <div class="label">Ocupación máxima</div>
+      <div class="valor">${ind.max.toFixed(1)}%</div>
+      <div class="sub">Registro más alto</div>
+    </div>
+    <div class="card-indicador">
+      <div class="label">Establecimientos</div>
+      <div class="valor">${ind.establecimientos.toLocaleString('es-CO')}</div>
+      <div class="sub">Suma de registros</div>
+    </div>
+    <div class="card-indicador">
+      <div class="label">Habitaciones</div>
+      <div class="valor">${ind.habitaciones.toLocaleString('es-CO')}</div>
+      <div class="sub">Suma de registros</div>
+    </div>
+  `;
 }
 
-/* ============================================================
-   GRÁFICAS
-============================================================ */
-let chartOcupacion, chartIngresos;
+/* ===== FILTROS ===== */
+function cargarFiltros() {
+  const d = datosActuales.datos;
+  const anios = [...new Set(d.map(x => x.anio))].sort();
+  const regiones = [...new Set(d.map(x => x.region))].sort();
 
-function actualizarGraficas() {
-  const conDatos = datos.regiones.filter(r =>
-    r.nombre && (r.ocupacion !== '' || r.ingresos !== '')
-  );
+  $('#filtroAnio').innerHTML = '<option value="">Todos los años</option>' +
+    anios.map(a => `<option value="${a}">${a}</option>`).join('');
+  $('#filtroRegion').innerHTML = '<option value="">Todas las regiones</option>' +
+    regiones.map(r => `<option value="${r}">${r}</option>`).join('');
+  $('#filtroMes').innerHTML = '<option value="">Todos los meses</option>' +
+    MESES_ORDEN.map(m => `<option value="${m}">${m}</option>`).join('');
+}
 
-  const labels = conDatos.map(r => r.nombre);
-  const ocupData = conDatos.map(r => r.ocupacion === '' ? null : parseFloat(r.ocupacion));
-  const ingData = conDatos.map(r => r.ingresos === '' ? null : parseFloat(r.ingresos));
+function aplicarFiltros() {
+  const anio = $('#filtroAnio').value;
+  const region = $('#filtroRegion').value;
+  const mes = $('#filtroMes').value;
 
-  const colores = conDatos.map(r =>
-    r.nombre.includes('Eje Cafetero') ? '#ed8936' : '#2c5f8a'
-  );
+  return datosActuales.datos.filter(x => {
+    if (anio && x.anio != anio) return false;
+    if (region && x.region !== region) return false;
+    if (mes && x.mes !== mes) return false;
+    return true;
+  });
+}
 
-  // Ocupación
-  if (chartOcupacion) chartOcupacion.destroy();
-  const ctxOc = $('#chartOcupacion');
-  if (ctxOc) {
-    chartOcupacion = new Chart(ctxOc, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Ocupación (%)',
-          data: ocupData,
-          backgroundColor: colores,
-          borderRadius: 4
-        }]
+['filtroAnio','filtroRegion','filtroMes'].forEach(id => {
+  const el = $('#' + id);
+  if (el) el.addEventListener('change', () => renderizarTodo());
+});
+
+$('#btnLimpiarFiltros').addEventListener('click', () => {
+  $('#filtroAnio').value = '';
+  $('#filtroRegion').value = '';
+  $('#filtroMes').value = '';
+  renderizarTodo();
+});
+
+$('#btnRecalcular').addEventListener('click', () => {
+  renderizarTodo();
+  toast('Datos recalculados', 'exito');
+});
+
+/* ===== GRÁFICAS ===== */
+function destruirCharts() {
+  Object.values(charts).forEach(c => c && c.destroy());
+  charts = {};
+}
+
+function renderizarGraficas(filtrados) {
+  destruirCharts();
+
+  const porMes = {};
+  filtrados.forEach(x => {
+    const key = `${x.anio}-${String(MESES_ORDEN.indexOf(x.mes)+1).padStart(2,'0')}`;
+    if (!porMes[key]) porMes[key] = { suma: 0, n: 0 };
+    porMes[key].suma += x.ocupacion;
+    porMes[key].n++;
+  });
+  const labelsEvo = Object.keys(porMes).sort();
+  const dataEvo = labelsEvo.map(k => (porMes[k].suma / porMes[k].n).toFixed(1));
+
+  charts.evolucion = new Chart($('#chartEvolucion'), {
+    type: 'line',
+    data: {
+      labels: labelsEvo,
+      datasets: [{
+        label: 'Ocupación promedio (%)',
+        data: dataEvo,
+        borderColor: '#2c5f8a',
+        backgroundColor: 'rgba(44,95,138,0.1)',
+        borderWidth: 2, tension: 0.3, fill: true,
+        pointRadius: 3, pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: 'Evolución mensual de ocupación (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        legend: { display: false }
       },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          title: { display: true, text: 'Ocupación hotelera por región (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-          legend: { display: false }
-        },
-        scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => v + '%' } },
+        x: { ticks: { maxRotation: 90, minRotation: 45, font: { size: 9 } } }
       }
-    });
-  }
-
-  // Ingresos
-  if (chartIngresos) chartIngresos.destroy();
-  const ctxIng = $('#chartIngresos');
-  if (ctxIng) {
-    chartIngresos = new Chart(ctxIng, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Var. ingresos reales (%)',
-          data: ingData,
-          backgroundColor: conDatos.map(r => {
-            const v = parseFloat(r.ingresos);
-            if (isNaN(v)) return '#a0aec0';
-            return v >= 0 ? '#38a169' : '#e53e3e';
-          }),
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          title: { display: true, text: 'Variación anual de ingresos reales (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-          legend: { display: false }
-        },
-        scales: { y: { ticks: { callback: v => v + '%' } } }
-      }
-    });
-  }
-}
-
-/* ============================================================
-   RENDERIZAR PESTAÑA "EDITAR"
-============================================================ */
-function renderizarEditor() {
-  $('#editTitulo').value = datos.titulo;
-  $('#editSubtitulo').value = datos.subtitulo;
-  $('#editContexto').value = datos.contexto;
-  $('#editAviso').value = datos.aviso.replace(/<[^>]+>/g, '');
-  $('#editPregunta').value = datos.pregunta;
-  $('#editEstado').value = datos.estado;
-
-  // Indicadores
-  $('#editIndicadores').innerHTML = datos.indicadores.map((ind, idx) => `
-    <div class="fila-editable" data-id="${ind.id}">
-      <input type="text" data-campo="label" value="${ind.label.replace(/"/g,'&quot;')}" placeholder="Nombre">
-      <input type="text" data-campo="valor" value="${(ind.valor||'').replace(/"/g,'&quot;')}" placeholder="Valor">
-      <button class="btn-borrar" data-accion="borrar-ind" title="Eliminar">✕</button>
-    </div>
-  `).join('');
-
-  // Regiones
-  $('#editRegiones').innerHTML = datos.regiones.map(r => `
-    <div class="fila-editable" data-id="${r.id}">
-      <input type="text" data-campo="nombre" value="${r.nombre.replace(/"/g,'&quot;')}" placeholder="Región">
-      <input type="number" step="0.1" data-campo="ocupacion" value="${r.ocupacion}" placeholder="Ocupación %">
-      <input type="number" step="0.1" data-campo="ingresos" value="${r.ingresos}" placeholder="Ingresos %">
-      <input type="number" data-campo="personal" value="${r.personal}" placeholder="Personal">
-      <button class="btn-borrar" data-accion="borrar-reg" title="Eliminar">✕</button>
-    </div>
-  `).join('');
-
-  // Fuentes
-  $('#editFuentes').innerHTML = datos.fuentes.map(f => `
-    <div class="fila-editable" data-id="${f.id}" style="grid-template-columns: 1fr auto;">
-      <input type="text" data-campo="texto" value="${f.texto.replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')}" placeholder="Texto de la fuente">
-      <button class="btn-borrar" data-accion="borrar-fue" title="Eliminar">✕</button>
-    </div>
-  `).join('');
-
-  // Eventos de edición en vivo (indicadores y regiones)
-  $$('#editIndicadores .fila-editable input, #editRegiones .fila-editable input, #editFuentes .fila-editable input').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const fila = e.target.closest('.fila-editable');
-      const id = fila.dataset.id;
-      const campo = e.target.dataset.campo;
-      const valor = e.target.value;
-
-      const ind = datos.indicadores.find(i => i.id === id);
-      const reg = datos.regiones.find(r => r.id === id);
-      const fue = datos.fuentes.find(f => f.id === id);
-
-      if (ind) ind[campo] = valor;
-      else if (reg) reg[campo] = valor;
-      else if (fue && campo === 'texto') fue.texto = valor;
-    });
-  });
-
-  // Botones borrar
-  $$('#editIndicadores [data-accion="borrar-ind"]').forEach(b => {
-    b.addEventListener('click', e => {
-      const id = e.target.closest('.fila-editable').dataset.id;
-      datos.indicadores = datos.indicadores.filter(i => i.id !== id);
-      guardarDatos();
-      renderizarEditor();
-      renderizarDatos();
-    });
-  });
-  $$('#editRegiones [data-accion="borrar-reg"]').forEach(b => {
-    b.addEventListener('click', e => {
-      const id = e.target.closest('.fila-editable').dataset.id;
-      datos.regiones = datos.regiones.filter(r => r.id !== id);
-      guardarDatos();
-      renderizarEditor();
-      renderizarDatos();
-    });
-  });
-  $$('#editFuentes [data-accion="borrar-fue"]').forEach(b => {
-    b.addEventListener('click', e => {
-      const id = e.target.closest('.fila-editable').dataset.id;
-      datos.fuentes = datos.fuentes.filter(f => f.id !== id);
-      guardarDatos();
-      renderizarEditor();
-      renderizarDatos();
-    });
-  });
-
-  // Encabezados y campos de texto (se actualizan al escribir)
-  ['editTitulo', 'editSubtitulo', 'editContexto', 'editPregunta', 'editEstado'].forEach(idCampo => {
-    const el = document.getElementById(idCampo);
-    el.addEventListener('input', () => {
-      if (idCampo === 'editTitulo') datos.titulo = el.value;
-      if (idCampo === 'editSubtitulo') datos.subtitulo = el.value;
-      if (idCampo === 'editContexto') datos.contexto = el.value;
-      if (idCampo === 'editPregunta') datos.pregunta = el.value;
-      if (idCampo === 'editEstado') datos.estado = el.value;
-      renderizarDatos();
-    });
-  });
-
-  const aviso = document.getElementById('editAviso');
-  aviso.addEventListener('input', () => {
-    datos.aviso = aviso.value;
-    renderizarDatos();
-  });
-}
-
-/* ============================================================
-   BOTONES DE EDICIÓN
-============================================================ */
-$('#btnAddIndicador').addEventListener('click', () => {
-  datos.indicadores.push({ id: 'i_' + Date.now(), label: 'Nuevo indicador', valor: '' });
-  guardarDatos();
-  renderizarEditor();
-  renderizarDatos();
-  toast('Indicador agregado', 'exito');
-});
-
-$('#btnAddRegion').addEventListener('click', () => {
-  datos.regiones.push({ id: 'r_' + Date.now(), nombre: 'Nueva región', ocupacion: '', ingresos: '', personal: '' });
-  guardarDatos();
-  renderizarEditor();
-  renderizarDatos();
-  toast('Región agregada', 'exito');
-});
-
-$('#btnAddFuente').addEventListener('click', () => {
-  datos.fuentes.push({ id: 'f_' + Date.now(), texto: 'Nueva fuente' });
-  guardarDatos();
-  renderizarEditor();
-  renderizarDatos();
-  toast('Fuente agregada', 'exito');
-});
-
-$('#btnGuardar').addEventListener('click', () => {
-  guardarDatos();
-  renderizarDatos();
-  toast('Cambios guardados', 'exito');
-});
-
-$('#btnExportar').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `risaralda-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('JSON exportado', 'exito');
-});
-
-$('#btnImportar').addEventListener('click', () => $('#inputImportar').click());
-$('#inputImportar').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const json = JSON.parse(ev.target.result);
-      datos = json;
-      guardarDatos();
-      renderizarDatos();
-      renderizarEditor();
-      toast('Datos importados', 'exito');
-    } catch (err) {
-      toast('Error: ' + err.message, 'error');
     }
-  };
-  reader.readAsText(file);
+  });
+
+  const porRegion = {};
+  filtrados.forEach(x => {
+    if (!porRegion[x.region]) porRegion[x.region] = { suma: 0, n: 0 };
+    porRegion[x.region].suma += x.ocupacion;
+    porRegion[x.region].n++;
+  });
+  const regs = Object.keys(porRegion).sort((a,b) => porRegion[b].suma/porRegion[b].n - porRegion[a].suma/porRegion[a].n);
+  const dataReg = regs.map(r => (porRegion[r].suma / porRegion[r].n).toFixed(1));
+
+  charts.regiones = new Chart($('#chartRegiones'), {
+    type: 'bar',
+    data: {
+      labels: regs,
+      datasets: [{
+        label: 'Ocupación promedio (%)',
+        data: dataReg,
+        backgroundColor: regs.map(r => r === 'Eje Cafetero' ? '#ed8936' : '#2c5f8a'),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: 'Ocupación promedio por región (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        legend: { display: false }
+      },
+      scales: { x: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
+    }
+  });
+
+  const aniosUnicos = [...new Set(filtrados.map(x => x.anio))].sort();
+  const regionesUnicas = [...new Set(filtrados.map(x => x.region))].sort();
+  const coloresBar = ['#2c5f8a','#ed8936','#38a169','#e53e3e','#805ad5','#d69e2e','#3182ce','#dd6b20','#319795','#b83280','#4a5568','#2f855a'];
+
+  const datasetsAnual = regionesUnicas.map((reg, i) => ({
+    label: reg,
+    data: aniosUnicos.map(a => {
+      const items = filtrados.filter(x => x.anio === a && x.region === reg);
+      if (!items.length) return null;
+      return (items.reduce((s, x) => s + x.ocupacion, 0) / items.length).toFixed(1);
+    }),
+    backgroundColor: coloresBar[i % coloresBar.length],
+    borderRadius: 3
+  }));
+
+  charts.anual = new Chart($('#chartAnual'), {
+    type: 'bar',
+    data: { labels: aniosUnicos, datasets: datasetsAnual },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: 'Ocupación promedio anual por región (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+      },
+      scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
+    }
+  });
+
+  charts.promedios = new Chart($('#chartPromedios'), {
+    type: 'bar',
+    data: {
+      labels: regs,
+      datasets: [{
+        label: 'Ocupación promedio (%)',
+        data: dataReg,
+        backgroundColor: dataReg.map(v => {
+          const n = parseFloat(v);
+          if (n >= 60) return '#38a169';
+          if (n >= 40) return '#ed8936';
+          return '#e53e3e';
+        }),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: 'Clasificación de regiones por ocupación', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        legend: { display: false }
+      },
+      scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
+    }
+  });
+}
+
+/* ===== TABLAS ===== */
+function renderizarTablas(filtrados) {
+  const porRegion = {};
+  filtrados.forEach(x => {
+    if (!porRegion[x.region]) {
+      porRegion[x.region] = { ocupaciones: [], establecimientos: 0, habitaciones: 0, n: 0 };
+    }
+    porRegion[x.region].ocupaciones.push(x.ocupacion);
+    porRegion[x.region].establecimientos += (x.establecimientos || 0);
+    porRegion[x.region].habitaciones += (x.habitaciones || 0);
+    porRegion[x.region].n++;
+  });
+
+  const filasResumen = Object.keys(porRegion).sort().map(r => {
+    const o = porRegion[r].ocupaciones;
+    const prom = (o.reduce((a,b) => a+b, 0) / o.length).toFixed(1);
+    const max = Math.max(...o).toFixed(1);
+    const min = Math.min(...o).toFixed(1);
+    const destacado = r === 'Eje Cafetero' ? 'style="background:#fffaf0;font-weight:600;"' : '';
+    return `<tr ${destacado}>
+      <td>${r}</td><td>${prom}%</td><td>${max}%</td><td>${min}%</td>
+      <td>${porRegion[r].establecimientos.toLocaleString('es-CO')}</td>
+      <td>${porRegion[r].habitaciones.toLocaleString('es-CO')}</td>
+      <td>${porRegion[r].n}</td>
+    </tr>`;
+  }).join('');
+  $('#tbodyResumen').innerHTML = filasResumen || '<tr><td colspan="7" style="text-align:center;color:#a0aec0;">Sin datos</td></tr>';
+
+  const ordenados = [...filtrados].sort((a,b) => {
+    if (a.anio !== b.anio) return a.anio - b.anio;
+    return MESES_ORDEN.indexOf(a.mes) - MESES_ORDEN.indexOf(b.mes);
+  });
+  const mostrar = ordenados.slice(0, 200);
+  $('#contadorFilas').textContent = filtrados.length.toLocaleString('es-CO');
+
+  $('#tbodyDetalle').innerHTML = mostrar.map(x => `
+    <tr>
+      <td>${x.anio}</td><td>${x.mes}</td><td>${x.region}</td>
+      <td>${x.ocupacion.toFixed(2)}%</td>
+      <td>${x.establecimientos}</td><td>${x.habitaciones}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="6" style="text-align:center;color:#a0aec0;">Sin datos</td></tr>';
+}
+
+/* ===== RENDER PRINCIPAL ===== */
+function renderizarTodo() {
+  const filtrados = aplicarFiltros();
+  $('#infoDataset').textContent = `${datosActuales.datos.length} registros · ${datosActuales.meta.archivo} · ${datosActuales.meta.fuente}`;
+  renderizarIndicadores();
+  renderizarGraficas(filtrados);
+  renderizarTablas(filtrados);
+}
+
+/* ===== SUBIR DATASET ===== */
+const zonaDrop = $('#zonaDrop');
+const inputDataset = $('#inputDataset');
+
+zonaDrop.addEventListener('click', () => inputDataset.click());
+zonaDrop.addEventListener('dragover', e => { e.preventDefault(); zonaDrop.classList.add('dragover'); });
+zonaDrop.addEventListener('dragleave', () => zonaDrop.classList.remove('dragover'));
+zonaDrop.addEventListener('drop', e => {
+  e.preventDefault();
+  zonaDrop.classList.remove('dragover');
+  if (e.dataTransfer.files.length) procesarDataset(e.dataTransfer.files[0]);
+});
+inputDataset.addEventListener('change', e => {
+  if (e.target.files.length) procesarDataset(e.target.files[0]);
   e.target.value = '';
 });
 
-$('#btnReset').addEventListener('click', () => {
-  if (!confirm('¿Restaurar todos los valores por defecto? Se perderán tus cambios.')) return;
-  datos = JSON.parse(JSON.stringify(POR_DEFECTO));
-  guardarDatos();
-  renderizarDatos();
-  renderizarEditor();
-  toast('Valores restaurados', 'exito');
+async function procesarDataset(file) {
+  try {
+    toast('Procesando ' + file.name + '...');
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data);
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    const normalizado = rows.map(r => {
+      const keys = Object.keys(r);
+      const find = (names) => {
+        for (const n of names) {
+          const k = keys.find(k => k.toLowerCase().includes(n.toLowerCase()));
+          if (k) return r[k];
+        }
+        return null;
+      };
+      return {
+        anio: parseInt(find(['Año','Anio','year'])) || 0,
+        mes: String(find(['Mes','Month']) || '').trim(),
+        region: String(find(['region']) || '').trim(),
+        ocupacion: parseFloat(find(['ocupacion','occupancy'])) || 0,
+        establecimientos: parseInt(find(['establecimientos'])) || 0,
+        habitaciones: parseInt(find(['habitaciones'])) || 0
+      };
+    }).filter(r => r.anio && r.mes && r.region);
+
+    if (!normalizado.length) throw new Error('No se encontraron filas válidas');
+
+    datosActuales = {
+      meta: {
+        archivo: file.name,
+        filas: normalizado.length,
+        regiones: [...new Set(normalizado.map(x => x.region))].length,
+        periodo: `${Math.min(...normalizado.map(x => x.anio))}-${Math.max(...normalizado.map(x => x.anio))}`,
+        fuente: 'Archivo subido por el usuario'
+      },
+      datos: normalizado
+    };
+
+    try { localStorage.setItem('dataset_actual', JSON.stringify(datosActuales)); } catch(e) {}
+
+    cargarFiltros();
+    renderizarTodo();
+    renderizarListaDatasets();
+    toast(` ${normalizado.length} registros cargados`, 'exito');
+  } catch (err) {
+    console.error(err);
+    toast('❌ Error: ' + err.message, 'error');
+  }
+}
+
+function renderizarListaDatasets() {
+  const cont = $('#listaDatasetsCargados');
+  if (!cont) return;
+  cont.innerHTML = `
+    <div class="doc-card" style="cursor:default;">
+      <div class="doc-icon"></div>
+      <div class="doc-info">
+        <div class="nombre">${datosActuales.meta.archivo} <span class="badge badge-cdn">ACTIVO</span></div>
+        <div class="meta">${datosActuales.meta.filas} registros · ${datosActuales.meta.regiones} regiones · ${datosActuales.meta.periodo} · ${datosActuales.meta.fuente}</div>
+      </div>
+    </div>
+  `;
+}
+
+$('#btnRestaurar').addEventListener('click', () => {
+  if (!confirm('¿Restaurar los datos originales del dataset_cruzado.xlsx?')) return;
+  datosActuales = JSON.parse(JSON.stringify(DATASET_PRECARGADO));
+  localStorage.removeItem('dataset_actual');
+  cargarFiltros();
+  renderizarTodo();
+  renderizarListaDatasets();
+  toast('Datos originales restaurados', 'exito');
 });
 
-/* ============================================================
-   DOCUMENTOS (REPO + RELEASES)
-============================================================ */
+/* ===== DOCUMENTOS ===== */
 const USUARIO = 'edutruj';
 const REPO = 'mineria-de-datos-terremoto';
 const RAMA = 'main';
@@ -1205,10 +1308,28 @@ const API_TREE = `https://api.github.com/repos/${USUARIO}/${REPO}/git/trees/${RA
 const API_RELEASES = `https://api.github.com/repos/${USUARIO}/${REPO}/releases`;
 const UMBRAL_CDN = 20 * 1024 * 1024;
 
-const contenedor = $('#lista-docs');
-const buscador = $('#buscador');
 let docsRepo = [];
 let docsReleases = [];
+
+function iconoArchivo(nombre) {
+  const ext = nombre.split('.').pop().toLowerCase();
+  const mapa = {
+    pdf: '📕', xlsx: '📗', xls: '📗', csv: '📊',
+    doc: '📘', docx: '📘', ppt: '📙', pptx: '📙',
+    ipynb: '📓', md: '📝', txt: '📄',
+    png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️',
+    zip: '🗜️', rar: '🗜️', json: '⚙️', html: '🌐'
+  };
+  return mapa[ext] || '📎';
+}
+
+function formatearTamano(bytes) {
+  if (!bytes) return '';
+  const u = ['B', 'KB', 'MB', 'GB'];
+  let i = 0;
+  while (bytes >= 1024 && i < u.length - 1) { bytes /= 1024; i++; }
+  return bytes.toFixed(1) + ' ' + u[i];
+}
 
 function renderizarDocCard(doc) {
   const nombre = doc.path.split('/').pop();
@@ -1218,51 +1339,41 @@ function renderizarDocCard(doc) {
     : (doc.url || `https://raw.githubusercontent.com/${USUARIO}/${REPO}/${RAMA}/${doc.path}`);
   const icono = esCarpeta ? '' : iconoArchivo(nombre);
   const tamano = doc.size ? formatearTamano(doc.size) : '';
-
   let badge = '';
   if (doc.esRelease) {
     badge = doc.usandoCDN
       ? '<span class="badge badge-cdn">CDN jsDelivr</span>'
       : '<span class="badge badge-directo">GitHub directo</span>';
   }
-
-  const meta = doc.ruta || doc.path;
-
   return `
     <a class="doc-card" href="${url}" target="_blank" rel="noopener">
       <div class="doc-icon">${icono}</div>
       <div class="doc-info">
         <div class="nombre">${nombre}${badge}</div>
-        <div class="meta">${meta}${tamano ? ' · ' + tamano : ''}</div>
+        <div class="meta">${doc.ruta || doc.path}${tamano ? ' · ' + tamano : ''}</div>
       </div>
     </a>
   `;
 }
 
 function renderizarDocs(lista) {
+  const cont = $('#listaDocsRepo');
   if (!lista.length) {
-    contenedor.innerHTML = '<div class="estado-carga">No se encontraron documentos.</div>';
+    cont.innerHTML = '<div class="vacio">No se encontraron documentos.</div>';
     return;
   }
-
   const normales = lista.filter(d => !d.esRelease);
   const releases = lista.filter(d => d.esRelease);
-
   let html = '';
-
   if (releases.length) {
-    html += `<div class="seccion-titulo">Archivos pesados (GitHub Releases)</div>`;
-    html += `<div class="seccion-desc">Archivos subidos a Releases y servidos desde la CDN de jsDelivr. Los archivos &gt;20 MB se enlazan directo a GitHub.</div>`;
+    html += `<div class="seccion-titulo"> Archivos pesados (GitHub Releases)</div>`;
     html += '<div class="docs-grid">' + releases.map(renderizarDocCard).join('') + '</div>';
   }
-
   if (normales.length) {
-    html += `<div class="seccion-titulo">Archivos del repositorio</div>`;
-    html += `<div class="seccion-desc">Documentos y datos cargados directamente al repositorio.</div>`;
+    html += `<div class="seccion-titulo"> Archivos del repositorio</div>`;
     html += '<div class="docs-grid">' + normales.map(renderizarDocCard).join('') + '</div>';
   }
-
-  contenedor.innerHTML = html;
+  cont.innerHTML = html;
 }
 
 async function cargarDocsTree() {
@@ -1287,37 +1398,29 @@ async function cargarDocsReleases() {
     const resp = await fetch(API_RELEASES);
     if (!resp.ok) throw new Error('Error ' + resp.status);
     const releases = await resp.json();
-
     docsReleases = [];
-
     for (const release of releases) {
       const assetsResp = await fetch(release.assets_url);
       if (!assetsResp.ok) continue;
       const assets = await assetsResp.json();
-
       for (const asset of assets) {
+        if (asset.name === 'Source code (zip)' || asset.name === 'Source code (tar.gz)') continue;
         const tag = release.tag_name;
         const nombre = asset.name;
         const tamano = asset.size || 0;
-
         let url, usandoCDN;
         if (tamano > 0 && tamano <= UMBRAL_CDN) {
-          url = `https://cdn.jsdelivr.net/gh/${USUARIO}/${REPO}@${tag}/${nombre}`;
+          url = `https://cdn.jsdelivr.net/gh/${USUARIO}/${REPO}@${tag}/${encodeURIComponent(nombre)}`;
           usandoCDN = true;
         } else {
           url = asset.browser_download_url;
           usandoCDN = false;
         }
-
         docsReleases.push({
           path: nombre,
           ruta: `${release.name || release.tag_name} / ${nombre}`,
-          type: 'blob',
-          size: tamano,
-          url: url,
-          esRelease: true,
-          tag: tag,
-          usandoCDN: usandoCDN
+          type: 'blob', size: tamano,
+          url, esRelease: true, tag, usandoCDN
         });
       }
     }
@@ -1328,36 +1431,53 @@ async function cargarDocsReleases() {
 }
 
 async function cargarDocumentos() {
-  contenedor.innerHTML = '<div class="estado-carga">Cargando documentos desde el repositorio...</div>';
+  const cont = $('#listaDocsRepo');
+  if (!cont) return;
   await Promise.all([cargarDocsTree(), cargarDocsReleases()]);
-
   const todos = [...docsRepo, ...docsReleases];
   todos.sort((a, b) => {
     if (a.esRelease !== b.esRelease) return a.esRelease ? -1 : 1;
     return a.path.localeCompare(b.path);
   });
-
   renderizarDocs(todos);
 }
 
-buscador.addEventListener('input', e => {
-  const q = e.target.value.toLowerCase().trim();
-  const todos = [...docsRepo, ...docsReleases];
-  if (!q) return renderizarDocs(todos);
-
-  const filtrados = todos.filter(d => {
-    const nombre = d.path.toLowerCase();
-    const ruta = (d.ruta || '').toLowerCase();
-    return nombre.includes(q) || ruta.includes(q);
+const buscadorRepo = $('#buscadorRepo');
+if (buscadorRepo) {
+  buscadorRepo.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    const todos = [...docsRepo, ...docsReleases];
+    if (!q) return renderizarDocs(todos);
+    const filtrados = todos.filter(d => {
+      const nombre = d.path.toLowerCase();
+      const ruta = (d.ruta || '').toLowerCase();
+      return nombre.includes(q) || ruta.includes(q);
+    });
+    renderizarDocs(filtrados);
   });
-  renderizarDocs(filtrados);
-});
+}
 
-/* ============================================================
-   INICIALIZACIÓN
-============================================================ */
-renderizarDatos();
-cargarDocumentos();
+/* ===== INIT ===== */
+(function init() {
+  try {
+    const guardado = localStorage.getItem('dataset_actual');
+    if (guardado) {
+      const parsed = JSON.parse(guardado);
+      if (parsed && parsed.datos && parsed.datos.length) {
+        datosActuales = parsed;
+      }
+    }
+  } catch(e) {}
+
+  cargarFiltros();
+  renderizarTodo();
+  renderizarListaDatosYListo();
+  cargarDocumentos();
+
+  function renderizarListaDatosYListo() {
+    renderizarListaDatasets();
+  }
+})();
 </script>
 
 </body>
