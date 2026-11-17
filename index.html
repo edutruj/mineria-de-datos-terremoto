@@ -46,9 +46,6 @@
   button { background: var(--azul); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: .88rem; }
   button:hover { background: #163a5a; }
   footer { text-align: center; padding: 20px; color: #777; font-size: .8rem; }
-  details { background: var(--gris); padding: 14px 18px; border-radius: 10px; margin: 10px 0; }
-  summary { cursor: pointer; font-weight: 600; color: var(--azul); }
-  pre { background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: .8rem; line-height: 1.45; }
 </style>
 </head>
 <body>
@@ -61,7 +58,6 @@
 </header>
 
 <main>
-  <!-- BANNER DE VALIDACIÓN (Nuevo, pero con tu mismo estilo) -->
   <div id="banner-calidad"></div>
 
   <section>
@@ -122,116 +118,8 @@
   </section>
 
   <section>
-    <h2>Documentos del proyecto</h2>
-    <p>Archivos del repositorio y archivos pesados subidos a Releases de GitHub.</p>
-    <p>Cargando documentos desde GitHub...</p>
-  </section>
-
-  <section>
-    <h2>Códigos del cruce de datos</h2>
-    <p>Documentación del proceso de minería de datos aplicado al dataset cruzado (EMA-DANE + RNT).</p>
-    <p><strong>Objetivo:</strong> Unir la Encuesta Mensual de Alojamiento (EMA) del DANE con el Registro Nacional de Turismo (RNT) para analizar la ocupación hotelera por región en el período 2019–2026.</p>
-    
-    <details open>
-      <summary>Ver código Python completo (Corregido)</summary>
-<pre>
-# ============================================================
-# CRUCE EMA (ocupación) + RNT (establecimientos/habitaciones)
-# Versión corregida: tipos, % -> float, fecha, conteos
-# ============================================================
-import pandas as pd
-import numpy as np
-
-# --- 1. Carga de datos crudos ---
-rnt = pd.read_excel("../data/thwd-ivmp.xlsx")
-rnt = rnt.iloc[:, 0].str.split(",", expand=True)
-rnt.columns = [
-    "codigo_rnt", "estado_rnt", "razon_social_establecimiento",
-    "departamento", "cod_dpto", "municipio", "cod_mun", "nit",
-    "categoria", "sub_categoria", "habitaciones", "camas",
-    "num_emp1", "ano"
-]
-
-ema = pd.read_excel("../data/anex-EMA-jul2026 (1).xlsx", sheet_name=None)
-
-# --- 2. Limpieza hoja de ocupación mensual ---
-ocupacion = ema["4.2 Porc Mens Ocupación.reg"]
-ocupacion_limpia = ocupacion.copy()
-ocupacion_limpia.columns = ocupacion_limpia.iloc[10]
-ocupacion_limpia = ocupacion_limpia.iloc[11:]
-ocupacion_limpia.columns = ocupacion_limpia.columns.astype(str).str.strip()
-ocupacion_limpia = ocupacion_limpia.loc[:, ocupacion_limpia.columns.notna()]
-
-ocupacion_limpia["Año"] = ocupacion_limpia["Año"].ffill()
-ocupacion_limpia["Año"] = (ocupacion_limpia["Año"].astype(str).str.replace("p", "", regex=False))
-ocupacion_limpia["Año"] = pd.to_numeric(ocupacion_limpia["Año"], errors="coerce")
-
-# --- 3. Melt: ancho -> largo ---
-columnas_regiones = list(ocupacion_limpia.columns[3:15])
-ocupacion_long = pd.melt(
-    ocupacion_limpia,
-    id_vars=["Año", "Meses"],
-    value_vars=columnas_regiones,
-    var_name="region",
-    value_name="ocupacion"
-)
-
-# --- 4. CORRECCIÓN: ocupación texto -> float (0-1) ---
-ocupacion_long["ocupacion"] = (
-    ocupacion_long["ocupacion"].astype(str)
-    .str.replace("%", "", regex=False)
-    .str.replace(",", ".", regex=False)
-    .str.strip()
-)
-ocupacion_long["ocupacion"] = (pd.to_numeric(ocupacion_long["ocupacion"], errors="coerce") / 100)
-
-# --- 5. CORRECCIÓN: unificar nombre de columna ---
-ocupacion_long = ocupacion_long.rename(columns={"Meses": "mes_nombre"})
-
-# --- 6. CORRECCIÓN: construir fecha real ---
-mes_map = {"Enero":1,"Febrero":2,"Marzo":3,"Abril":4,"Mayo":5,"Junio":6,"Julio":7,"Agosto":8,"Septiembre":9,"Octubre":10,"Noviembre":11,"Diciembre":12}
-ocupacion_long["mes"] = ocupacion_long["mes_nombre"].map(mes_map)
-ocupacion_long["fecha"] = pd.to_datetime(dict(year=ocupacion_long["Año"], month=ocupacion_long["mes"], day=1), errors="coerce")
-
-# --- 7. RNT: filtrar alojamientos ---
-rnt_hoteles = rnt[rnt["categoria"].str.contains("ALOJAMIENTO", case=False, na=False)].copy()
-for col in rnt_hoteles.columns:
-    rnt_hoteles[col] = (rnt_hoteles[col].astype(str).str.replace('"', "", regex=False).str.strip())
-
-# --- 8. Mapeo departamentos -> regiones DANE ---
-mapa_region = {
-    "ANTIOQUIA": "Antioquia", "ATLANTICO": "Caribe", "CESAR": "Caribe", "MAGDALENA": "Caribe", "LA GUAJIRA": "Caribe",
-    "CALDAS": "Eje Cafetero", "QUINDIO": "Eje Cafetero", "RISARALDA": "Eje Cafetero",
-    "VALLE DEL CAUCA": "Pacífico", "CAUCA": "Pacífico", "NARIÑO": "Pacífico", "CHOCO": "Pacífico",
-    "SANTANDER": "Santanderes", "NORTE DE SANTANDER": "Santanderes", "META": "Llanos Orinoquía", "ARAUCA": "Llanos Orinoquía",
-    "CASANARE": "Llanos Orinoquía", "VICHADA": "Llanos Orinoquía", "AMAZONAS": "Amazonía", "CAQUETA": "Amazonía", "PUTUMAYO": "Amazonía",
-    "GUAINIA": "Amazonía", "GUAVIARE": "Amazonía", "VAUPES": "Amazonía", "BOGOTA": "Bogotá D.C.",
-    "CUNDINAMARCA": "Central", "BOYACA": "Central", "HUILA": "Central", "TOLIMA": "Central",
-    "CORDOBA": "Golfo Morrosquillo y Sabana", "SUCRE": "Golfo Morrosquillo y Sabana",
-    "SAN ANDRES Y PROVIDENCIA": "San Andrés y Providencia", "BOLIVAR": "Cartagena"
-}
-rnt_hoteles["region"] = (rnt_hoteles["departamento"].str.upper().map(mapa_region))
-
-# --- 9. CORRECCIÓN: resumen RNT (nunique + sum) ---
-rnt_hoteles["habitaciones"] = pd.to_numeric(rnt_hoteles["habitaciones"], errors="coerce")
-rnt_resumen = (rnt_hoteles.groupby("region", as_index=False).agg(establecimientos=("codigo_rnt", "nunique"), habitaciones=("habitaciones", "sum")))
-
-# --- 10. Cruce final ---
-dataset_final = pd.merge(ocupacion_long, rnt_resumen, on="region", how="left", indicator=True)
-
-# --- 11. Verificación de integridad ---
-print(f"Filas esperadas: {12 * 99} | Filas obtenidas: {len(dataset_final)}")
-
-# --- 12. Exportación ---
-dataset_final.to_excel("../data/dataset_cruzado.xlsx", index=False)
-print("Dataset guardado correctamente")
-</pre>
-    </details>
-  </section>
-
-  <section>
     <h2>Subir nuevo dataset</h2>
-    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code>dataset_cruzado.xlsx</code>. La página procesará el cruce automáticamente y actualizará todas las gráficas.</p>
+    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code>dataset_cruzado.xlsx</code>.</p>
     <p><strong>Columnas esperadas:</strong> Año, Meses (o mes), region, ocupacion, establecimientos, habitaciones.</p>
     <div class="dropzone" id="dropzone">
       Arrastra tu archivo aquí o haz clic para seleccionar<br>
@@ -255,7 +143,6 @@ let charts = {};
 const ESPERADO = 12 * 99;
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
-// --- LÓGICA DE DATOS (Nueva, pero compatible con tu diseño) ---
 function parseOcupacion(v) {
   if (v === null || v === undefined || v === "") return null;
   if (typeof v === "number") return v > 1 ? v / 100 : v;
@@ -299,7 +186,7 @@ function validarIntegridad(data, nombreArchivo) {
   const ok = n >= ESPERADO * 0.95;
   let html = ok ? `<div class="banner ok">✔ Integridad verificada — ${n.toLocaleString()} registros cargados correctamente.</div>` 
                 : `<div class="banner alerta">⚠ Dataset recortado — ${n.toLocaleString()} registros (esperados ~${ESPERADO}).</div>`;
-  if (sospecha) html += `<div class="banner alerta">⚠ Habitaciones == Establecimientos en muchas filas. Ejecuta el cruce corregido (usa <code>sum</code>).</div>`;
+  if (sospecha) html += `<div class="banner alerta">⚠ Habitaciones == Establecimientos en muchas filas. Revisa el cruce.</div>`;
   document.getElementById("banner-calidad").innerHTML = html;
   document.getElementById("fuente-datos").textContent = `Datos cargados: ${n.toLocaleString()} registros · ${nombreArchivo}`;
 }
