@@ -12,6 +12,16 @@ Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujill
 
 El dataset limpio contiene 1,092 filas mensuales para 12 regiones, de enero de 2019 a julio de 2026. La ocupación tiene 1,087 valores disponibles; cinco son faltantes para San Andrés entre abril y agosto de 2020. Los establecimientos y habitaciones corresponden a capacidad regional y no deben sumarse repetidamente por cada mes.
 
+## Fuentes, flujo y conciliación
+
+- `anex-EMA-jul2026 (1).xlsx` contiene 25 hojas. El análisis usa la hoja mensual de ocupación y la de variación anual de ingresos reales; no combina las demás porque sus métricas y niveles de agregación son distintos.
+- `thwd-ivmp.xlsx` es la extracción RNT de alojamientos de 2026. Tras normalizar los nombres regionales, se concilia con las 12 regiones: 498 establecimientos, 27,109 habitaciones, 61,286 camas y 15,346 empleados. El `thwd-ivmp.csv` histórico de 2019 no se mezcla con esta extracción.
+- `01_turismo_colombia_integrado.xlsx` tiene 1,188 filas: 1,092 registros mensuales y 96 filas de notas u otros contenidos. Las 1,092 claves mensuales coinciden con `02_turismo_colombia_limpio.xlsx`.
+- `02_turismo_colombia_limpio.xlsx` es la base analítica del dashboard: 12 regiones por 91 meses. Mantiene los cinco faltantes reales de ocupación, no como ceros; no presenta claves mensuales duplicadas ni ocupaciones fuera de 0–100%.
+- `03_turismo_colombia_modelado.xlsx` conserva 1,092 registros y los faltantes; `04_turismo_colombia_segmentado.xlsx` usa las 1,087 observaciones completas. `05_turismo_colombia_prediccion.xlsx` contiene 327 observaciones de prueba, no una proyección futura: TN/FP/FN/TP = 267/10/17/33, exactitud 91.74%, precisión 76.74%, recall 66.00% y F1 70.97%.
+
+La ocupación media simple es 44.74% sobre 1,087 observaciones. Los cuadernos alternativos de la raíz y el CSV RNT de 2019 son históricos, no fuentes canónicas para reproducir los resultados actuales. La libreta principal incluye una celda de auditoría para volver a comprobar la cobertura, conciliación y métricas del flujo.
+
 ## Ejecutar
 
 1. Abrir la libreta principal en Jupyter y ejecutar sus celdas en orden. Las rutas de datos se resuelven desde el repositorio.
