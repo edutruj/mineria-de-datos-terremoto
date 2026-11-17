@@ -455,13 +455,12 @@
       <strong>✅ Datos cargados:</strong> <span id="infoDataset"></span>
     </div>
 
-    <div class="aviso" aria-label="Alcance y límites de los datos">
-      <strong>Cómo leer esta información:</strong>
-      la base original reúne 1,092 registros de 12 regiones entre enero de 2019 y julio de 2026.
-      Incluye 1,087 ocupaciones observadas y 5 faltantes reales de San Andrés (abril–agosto de 2020);
-      los faltantes no equivalen a ocupación cero.
-      <strong>El período termina antes del terremoto de agosto de 2026</strong>, así que estos datos no permiten medir su efecto posterior.
-      Esta nota describe la base original; si cargas otro archivo, el aviso «Datos cargados» identifica la fuente activa.
+    <div class="aviso" aria-label="Seguimiento EMA alrededor del terremoto">
+      <strong>Seguimiento oficial del DANE — corte septiembre de 2026 (cifras provisionales):</strong>
+      <p>En el Eje Cafetero, la ocupación fue 35.49% en agosto (mes del terremoto, con días antes y después) y 36.62% en septiembre (primer mes completo posterior). Frente a los mismos meses de 2025, bajó 9.61 y 4.16 puntos porcentuales.</p>
+      <p>Los ingresos reales variaron -45.0% en agosto y -36.7% en septiembre frente a los mismos meses de 2025. Estos cambios coinciden en el tiempo con el evento, pero no demuestran que este los haya causado.</p>
+      <p><strong>Estimación trimestral de referencia, calculada con el corte de septiembre:</strong> para octubre–diciembre de 2026 se estiman 45.82%, 45.09% y 41.78%, repitiendo la ocupación de cada mes de 2025. La comparación parcial de agosto–septiembre arroja un error porcentual absoluto medio (MAPE) de 19.21%, por encima del criterio de 15%; faltan datos de octubre para evaluar el trimestre completo.</p>
+      <p>La base original de las gráficas llega hasta julio de 2026; este seguimiento complementario se mantiene separado y no se combina automáticamente con otros archivos que cargues. <a href="https://www.dane.gov.co/index.php/estadisticas-por-tema/servicios/encuesta-mensual-de-alojamiento-ema" target="_blank" rel="noopener">Fuente y boletín EMA del DANE</a> · <a href="https://www.dane.gov.co/files/operaciones/EMA/anex-EMA-sep2026.xlsx" target="_blank" rel="noopener">Anexo de septiembre de 2026</a> (publicado el 13 de noviembre; cifras provisionales).</p>
     </div>
 
     <h2>Indicadores clave</h2>
@@ -726,7 +725,7 @@ print("Dataset guardado correctamente")</pre>
       <div class="card-indicador">
         <div class="label">Período</div>
         <div class="valor">2019–2026</div>
-        <div class="sub">Hasta julio de 2026; no mide el efecto posterior al sismo</div>
+        <div class="sub">Base principal hasta julio; seguimiento DANE separado hasta septiembre</div>
       </div>
       <div class="card-indicador">
         <div class="label">Columnas finales</div>
@@ -740,9 +739,9 @@ print("Dataset guardado correctamente")</pre>
       <li><strong>Eje Cafetero:</strong> Ocupación media de 40.57% en el período disponible.</li>
       <li><strong>Meses de menor ocupación del Eje Cafetero:</strong> mayo (32.35%), abril (36.21%) y junio (37.15%), promedios mensuales 2019–2026.</li>
       <li><strong>Ingresos reales:</strong> la variación anual encadenada de julio 2026 frente a julio 2019 ubica al Eje Cafetero en +14.15% (3.º entre 11 regiones comparables).</li>
-      <li><strong>Pronóstico estacional:</strong> el backtest ago.–oct. 2025 obtuvo MAPE de 5.49%; la proyección para 2026 es una referencia, no una medición del impacto del terremoto.</li>
+      <li><strong>Estimación temporal:</strong> el backtest ago.–oct. 2025 obtuvo MAPE de 5.49%; al contrastar ago.–sep. 2026 con los datos DANE, el MAPE parcial es 19.21%, por encima del objetivo de 15% y aún sin completar el trimestre.</li>
       <li><strong>Modelo de clasificación:</strong> el archivo <code class="inline">05_turismo_colombia_prediccion.xlsx</code> evalúa 327 casos de prueba para clasificar ocupación alta (60% o más); sus resultados no son una predicción futura.</li>
-      <li><strong>Límite del análisis:</strong> la EMA publicada llega a julio de 2026 y no desagrega ocupación e ingresos mensuales por tipo de alojamiento.</li>
+      <li><strong>Límite del análisis:</strong> el dataset principal llega a julio y el seguimiento DANE separado a septiembre de 2026. Estos cambios no prueban causalidad y no hay datos mensuales desagregados por tipo de alojamiento.</li>
     </ul>
 
     <h3>📥 Descargar código</h3>
