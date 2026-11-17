@@ -1,508 +1,149 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Turismo y Ocupación Hotelera en Risaralda</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Turismo y Ocupación Hotelera en Risaralda — Minería de Datos</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --azul: #1a3a5c;
-    --azul-claro: #2c5f8a;
+    --azul: #1f4e79;
+    --azul-claro: #dbe9f4;
     --gris: #f4f6f8;
-    --borde: #d9e2ec;
-    --texto: #2d3748;
-    --verde: #38a169;
-    --rojo: #e53e3e;
-    --naranja: #ed8936;
+    --texto: #222;
+    --ok: #2e7d32;
+    --alerta: #c62828;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; }
   body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: var(--texto);
-    background: #fff;
-    line-height: 1.6;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0; color: var(--texto); background: #fff;
+    line-height: 1.5;
   }
-
-  /* ===== MENÚ SUPERIOR ===== */
-  header.top-bar {
-    background: var(--azul);
-    padding: 0 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  header {
+    background: var(--azul); color: #fff; padding: 28px 24px;
   }
-  .top-bar-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
+  header h1 { margin: 0 0 6px; font-size: 1.7rem; }
+  header p { margin: 2px 0; opacity: .9; font-size: .95rem; }
+  main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  section { margin-bottom: 36px; }
+  h2 {
+    color: var(--azul); border-bottom: 2px solid var(--azul-claro);
+    padding-bottom: 6px; font-size: 1.25rem;
   }
-  .top-bar .logo {
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: 0.3px;
+  .cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px; margin: 18px 0;
   }
-  .menu-toggle {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 1.6rem;
-    padding: 0.9rem 1rem;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.2s;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  .card {
+    background: var(--gris); border-radius: 10px; padding: 16px;
+    border-left: 5px solid var(--azul);
   }
-  .menu-toggle:hover { background: rgba(255,255,255,0.1); }
-  .menu-toggle .etiqueta { font-size: 0.9rem; font-weight: 500; }
-  .menu-toggle .hamburguesa {
-    display: inline-flex; flex-direction: column; gap: 4px;
-  }
-  .menu-toggle .hamburguesa span {
-    width: 22px; height: 2px;
-    background: #fff; border-radius: 2px;
-    transition: all 0.3s ease;
-  }
-  .menu-toggle.abierto .hamburguesa span:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
-  }
-  .menu-toggle.abierto .hamburguesa span:nth-child(2) { opacity: 0; }
-  .menu-toggle.abierto .hamburguesa span:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
-  }
-
-  .menu-desplegable {
-    position: absolute;
-    top: 100%; right: 1rem;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    overflow: hidden;
-    min-width: 240px;
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-    transition: all 0.25s ease;
-    border: 1px solid var(--borde);
-    z-index: 999;
-  }
-  .menu-desplegable.abierto {
-    opacity: 1; transform: translateY(0.5rem);
-    pointer-events: auto;
-  }
-  .menu-desplegable button {
-    display: flex; align-items: center; gap: 0.7rem;
-    width: 100%; padding: 0.85rem 1.1rem;
-    background: transparent; border: none;
-    color: var(--texto); font-size: 0.95rem;
-    font-weight: 500; text-align: left;
-    cursor: pointer; font-family: inherit;
-    transition: background 0.15s;
-  }
-  .menu-desplegable button:hover {
-    background: var(--gris); color: var(--azul);
-  }
-  .menu-desplegable button.active {
-    background: #eef4fa; color: var(--azul);
-    font-weight: 600;
-    border-left: 3px solid var(--azul-claro);
-    padding-left: calc(1.1rem - 3px);
-  }
-  .menu-desplegable button .icono {
-    font-size: 1.05rem; width: 22px; text-align: center;
-  }
-  .menu-separador { height: 1px; background: var(--borde); margin: 0.3rem 0; }
-  .menu-version {
-    padding: 0.7rem 1.1rem;
-    font-size: 0.78rem; color: #718096;
-    display: flex; align-items: center; gap: 0.5rem;
-    background: var(--gris);
-  }
-  .menu-version .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--verde);
-    box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
-  }
-
-  /* ===== HEADER PÁGINA ===== */
-  header.page-header {
-    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%);
-    color: #fff;
-    padding: 2.5rem 1.5rem;
-    text-align: center;
-  }
-  header.page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-  header.page-header p { opacity: 0.9; font-size: 0.95rem; }
-  header.page-header .contexto {
-    display: inline-block; margin-top: 0.75rem;
-    background: rgba(255,255,255,0.15);
-    padding: 0.35rem 1rem; border-radius: 20px;
-    font-size: 0.85rem;
-  }
-
-  main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; animation: fade 0.3s ease; }
-  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-
-  h2 { color: var(--azul); margin: 2rem 0 1rem; font-size: 1.35rem; }
-  h3 { color: var(--azul-claro); margin: 1.5rem 0 0.75rem; font-size: 1.1rem; }
-
-  .aviso {
-    background: #fffaf0; border-left: 4px solid var(--naranja);
-    padding: 1rem 1.25rem; border-radius: 4px;
-    margin: 1.5rem 0; font-size: 0.95rem;
-  }
-  .aviso.ok {
-    background: #f0fff4; border-left-color: var(--verde);
-  }
-
-  .btn {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.55rem 1.1rem; border-radius: 6px;
-    border: none; cursor: pointer; font-size: 0.9rem;
-    font-weight: 500; font-family: inherit;
-    transition: all 0.15s ease; text-decoration: none;
-  }
-  .btn-primary { background: var(--azul); color: #fff; }
-  .btn-primary:hover { background: var(--azul-claro); }
-  .btn-success { background: var(--verde); color: #fff; }
-  .btn-success:hover { background: #2f855a; }
-  .btn-danger { background: var(--rojo); color: #fff; }
-  .btn-danger:hover { background: #c53030; }
-  .btn-outline {
-    background: transparent; color: var(--azul);
-    border: 1px solid var(--borde);
-  }
-  .btn-outline:hover { background: var(--gris); border-color: var(--azul-claro); }
-  .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.82rem; }
-
-  .barra-acciones {
-    display: flex; flex-wrap: wrap; gap: 0.5rem;
-    align-items: center; margin: 1rem 0;
-    padding: 0.85rem; background: var(--gris);
-    border-radius: 8px;
-  }
-  .barra-acciones .spacer { flex: 1; }
-
-  .grid-indicadores {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem; margin: 1.5rem 0;
-  }
-  .card-indicador {
-    background: var(--gris); border: 1px solid var(--borde);
-    border-radius: 8px; padding: 1.25rem; text-align: center;
-  }
-  .card-indicador .label {
-    font-size: 0.82rem; color: #718096;
-    margin-bottom: 0.5rem; text-transform: uppercase;
-    letter-spacing: 0.5px; font-weight: 600;
-  }
-  .card-indicador .valor {
-    font-size: 1.6rem; font-weight: 700; color: var(--azul);
-  }
-  .card-indicador .sub {
-    font-size: 0.75rem; color: #718096; margin-top: 0.3rem;
-  }
-  .card-indicador.destacado { background: #fffaf0; border-color: var(--naranja); }
-  .card-indicador.destacado .valor { color: var(--naranja); }
-
-  .charts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem; margin: 1.5rem 0;
-  }
-  .charts-grid.full { grid-template-columns: 1fr; }
-  @media (max-width: 800px) {
-    .charts-grid { grid-template-columns: 1fr; }
-  }
-  .chart-container {
-    background: #fff; border: 1px solid var(--borde);
-    border-radius: 8px; padding: 1.25rem;
-    position: relative; height: 380px;
-  }
-  .chart-container.tall { height: 460px; }
-
-  .filtros {
-    display: flex; flex-wrap: wrap; gap: 0.75rem;
-    align-items: end; padding: 1rem;
-    background: var(--gris); border-radius: 8px;
-    margin: 1rem 0;
-  }
-  .filtros .campo { display: flex; flex-direction: column; gap: 0.3rem; }
-  .filtros label {
-    font-size: 0.78rem; font-weight: 600;
-    color: var(--azul); text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+  .card .label { font-size: .8rem; color: #555; text-transform: uppercase; letter-spacing: .5px; }
+  .card .value { font-size: 1.6rem; font-weight: 700; color: var(--azul); margin-top: 4px; }
+  .card .sub { font-size: .8rem; color: #666; margin-top: 2px; }
+  .filtros { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 18px; }
+  .filtros label { font-size: .85rem; display: flex; flex-direction: column; gap: 4px; }
   .filtros select, .filtros input {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--borde); border-radius: 6px;
-    font-family: inherit; font-size: 0.88rem;
-    background: #fff;
+    padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; min-width: 130px;
   }
-  .filtros select:focus, .filtros input:focus {
-    outline: none; border-color: var(--azul-claro);
-    box-shadow: 0 0 0 2px rgba(44,95,138,0.15);
+  .chart-box { position: relative; height: 340px; margin: 12px 0 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 10px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid #e3e6ea; text-align: left; }
+  th { background: var(--azul-claro); color: var(--azul); font-weight: 600; }
+  tr:hover td { background: #fafcfe; }
+  .banner {
+    padding: 12px 16px; border-radius: 8px; margin: 14px 0; font-size: .9rem;
   }
-
-  .tabla-wrap { overflow-x: auto; margin: 1.5rem 0; }
-  table {
-    width: 100%; border-collapse: collapse;
-    font-size: 0.9rem; min-width: 600px;
+  .banner.ok { background: #e8f5e9; color: var(--ok); border-left: 4px solid var(--ok); }
+  .banner.alerta { background: #ffebee; color: var(--alerta); border-left: 4px solid var(--alerta); }
+  .dropzone {
+    border: 2px dashed var(--azul); border-radius: 12px; padding: 28px;
+    text-align: center; color: var(--azul); background: var(--azul-claro);
+    cursor: pointer; transition: background .2s;
   }
-  th, td {
-    padding: 0.65rem 0.85rem; text-align: left;
-    border-bottom: 1px solid var(--borde);
+  .dropzone:hover { background: #cfe2f0; }
+  .archivo-activo {
+    margin-top: 12px; padding: 10px 14px; background: var(--gris);
+    border-radius: 8px; display: flex; justify-content: space-between;
+    align-items: center; font-size: .9rem;
   }
-  th {
-    background: var(--azul); color: #fff;
-    font-weight: 600; font-size: 0.82rem;
-    text-transform: uppercase; letter-spacing: 0.3px;
+  .archivo-activo .badge {
+    background: var(--ok); color: #fff; padding: 2px 8px; border-radius: 10px;
+    font-size: .75rem; margin-left: 8px;
   }
-  tr:hover td { background: var(--gris); }
-
-  .zona-drop {
-    border: 2px dashed var(--borde);
-    border-radius: 12px;
-    padding: 2.5rem 1.5rem;
-    text-align: center;
-    background: var(--gris);
-    transition: all 0.2s;
-    cursor: pointer;
-    margin: 1rem 0;
+  button {
+    background: var(--azul); color: #fff; border: none; padding: 8px 14px;
+    border-radius: 6px; cursor: pointer; font-size: .88rem;
   }
-  .zona-drop:hover, .zona-drop.dragover {
-    border-color: var(--azul-claro);
-    background: #eef4fa;
+  button:hover { background: #163a5a; }
+  footer { text-align: center; padding: 20px; color: #777; font-size: .8rem; }
+  details { background: var(--gris); padding: 14px 18px; border-radius: 10px; margin: 10px 0; }
+  summary { cursor: pointer; font-weight: 600; color: var(--azul); }
+  pre {
+    background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 8px;
+    overflow-x: auto; font-size: .8rem; line-height: 1.45;
   }
-  .zona-drop .icono-grande { font-size: 2.5rem; margin-bottom: 0.5rem; }
-  .zona-drop p { color: #4a5568; margin-bottom: 0.3rem; }
-  .zona-drop small { color: #a0aec0; }
-
-  .docs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem; margin-top: 1rem;
-  }
-  .doc-card {
-    display: flex; align-items: center; gap: 1rem;
-    background: #fff; border: 1px solid var(--borde);
-    border-radius: 8px; padding: 1rem 1.25rem;
-    text-decoration: none; color: var(--texto);
-    transition: all 0.2s;
-  }
-  .doc-card:hover {
-    border-color: var(--azul-claro);
-    box-shadow: 0 4px 12px rgba(26,58,92,0.12);
-    transform: translateY(-2px);
-  }
-  .doc-icon {
-    flex-shrink: 0; width: 44px; height: 44px;
-    border-radius: 8px; display: flex;
-    align-items: center; justify-content: center;
-    font-size: 1.3rem; background: var(--gris);
-  }
-  .doc-info { flex: 1; min-width: 0; }
-  .doc-info .nombre {
-    font-weight: 600; font-size: 0.92rem;
-    word-break: break-word; margin-bottom: 0.15rem;
-  }
-  .doc-info .meta { font-size: 0.78rem; color: #718096; }
-
-  .seccion-titulo {
-    display: flex; align-items: center; gap: 0.5rem;
-    margin-top: 2rem; padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--borde);
-    color: var(--azul); font-size: 1.1rem; font-weight: 700;
-  }
-  .seccion-desc {
-    font-size: 0.85rem; color: #718096;
-    margin: 0.5rem 0 0.75rem;
-  }
-
-  .buscador {
-    width: 100%; padding: 0.75rem 1rem;
-    border: 1px solid var(--borde); border-radius: 8px;
-    font-size: 0.95rem; font-family: inherit;
-    margin-bottom: 1rem;
-  }
-  .buscador:focus {
-    outline: none; border-color: var(--azul-claro);
-    box-shadow: 0 0 0 3px rgba(44,95,138,0.15);
-  }
-
-  .estado-carga {
-    text-align: center; color: #718096;
-    padding: 2rem; font-style: italic;
-  }
-  .vacio {
-    text-align: center; color: #a0aec0;
-    padding: 2.5rem 1rem; font-style: italic;
-    background: var(--gris); border-radius: 8px;
-    border: 1px dashed var(--borde);
-  }
-
-  pre.code-block {
-    background: #1a202c; color: #e2e8f0;
-    padding: 1.25rem; border-radius: 8px;
-    overflow-x: auto; font-size: 0.82rem;
-    line-height: 1.55; margin: 1rem 0;
-    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-  }
-  code.inline {
-    background: var(--gris); padding: 0.15rem 0.4rem;
-    border-radius: 4px; font-family: monospace;
-    font-size: 0.85em;
-  }
-
-  .paso {
-    display: flex; gap: 1rem;
-    padding: 1rem; background: var(--gris);
-    border-radius: 8px; margin-bottom: 0.75rem;
-    border-left: 4px solid var(--azul-claro);
-  }
-  .paso .num {
-    flex-shrink: 0; width: 32px; height: 32px;
-    background: var(--azul); color: #fff;
-    border-radius: 50%; display: flex;
-    align-items: center; justify-content: center;
-    font-weight: 700; font-size: 0.9rem;
-  }
-  .paso .contenido { flex: 1; }
-  .paso .contenido h4 {
-    color: var(--azul); font-size: 0.95rem;
-    margin-bottom: 0.35rem;
-  }
-  .paso .contenido p { font-size: 0.88rem; color: #4a5568; }
-
-  .badge {
-    display: inline-block;
-    padding: 0.1rem 0.5rem; border-radius: 10px;
-    font-size: 0.68rem; font-weight: 600;
-    margin-left: 0.35rem; vertical-align: middle;
-  }
-  .badge-cdn { background: #e6fffa; color: #234e52; }
-  .badge-directo { background: #fffaf0; color: #7b341e; }
-
-  footer {
-    text-align: center; padding: 2rem 1rem;
-    color: #718096; font-size: 0.85rem;
-    border-top: 1px solid var(--borde); margin-top: 3rem;
-  }
-
-  .toast {
-    position: fixed; bottom: 20px; right: 20px;
-    background: var(--azul); color: #fff;
-    padding: 0.9rem 1.2rem; border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    z-index: 2000; font-size: 0.9rem;
-    transform: translateY(120%);
-    transition: transform 0.3s ease;
-    max-width: 340px;
-  }
-  .toast.activo { transform: translateY(0); }
-  .toast.exito { background: var(--verde); }
-  .toast.error { background: var(--rojo); }
 </style>
 </head>
 <body>
 
-<header class="top-bar">
-  <div class="top-bar-inner">
-    <div class="logo"> Minería de Datos · Risaralda</div>
-    <button class="menu-toggle" id="menuToggle" aria-label="Menú">
-      <span class="etiqueta">Menú</span>
-      <span class="hamburguesa">
-        <span></span><span></span><span></span>
-      </span>
-    </button>
-    <div class="menu-desplegable" id="menuDesplegable">
-      <button class="tab-btn active" data-tab="datos"><span class="icono"></span> Datos</button>
-      <button class="tab-btn" data-tab="documentos"><span class="icono"></span> Documentos</button>
-      <button class="tab-btn" data-tab="codigos"><span class="icono"></span> Códigos cruces</button>
-      <button class="tab-btn" data-tab="subir"><span class="icono"></span> Subir dataset</button>
-      <div class="menu-separador"></div>
-      <div class="menu-version">
-        <span class="dot"></span>
-        <span>Versión <strong>2.0.0</strong></span>
-      </div>
-    </div>
-  </div>
-</header>
-
-<header class="page-header">
+<header>
   <h1>Turismo y Ocupación Hotelera en Risaralda</h1>
   <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
-  <span class="contexto">Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</span>
+  <p>Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</p>
+  <p id="fuente-datos">Datos cargados: — · dataset_cruzado.xlsx · EMA-DANE + RNT</p>
 </header>
 
 <main>
 
-  <section id="tab-datos" class="tab-panel active">
-    <div class="aviso ok" id="avisoEstado">
-      <strong> Datos cargados:</strong> <span id="infoDataset"></span>
-    </div>
+  <!-- ===== BANNER DE CALIDAD ===== -->
+  <div id="banner-calidad"></div>
 
+  <!-- ===== INDICADORES ===== -->
+  <section>
     <h2>Indicadores clave</h2>
-    <div class="grid-indicadores" id="gridIndicadores"></div>
+    <div class="cards" id="cards-indicadores"></div>
+  </section>
 
+  <!-- ===== FILTROS ===== -->
+  <section>
     <h2>Filtros interactivos</h2>
     <div class="filtros">
-      <div class="campo">
-        <label>Año</label>
-        <select id="filtroAnio"><option value="">Todos los años</option></select>
-      </div>
-      <div class="campo">
-        <label>Región</label>
-        <select id="filtroRegion"><option value="">Todas las regiones</option></select>
-      </div>
-      <div class="campo">
-        <label>Mes</label>
-        <select id="filtroMes"><option value="">Todos los meses</option></select>
-      </div>
-      <button class="btn btn-outline btn-sm" id="btnLimpiarFiltros"> Limpiar</button>
-      <div class="spacer"></div>
-      <button class="btn btn-primary btn-sm" id="btnRecalcular"> Recalcular todo</button>
+      <label>Región
+        <select id="filtro-region"><option value="">Todas</option></select>
+      </label>
+      <label>Año
+        <select id="filtro-anio"><option value="">Todos</option></select>
+      </label>
+      <label>Mes
+        <select id="filtro-mes"><option value="">Todos</option></select>
+      </label>
     </div>
+  </section>
 
+  <!-- ===== GRÁFICOS ===== -->
+  <section>
     <h2>Evolución mensual de ocupación</h2>
-    <div class="charts-grid">
-      <div class="chart-container tall">
-        <canvas id="chartEvolucion"></canvas>
-      </div>
-      <div class="chart-container tall">
-        <canvas id="chartRegiones"></canvas>
-      </div>
-    </div>
+    <div class="chart-box"><canvas id="chart-evolucion"></canvas></div>
+  </section>
 
+  <section>
     <h2>Comparación anual por región</h2>
-    <div class="charts-grid full">
-      <div class="chart-container tall">
-        <canvas id="chartAnual"></canvas>
-      </div>
-    </div>
+    <div class="chart-box"><canvas id="chart-anual"></canvas></div>
+  </section>
 
+  <section>
     <h2>Ocupación promedio por región</h2>
-    <div class="charts-grid full">
-      <div class="chart-container">
-        <canvas id="chartPromedios"></canvas>
-      </div>
-    </div>
+    <div class="chart-box"><canvas id="chart-region"></canvas></div>
+  </section>
 
+  <!-- ===== TABLA RESUMEN ===== -->
+  <section>
     <h2>Tabla resumen por región</h2>
-    <div class="tabla-wrap">
-      <table id="tablaResumen">
+    <div style="overflow-x:auto;">
+      <table id="tabla-resumen">
         <thead>
           <tr>
             <th>Región</th>
@@ -514,14 +155,17 @@
             <th>Registros</th>
           </tr>
         </thead>
-        <tbody id="tbodyResumen"></tbody>
+        <tbody></tbody>
       </table>
     </div>
+  </section>
 
+  <!-- ===== DETALLE ===== -->
+  <section>
     <h2>Detalle de datos</h2>
-    <p style="font-size:0.88rem;color:#718096;">Mostrando <span id="contadorFilas">0</span> registros filtrados.</p>
-    <div class="tabla-wrap">
-      <table id="tablaDetalle">
+    <p id="detalle-info">Mostrando 0 registros filtrados.</p>
+    <div style="overflow-x:auto; max-height: 420px;">
+      <table id="tabla-detalle">
         <thead>
           <tr>
             <th>Año</th>
@@ -532,94 +176,26 @@
             <th>Habitaciones</th>
           </tr>
         </thead>
-        <tbody id="tbodyDetalle"></tbody>
+        <tbody></tbody>
       </table>
     </div>
   </section>
 
-  <section id="tab-documentos" class="tab-panel">
-    <h2> Documentos del proyecto</h2>
-    <p>Archivos del repositorio y archivos pesados subidos a Releases de GitHub.</p>
-    <input type="text" class="buscador" id="buscadorRepo" placeholder="🔍 Buscar documento...">
-    <div id="listaDocsRepo">
-      <div class="estado-carga">Cargando documentos desde GitHub...</div>
-    </div>
-  </section>
-
-  <section id="tab-codigos" class="tab-panel">
-    <h2> Códigos del cruce de datos</h2>
-    <p>Documentación del proceso de minería de datos aplicado al dataset cruzado (EMA-DANE + RNT).</p>
-
-    <div class="aviso">
-      <strong>Objetivo:</strong> Unir la <em>Encuesta Mensual de Alojamiento (EMA)</em> del DANE con el <em>Registro Nacional de Turismo (RNT)</em> para analizar la ocupación hotelera por región en el período 2019–2026.
-    </div>
-
-    <h3> Pasos del proceso</h3>
-
-    <div class="paso">
-      <div class="num">1</div>
-      <div class="contenido">
-        <h4>Carga de datos crudos</h4>
-        <p>Se cargan los dos archivos Excel: <code class="inline">anex-EMA-jul2026.xlsx</code> (ocupación) y <code class="inline">thwd-ivmp.xlsx</code> (RNT). Se leen 25 hojas del archivo EMA.</p>
-      </div>
-    </div>
-
-    <div class="paso">
-      <div class="num">2</div>
-      <div class="contenido">
-        <h4>Limpieza de la hoja de ocupación</h4>
-        <p>Se extrae la hoja <code class="inline">"4.2 Porc Mens Ocupación.reg"</code>, se ajustan los encabezados (fila 10), se eliminan columnas vacías y se rellenan los años con <code class="inline">ffill()</code>.</p>
-      </div>
-    </div>
-
-    <div class="paso">
-      <div class="num">3</div>
-      <div class="contenido">
-        <h4>Transformación a formato largo (melt)</h4>
-        <p>Se pasa de formato ancho (una columna por región) a formato largo con <code class="inline">pd.melt()</code>, obteniendo columnas: <code class="inline">Año</code>, <code class="inline">Meses</code>, <code class="inline">region</code>, <code class="inline">ocupacion</code>.</p>
-      </div>
-    </div>
-
-    <div class="paso">
-      <div class="num">4</div>
-      <div class="contenido">
-        <h4>Procesamiento del RNT</h4>
-        <p>Se limpia el archivo del Registro Nacional de Turismo (separar por comas, quitar comillas), se filtran solo los <em>establecimientos de alojamiento turístico</em> y se agrupa por región.</p>
-      </div>
-    </div>
-
-    <div class="paso">
-      <div class="num">5</div>
-      <div class="contenido">
-        <h4>Mapeo de departamentos a regiones</h4>
-        <p>Se crea un diccionario que agrupa los 33 departamentos de Colombia en las 12 regiones del DANE (ej: Risaralda, Caldas, Quindío → "Eje Cafetero").</p>
-      </div>
-    </div>
-
-    <div class="paso">
-      <div class="num">6</div>
-      <div class="contenido">
-        <h4>Cruce de datasets (merge)</h4>
-        <p>Se unen ambos DataFrames por la columna <code class="inline">region</code> con <code class="inline">how="left"</code>, obteniendo un dataset final de <strong>1188 filas × 7 columnas</strong> (12 regiones × 99 meses).</p>
-      </div>
-    </div>
-
-    <div class="paso">
-      <div class="num">7</div>
-      <div class="contenido">
-        <h4>Exportación</h4>
-        <p>El resultado se guarda como <code class="inline">dataset_cruzado.xlsx</code> listo para análisis y visualización.</p>
-      </div>
-    </div>
-
-    <h3> Código Python completo</h3>
-    <pre class="code-block"># 1. Carga de librerías
+  <!-- ===== DOCUMENTOS / CÓDIGO ===== -->
+  <section>
+    <h2>Códigos del cruce de datos (corregidos)</h2>
+    <details open>
+      <summary>Ver código Python corregido del cruce</summary>
+<pre># ============================================================
+# CRUCE EMA (ocupación) + RNT (establecimientos/habitaciones)
+# Versión corregida: tipos, % -> float, fecha, conteos
+# ============================================================
 import pandas as pd
 import numpy as np
 
-# 2. Carga de datos crudos
+# --- 1. Carga de datos crudos ---
 rnt = pd.read_excel("../data/thwd-ivmp.xlsx")
-rnt = rnt.iloc[:,0].str.split(",", expand=True)
+rnt = rnt.iloc[:, 0].str.split(",", expand=True)
 rnt.columns = [
     "codigo_rnt", "estado_rnt", "razon_social_establecimiento",
     "departamento", "cod_dpto", "municipio", "cod_mun", "nit",
@@ -627,21 +203,26 @@ rnt.columns = [
     "num_emp1", "ano"
 ]
 
-# 3. Carga EMA (25 hojas)
 ema = pd.read_excel("../data/anex-EMA-jul2026 (1).xlsx", sheet_name=None)
 
-# 4. Limpieza de la hoja de ocupación mensual
+# --- 2. Limpieza hoja de ocupación mensual ---
 ocupacion = ema["4.2 Porc Mens Ocupación.reg"]
 ocupacion_limpia = ocupacion.copy()
 ocupacion_limpia.columns = ocupacion_limpia.iloc[10]
 ocupacion_limpia = ocupacion_limpia.iloc[11:]
 ocupacion_limpia.columns = ocupacion_limpia.columns.astype(str).str.strip()
 ocupacion_limpia = ocupacion_limpia.loc[:, ocupacion_limpia.columns.notna()]
-ocupacion_limpia["Año"] = ocupacion_limpia["Año"].ffill()
-ocupacion_limpia["Año"] = ocupacion_limpia["Año"].astype(str).str.replace("p", "", regex=False)
-ocupacion_limpia["Año"] = pd.to_numeric(ocupacion_limpia["Año"], errors="coerce")
 
-# 5. Melt: ancho -> largo
+ocupacion_limpia["Año"] = ocupacion_limpia["Año"].ffill()
+ocupacion_limpia["Año"] = (
+    ocupacion_limpia["Año"].astype(str)
+    .str.replace("p", "", regex=False)
+)
+ocupacion_limpia["Año"] = pd.to_numeric(
+    ocupacion_limpia["Año"], errors="coerce"
+)
+
+# --- 3. Melt: ancho -> largo ---
 columnas_regiones = list(ocupacion_limpia.columns[3:15])
 ocupacion_long = pd.melt(
     ocupacion_limpia,
@@ -651,833 +232,604 @@ ocupacion_long = pd.melt(
     value_name="ocupacion"
 )
 
-# 6. Filtrar alojamientos del RNT
-rnt_hoteles = rnt[rnt["categoria"].str.contains("ALOJAMIENTO", case=False, na=False)]
-for col in rnt_hoteles.columns:
-    rnt_hoteles[col] = rnt_hoteles[col].astype(str).str.replace('"', '', regex=False).str.strip()
+# --- 4. CORRECCIÓN: ocupación texto -> float (0-1) ---
+ocupacion_long["ocupacion"] = (
+    ocupacion_long["ocupacion"]
+    .astype(str)
+    .str.replace("%", "", regex=False)
+    .str.replace(",", ".", regex=False)
+    .str.strip()
+)
+ocupacion_long["ocupacion"] = (
+    pd.to_numeric(ocupacion_long["ocupacion"], errors="coerce") / 100
+)
 
-# 7. Mapeo de departamentos -> regiones DANE
+# --- 5. CORRECCIÓN: unificar nombre de columna ---
+ocupacion_long = ocupacion_long.rename(columns={"Meses": "mes_nombre"})
+
+# --- 6. CORRECCIÓN: construir fecha real ---
+mes_map = {
+    "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5,
+    "Junio": 6, "Julio": 7, "Agosto": 8, "Septiembre": 9,
+    "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+}
+ocupacion_long["mes"] = ocupacion_long["mes_nombre"].map(mes_map)
+ocupacion_long["fecha"] = pd.to_datetime(
+    dict(year=ocupacion_long["Año"],
+         month=ocupacion_long["mes"],
+         day=1),
+    errors="coerce"
+)
+
+# --- 7. RNT: filtrar alojamientos ---
+rnt_hoteles = rnt[
+    rnt["categoria"].str.contains("ALOJAMIENTO", case=False, na=False)
+].copy()
+for col in rnt_hoteles.columns:
+    rnt_hoteles[col] = (
+        rnt_hoteles[col].astype(str)
+        .str.replace('"', "", regex=False)
+        .str.strip()
+    )
+
+# --- 8. Mapeo departamentos -> regiones DANE ---
 mapa_region = {
     "ANTIOQUIA": "Antioquia",
-    "ATLANTICO": "Caribe", "CESAR": "Caribe", "MAGDALENA": "Caribe", "LA GUAJIRA": "Caribe",
-    "CALDAS": "Eje Cafetero", "QUINDIO": "Eje Cafetero", "RISARALDA": "Eje Cafetero",
-    "VALLE DEL CAUCA": "Pacífico", "CAUCA": "Pacífico", "NARIÑO": "Pacífico", "CHOCO": "Pacífico",
+    "ATLANTICO": "Caribe", "CESAR": "Caribe",
+    "MAGDALENA": "Caribe", "LA GUAJIRA": "Caribe",
+    "CALDAS": "Eje Cafetero", "QUINDIO": "Eje Cafetero",
+    "RISARALDA": "Eje Cafetero",
+    "VALLE DEL CAUCA": "Pacífico", "CAUCA": "Pacífico",
+    "NARIÑO": "Pacífico", "CHOCO": "Pacífico",
     "SANTANDER": "Santanderes", "NORTE DE SANTANDER": "Santanderes",
     "META": "Llanos Orinoquía", "ARAUCA": "Llanos Orinoquía",
     "CASANARE": "Llanos Orinoquía", "VICHADA": "Llanos Orinoquía",
-    "AMAZONAS": "Amazonía", "CAQUETA": "Amazonía", "PUTUMAYO": "Amazonía",
-    "GUAINIA": "Amazonía", "GUAVIARE": "Amazonía", "VAUPES": "Amazonía",
+    "AMAZONAS": "Amazonía", "CAQUETA": "Amazonía",
+    "PUTUMAYO": "Amazonía", "GUAINIA": "Amazonía",
+    "GUAVIARE": "Amazonía", "VAUPES": "Amazonía",
     "BOGOTA": "Bogotá D.C.",
-    "CUNDINAMARCA": "Central", "BOYACA": "Central", "HUILA": "Central", "TOLIMA": "Central",
-    "CORDOBA": "Golfo Morrosquillo y Sabana", "SUCRE": "Golfo Morrosquillo y Sabana",
+    "CUNDINAMARCA": "Central", "BOYACA": "Central",
+    "HUILA": "Central", "TOLIMA": "Central",
+    "CORDOBA": "Golfo Morrosquillo y Sabana",
+    "SUCRE": "Golfo Morrosquillo y Sabana",
     "SAN ANDRES Y PROVIDENCIA": "San Andrés y Providencia",
     "BOLIVAR": "Cartagena"
 }
+rnt_hoteles["region"] = (
+    rnt_hoteles["departamento"].str.upper().map(mapa_region)
+)
 
-rnt_hoteles["region"] = rnt_hoteles["departamento"].str.upper().map(mapa_region)
-
-# 8. Agrupar RNT por región
+# --- 9. CORRECCIÓN: resumen RNT (nunique + sum) ---
+rnt_hoteles["habitaciones"] = pd.to_numeric(
+    rnt_hoteles["habitaciones"], errors="coerce"
+)
 rnt_resumen = (
     rnt_hoteles
     .groupby("region", as_index=False)
     .agg(
-        establecimientos=("codigo_rnt", "count"),
-        habitaciones=("habitaciones", "count")
+        establecimientos=("codigo_rnt", "nunique"),
+        habitaciones=("habitaciones", "sum")
     )
 )
 
-# 9. CRUCE FINAL: EMA + RNT
+# --- 10. Cruce final ---
 dataset_final = pd.merge(
-    ocupacion_long,
-    rnt_resumen,
-    on="region",
-    how="left",
-    indicator=True
+    ocupacion_long, rnt_resumen,
+    on="region", how="left", indicator=True
 )
 
-# 10. Verificación y exportación
+# --- 11. Verificación de integridad ---
+esperado = 12 * 99  # 12 regiones x 99 meses
+print(f"Filas esperadas: {esperado}")
+print(f"Filas obtenidas: {len(dataset_final)}")
 print(dataset_final["_merge"].value_counts())
+print("Habitaciones == Establecimientos?",
+      (dataset_final["habitaciones"] ==
+       dataset_final["establecimientos"]).all())
+
+# --- 12. Exportación ---
 dataset_final.to_excel("../data/dataset_cruzado.xlsx", index=False)
-print("Dataset guardado correctamente")</pre>
-
-    <h3> Resultado del cruce</h3>
-    <div class="grid-indicadores">
-      <div class="card-indicador">
-        <div class="label">Registros totales</div>
-        <div class="valor">1,188</div>
-        <div class="sub">12 regiones × 99 meses</div>
-      </div>
-      <div class="card-indicador">
-        <div class="label">Cobertura</div>
-        <div class="valor">100%</div>
-        <div class="sub">Sin valores huérfanos</div>
-      </div>
-      <div class="card-indicador">
-        <div class="label">Período</div>
-        <div class="valor">2019–2026</div>
-        <div class="sub">7 años y 3 meses</div>
-      </div>
-      <div class="card-indicador">
-        <div class="label">Columnas finales</div>
-        <div class="valor">7</div>
-        <div class="sub">Año, Mes, Región, Ocupación, etc.</div>
-      </div>
-    </div>
-
-    <h3> Hallazgos clave</h3>
-    <ul style="padding-left:1.5rem; margin:1rem 0; font-size:0.92rem;">
-      <li><strong>2020:</strong> Caída drástica de ocupación por pandemia (mínimo: abril, 8.77% en Bogotá).</li>
-      <li><strong>Eje Cafetero (Risaralda):</strong> Ocupación promedio ~44%, con recuperación gradual post-2020.</li>
-      <li><strong>Cartagena y San Andrés:</strong> Ocupaciones más altas del país (60-75%).</li>
-      <li><strong>Recuperación 2022–2026:</strong> Retorno a niveles pre-pandemia en la mayoría de regiones.</li>
-      <li><strong>2026 (terremoto):</strong> Se espera caída en Eje Cafetero, especialmente en meses post-agosto.</li>
-    </ul>
-
-    <h3> Descargar código</h3>
-    <p>
-      <a class="btn btn-primary" href="https://github.com/edutruj/mineria-de-datos-terremoto/blob/main/Notebook_Adquisicion_FINAL.ipynb" target="_blank" rel="noopener">
-         Ver notebook completo en GitHub
-      </a>
-    </p>
+print("Dataset guardado correctamente")
+</pre>
+    </details>
   </section>
 
-  <section id="tab-subir" class="tab-panel">
-    <h2> Subir nuevo dataset</h2>
-    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code class="inline">dataset_cruzado.xlsx</code>. La página procesará el cruce automáticamente y actualizará todas las gráficas.</p>
-
-    <div class="aviso">
-      <strong>Columnas esperadas:</strong> <code class="inline">Año</code>, <code class="inline">Meses</code>, <code class="inline">region</code>, <code class="inline">ocupacion</code>, <code class="inline">establecimientos</code>, <code class="inline">habitaciones</code>.
-    </div>
-
-    <div class="zona-drop" id="zonaDrop">
-      <div class="icono-grande"></div>
-      <p><strong>Arrastra tu archivo aquí</strong> o haz clic para seleccionar</p>
+  <!-- ===== SUBIR NUEVO DATASET ===== -->
+  <section>
+    <h2>Subir nuevo dataset</h2>
+    <p>Sube un archivo Excel (.xlsx) o CSV con la estructura de
+       <code>dataset_cruzado.xlsx</code>. La página valida integridad y
+       actualiza todas las gráficas.</p>
+    <p><strong>Columnas esperadas:</strong>
+      Año, mes (o Meses), region, ocupacion, establecimientos, habitaciones.</p>
+    <div class="dropzone" id="dropzone">
+      Arrastra tu archivo aquí o haz clic para seleccionar<br>
       <small>Soportado: .xlsx, .xls, .csv</small>
-      <input type="file" id="inputDataset" accept=".xlsx,.xls,.csv" hidden>
     </div>
-
-    <h3>Archivos cargados</h3>
-    <div id="listaDatasetsCargados">
-      <div class="vacio">Aún no has subido datasets.</div>
+    <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden />
+    <div id="archivo-activo" class="archivo-activo" style="display:none;">
+      <span id="archivo-nombre"></span>
+      <button id="btn-restaurar">Restaurar dataset original</button>
     </div>
-
-    <h3>Restaurar dataset original</h3>
-    <p style="font-size:0.88rem;color:#718096;">Vuelve a los datos de <code class="inline">dataset_cruzado.xlsx</code> precargados.</p>
-    <button class="btn btn-danger" id="btnRestaurar"> Restaurar datos originales</button>
   </section>
 
 </main>
 
 <footer>
-  Proyecto de Minería de Datos · Turismo y Ocupación Hotelera en Risaralda · 2026
+  Minería de Datos · Risaralda — Terremoto de Pereira 2026 · EMA-DANE + RNT
 </footer>
-
-<div class="toast" id="toast"></div>
 
 <script>
 /* ============================================================
-   DATASET PRECARGADO
-============================================================ */
-const DATASET_PRECARGADO = {
-  meta: {
-    archivo: 'dataset_cruzado.xlsx',
-    filas: 1188,
-    regiones: 12,
-    periodo: '2019-2026',
-    fuente: 'EMA-DANE + RNT'
-  },
-  datos: [
-    { anio: 2019, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 44.80, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Febrero', region: 'Bogotá D.C.', ocupacion: 58.73, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Marzo', region: 'Bogotá D.C.', ocupacion: 55.61, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Abril', region: 'Bogotá D.C.', ocupacion: 53.26, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Mayo', region: 'Bogotá D.C.', ocupacion: 58.28, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Junio', region: 'Bogotá D.C.', ocupacion: 57.04, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 59.19, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Agosto', region: 'Bogotá D.C.', ocupacion: 59.71, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Septiembre', region: 'Bogotá D.C.', ocupacion: 61.86, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Octubre', region: 'Bogotá D.C.', ocupacion: 60.80, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Noviembre', region: 'Bogotá D.C.', ocupacion: 64.87, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 48.83, establecimientos: 49, habitaciones: 49 },
-    { anio: 2020, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 47.25, establecimientos: 49, habitaciones: 49 },
-    { anio: 2020, mes: 'Abril', region: 'Bogotá D.C.', ocupacion: 8.78, establecimientos: 49, habitaciones: 49 },
-    { anio: 2020, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 10.05, establecimientos: 49, habitaciones: 49 },
-    { anio: 2020, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 26.02, establecimientos: 49, habitaciones: 49 },
-    { anio: 2021, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 20.77, establecimientos: 49, habitaciones: 49 },
-    { anio: 2021, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 34.13, establecimientos: 49, habitaciones: 49 },
-    { anio: 2021, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 46.58, establecimientos: 49, habitaciones: 49 },
-    { anio: 2022, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 41.55, establecimientos: 49, habitaciones: 49 },
-    { anio: 2022, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 62.83, establecimientos: 49, habitaciones: 49 },
-    { anio: 2022, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 56.70, establecimientos: 49, habitaciones: 49 },
-    { anio: 2023, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 52.17, establecimientos: 49, habitaciones: 49 },
-    { anio: 2023, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 61.87, establecimientos: 49, habitaciones: 49 },
-    { anio: 2023, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 53.42, establecimientos: 49, habitaciones: 49 },
-    { anio: 2024, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 50.19, establecimientos: 49, habitaciones: 49 },
-    { anio: 2024, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 60.58, establecimientos: 49, habitaciones: 49 },
-    { anio: 2024, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 54.33, establecimientos: 49, habitaciones: 49 },
-    { anio: 2025, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 48.99, establecimientos: 49, habitaciones: 49 },
-    { anio: 2025, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 60.91, establecimientos: 49, habitaciones: 49 },
-    { anio: 2025, mes: 'Diciembre', region: 'Bogotá D.C.', ocupacion: 51.02, establecimientos: 49, habitaciones: 49 },
-    { anio: 2026, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 46.11, establecimientos: 49, habitaciones: 49 },
-    { anio: 2026, mes: 'Julio', region: 'Bogotá D.C.', ocupacion: 58.45, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Enero', region: 'Cartagena', ocupacion: 67.44, establecimientos: 16, habitaciones: 16 },
-    { anio: 2019, mes: 'Julio', region: 'Cartagena', ocupacion: 58.62, establecimientos: 16, habitaciones: 16 },
-    { anio: 2020, mes: 'Abril', region: 'Cartagena', ocupacion: 5.60, establecimientos: 16, habitaciones: 16 },
-    { anio: 2020, mes: 'Diciembre', region: 'Cartagena', ocupacion: 35.19, establecimientos: 16, habitaciones: 16 },
-    { anio: 2021, mes: 'Julio', region: 'Cartagena', ocupacion: 55.92, establecimientos: 16, habitaciones: 16 },
-    { anio: 2022, mes: 'Enero', region: 'Cartagena', ocupacion: 76.98, establecimientos: 16, habitaciones: 16 },
-    { anio: 2022, mes: 'Julio', region: 'Cartagena', ocupacion: 76.73, establecimientos: 16, habitaciones: 16 },
-    { anio: 2023, mes: 'Julio', region: 'Cartagena', ocupacion: 73.24, establecimientos: 16, habitaciones: 16 },
-    { anio: 2024, mes: 'Julio', region: 'Cartagena', ocupacion: 66.37, establecimientos: 16, habitaciones: 16 },
-    { anio: 2025, mes: 'Julio', region: 'Cartagena', ocupacion: 67.44, establecimientos: 16, habitaciones: 16 },
-    { anio: 2026, mes: 'Julio', region: 'Cartagena', ocupacion: 62.67, establecimientos: 16, habitaciones: 16 },
-    { anio: 2019, mes: 'Enero', region: 'Eje Cafetero', ocupacion: 49.56, establecimientos: 38, habitaciones: 38 },
-    { anio: 2019, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 43.73, establecimientos: 38, habitaciones: 38 },
-    { anio: 2020, mes: 'Abril', region: 'Eje Cafetero', ocupacion: 11.84, establecimientos: 38, habitaciones: 38 },
-    { anio: 2020, mes: 'Diciembre', region: 'Eje Cafetero', ocupacion: 35.75, establecimientos: 38, habitaciones: 38 },
-    { anio: 2021, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 41.13, establecimientos: 38, habitaciones: 38 },
-    { anio: 2022, mes: 'Enero', region: 'Eje Cafetero', ocupacion: 51.77, establecimientos: 38, habitaciones: 38 },
-    { anio: 2022, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 52.54, establecimientos: 38, habitaciones: 38 },
-    { anio: 2023, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 49.16, establecimientos: 38, habitaciones: 38 },
-    { anio: 2024, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 42.74, establecimientos: 38, habitaciones: 38 },
-    { anio: 2025, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 42.26, establecimientos: 38, habitaciones: 38 },
-    { anio: 2026, mes: 'Julio', region: 'Eje Cafetero', ocupacion: 44.47, establecimientos: 38, habitaciones: 38 },
-    { anio: 2019, mes: 'Enero', region: 'Central', ocupacion: 38.75, establecimientos: 123, habitaciones: 123 },
-    { anio: 2020, mes: 'Abril', region: 'Central', ocupacion: 7.02, establecimientos: 123, habitaciones: 123 },
-    { anio: 2022, mes: 'Julio', region: 'Central', ocupacion: 44.60, establecimientos: 123, habitaciones: 123 },
-    { anio: 2026, mes: 'Julio', region: 'Central', ocupacion: 40.34, establecimientos: 123, habitaciones: 123 },
-    { anio: 2019, mes: 'Enero', region: 'Caribe', ocupacion: 51.01, establecimientos: 38, habitaciones: 38 },
-    { anio: 2020, mes: 'Abril', region: 'Caribe', ocupacion: 9.31, establecimientos: 38, habitaciones: 38 },
-    { anio: 2022, mes: 'Julio', region: 'Caribe', ocupacion: 60.56, establecimientos: 38, habitaciones: 38 },
-    { anio: 2026, mes: 'Julio', region: 'Caribe', ocupacion: 51.09, establecimientos: 38, habitaciones: 38 },
-    { anio: 2019, mes: 'Enero', region: 'Antioquia', ocupacion: 46.54, establecimientos: 32, habitaciones: 32 },
-    { anio: 2020, mes: 'Abril', region: 'Antioquia', ocupacion: 9.68, establecimientos: 32, habitaciones: 32 },
-    { anio: 2022, mes: 'Julio', region: 'Antioquia', ocupacion: 63.32, establecimientos: 32, habitaciones: 32 },
-    { anio: 2026, mes: 'Julio', region: 'Antioquia', ocupacion: 50.91, establecimientos: 32, habitaciones: 32 },
-    { anio: 2019, mes: 'Enero', region: 'San Andrés y Providencia', ocupacion: 72.01, establecimientos: 15, habitaciones: 15 },
-    { anio: 2020, mes: 'Abril', region: 'San Andrés y Providencia', ocupacion: 0, establecimientos: 15, habitaciones: 15 },
-    { anio: 2022, mes: 'Julio', region: 'San Andrés y Providencia', ocupacion: 71.66, establecimientos: 15, habitaciones: 15 },
-    { anio: 2026, mes: 'Julio', region: 'San Andrés y Providencia', ocupacion: 70.92, establecimientos: 15, habitaciones: 15 },
-    { anio: 2019, mes: 'Enero', region: 'Pacífico', ocupacion: 35.00, establecimientos: 49, habitaciones: 49 },
-    { anio: 2020, mes: 'Abril', region: 'Pacífico', ocupacion: 7.74, establecimientos: 49, habitaciones: 49 },
-    { anio: 2022, mes: 'Julio', region: 'Pacífico', ocupacion: 51.22, establecimientos: 49, habitaciones: 49 },
-    { anio: 2026, mes: 'Julio', region: 'Pacífico', ocupacion: 39.02, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Enero', region: 'Santanderes', ocupacion: 38.21, establecimientos: 49, habitaciones: 49 },
-    { anio: 2020, mes: 'Abril', region: 'Santanderes', ocupacion: 12.25, establecimientos: 49, habitaciones: 49 },
-    { anio: 2022, mes: 'Julio', region: 'Santanderes', ocupacion: 47.62, establecimientos: 49, habitaciones: 49 },
-    { anio: 2026, mes: 'Julio', region: 'Santanderes', ocupacion: 40.20, establecimientos: 49, habitaciones: 49 },
-    { anio: 2019, mes: 'Enero', region: 'Llanos Orinoquía', ocupacion: 37.99, establecimientos: 16, habitaciones: 16 },
-    { anio: 2020, mes: 'Abril', region: 'Llanos Orinoquía', ocupacion: 9.50, establecimientos: 16, habitaciones: 16 },
-    { anio: 2022, mes: 'Julio', region: 'Llanos Orinoquía', ocupacion: 44.64, establecimientos: 16, habitaciones: 16 },
-    { anio: 2026, mes: 'Julio', region: 'Llanos Orinoquía', ocupacion: 38.10, establecimientos: 16, habitaciones: 16 },
-    { anio: 2019, mes: 'Enero', region: 'Golfo Morrosquillo y Sabana', ocupacion: 31.53, establecimientos: 19, habitaciones: 19 },
-    { anio: 2020, mes: 'Abril', region: 'Golfo Morrosquillo y Sabana', ocupacion: 8.46, establecimientos: 19, habitaciones: 19 },
-    { anio: 2022, mes: 'Julio', region: 'Golfo Morrosquillo y Sabana', ocupacion: 46.16, establecimientos: 19, habitaciones: 19 },
-    { anio: 2026, mes: 'Julio', region: 'Golfo Morrosquillo y Sabana', ocupacion: 38.36, establecimientos: 19, habitaciones: 19 },
-    { anio: 2019, mes: 'Enero', region: 'Amazonía', ocupacion: 39.59, establecimientos: 7, habitaciones: 7 },
-    { anio: 2020, mes: 'Abril', region: 'Amazonía', ocupacion: 24.34, establecimientos: 7, habitaciones: 7 },
-    { anio: 2022, mes: 'Julio', region: 'Amazonía', ocupacion: 53.21, establecimientos: 7, habitaciones: 7 },
-    { anio: 2026, mes: 'Julio', region: 'Amazonía', ocupacion: 50.72, establecimientos: 7, habitaciones: 7 }
-  ]
-};
+   ESTADO GLOBAL
+   ============================================================ */
+let DATA = [];              // registros activos
+let charts = {};            // instancias Chart.js
+const ESPERADO = 12 * 99;   // 1.188 filas esperadas
 
-let datosActuales = JSON.parse(JSON.stringify(DATASET_PRECARGADO));
-let charts = {};
+const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
+               "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
-const MESES_ORDEN = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-
-function toast(msg, tipo = 'info') {
-  const t = $('#toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.className = 'toast activo ' + tipo;
-  setTimeout(() => t.classList.remove('activo'), 3000);
-}
-
-/* ===== MENÚ ===== */
-const menuToggle = $('#menuToggle');
-const menuDesp = $('#menuDesplegable');
-
-menuToggle.addEventListener('click', e => {
-  e.stopPropagation();
-  menuToggle.classList.toggle('abierto');
-  menuDesp.classList.toggle('abierto');
-});
-
-document.addEventListener('click', e => {
-  if (!menuDesp.contains(e.target) && !menuToggle.contains(e.target)) {
-    menuToggle.classList.remove('abierto');
-    menuDesp.classList.remove('abierto');
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function parseOcupacion(v) {
+  if (v === null || v === undefined || v === "") return null;
+  if (typeof v === "number") {
+    // si ya viene 0-1 o 0-100
+    return v > 1 ? v / 100 : v;
   }
-});
-
-/* ===== PESTAÑAS ===== */
-$$('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    $$('.tab-btn').forEach(b => b.classList.remove('active'));
-    $$('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    $('#tab-' + btn.dataset.tab).classList.add('active');
-    menuToggle.classList.remove('abierto');
-    menuDesp.classList.remove('abierto');
-    if (btn.dataset.tab === 'datos') setTimeout(renderizarTodo, 50);
-  });
-});
-
-/* ===== INDICADORES ===== */
-function calcularIndicadores() {
-  const d = datosActuales.datos;
-  const ocupaciones = d.map(x => x.ocupacion).filter(v => v > 0);
-  const prom = ocupaciones.length ? ocupaciones.reduce((a,b) => a+b, 0) / ocupaciones.length : 0;
-  const max = Math.max(...ocupaciones);
-  const min = Math.min(...ocupaciones.filter(v => v > 0));
-  const regiones = [...new Set(d.map(x => x.region))].length;
-  const anios = [...new Set(d.map(x => x.anio))].length;
-  const establecimientos = d.reduce((s, x) => s + (x.establecimientos || 0), 0);
-  const habitaciones = d.reduce((s, x) => s + (x.habitaciones || 0), 0);
-  const ejeCaf = d.filter(x => x.region === 'Eje Cafetero');
-  const promEje = ejeCaf.length ? ejeCaf.reduce((s, x) => s + x.ocupacion, 0) / ejeCaf.length : 0;
-  return { prom, max, min, regiones, anios, establecimientos, habitaciones, promEje, total: d.length };
+  let s = String(v).replace("%", "").replace(",", ".").trim();
+  const n = parseFloat(s);
+  if (isNaN(n)) return null;
+  return n > 1 ? n / 100 : n;
 }
 
-function renderizarIndicadores() {
-  const ind = calcularIndicadores();
-  $('#gridIndicadores').innerHTML = `
-    <div class="card-indicador">
-      <div class="label">Registros totales</div>
-      <div class="valor">${ind.total.toLocaleString('es-CO')}</div>
-      <div class="sub">${ind.regiones} regiones × ${ind.anios} años</div>
-    </div>
-    <div class="card-indicador">
-      <div class="label">Ocupación promedio</div>
-      <div class="valor">${ind.prom.toFixed(1)}%</div>
-      <div class="sub">Nacional</div>
-    </div>
-    <div class="card-indicador destacado">
-      <div class="label">Eje Cafetero</div>
-      <div class="valor">${ind.promEje.toFixed(1)}%</div>
-      <div class="sub">Ocupación promedio</div>
-    </div>
-    <div class="card-indicador">
-      <div class="label">Ocupación máxima</div>
-      <div class="valor">${ind.max.toFixed(1)}%</div>
-      <div class="sub">Registro más alto</div>
-    </div>
-    <div class="card-indicador">
-      <div class="label">Establecimientos</div>
-      <div class="valor">${ind.establecimientos.toLocaleString('es-CO')}</div>
-      <div class="sub">Suma de registros</div>
-    </div>
-    <div class="card-indicador">
-      <div class="label">Habitaciones</div>
-      <div class="valor">${ind.habitaciones.toLocaleString('es-CO')}</div>
-      <div class="sub">Suma de registros</div>
-    </div>
-  `;
+function num(v) {
+  if (v === null || v === undefined || v === "") return 0;
+  const n = parseFloat(String(v).replace(",", ".").replace(/[^\d.\-]/g, ""));
+  return isNaN(n) ? 0 : n;
 }
 
-/* ===== FILTROS ===== */
-function cargarFiltros() {
-  const d = datosActuales.datos;
-  const anios = [...new Set(d.map(x => x.anio))].sort();
-  const regiones = [...new Set(d.map(x => x.region))].sort();
-
-  $('#filtroAnio').innerHTML = '<option value="">Todos los años</option>' +
-    anios.map(a => `<option value="${a}">${a}</option>`).join('');
-  $('#filtroRegion').innerHTML = '<option value="">Todas las regiones</option>' +
-    regiones.map(r => `<option value="${r}">${r}</option>`).join('');
-  $('#filtroMes').innerHTML = '<option value="">Todos los meses</option>' +
-    MESES_ORDEN.map(m => `<option value="${m}">${m}</option>`).join('');
+function fmtPct(v) {
+  if (v === null || v === undefined || isNaN(v)) return "—";
+  return (v * 100).toFixed(1) + "%";
 }
 
-function aplicarFiltros() {
-  const anio = $('#filtroAnio').value;
-  const region = $('#filtroRegion').value;
-  const mes = $('#filtroMes').value;
-
-  return datosActuales.datos.filter(x => {
-    if (anio && x.anio != anio) return false;
-    if (region && x.region !== region) return false;
-    if (mes && x.mes !== mes) return false;
-    return true;
-  });
+function uniq(arr) {
+  return [...new Set(arr)].filter(x => x !== null && x !== undefined && x !== "");
 }
 
-['filtroAnio','filtroRegion','filtroMes'].forEach(id => {
-  const el = $('#' + id);
-  if (el) el.addEventListener('change', () => renderizarTodo());
-});
-
-$('#btnLimpiarFiltros').addEventListener('click', () => {
-  $('#filtroAnio').value = '';
-  $('#filtroRegion').value = '';
-  $('#filtroMes').value = '';
-  renderizarTodo();
-});
-
-$('#btnRecalcular').addEventListener('click', () => {
-  renderizarTodo();
-  toast('Datos recalculados', 'exito');
-});
-
-/* ===== GRÁFICAS ===== */
-function destruirCharts() {
-  Object.values(charts).forEach(c => c && c.destroy());
-  charts = {};
-}
-
-function renderizarGraficas(filtrados) {
-  destruirCharts();
-
-  const porMes = {};
-  filtrados.forEach(x => {
-    const key = `${x.anio}-${String(MESES_ORDEN.indexOf(x.mes)+1).padStart(2,'0')}`;
-    if (!porMes[key]) porMes[key] = { suma: 0, n: 0 };
-    porMes[key].suma += x.ocupacion;
-    porMes[key].n++;
-  });
-  const labelsEvo = Object.keys(porMes).sort();
-  const dataEvo = labelsEvo.map(k => (porMes[k].suma / porMes[k].n).toFixed(1));
-
-  charts.evolucion = new Chart($('#chartEvolucion'), {
-    type: 'line',
-    data: {
-      labels: labelsEvo,
-      datasets: [{
-        label: 'Ocupación promedio (%)',
-        data: dataEvo,
-        borderColor: '#2c5f8a',
-        backgroundColor: 'rgba(44,95,138,0.1)',
-        borderWidth: 2, tension: 0.3, fill: true,
-        pointRadius: 3, pointHoverRadius: 6
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        title: { display: true, text: 'Evolución mensual de ocupación (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-        legend: { display: false }
-      },
-      scales: {
-        y: { beginAtZero: true, ticks: { callback: v => v + '%' } },
-        x: { ticks: { maxRotation: 90, minRotation: 45, font: { size: 9 } } }
-      }
+/* ============================================================
+   NORMALIZACIÓN DE REGISTROS
+   Acepta encabezados con tildes/mayúsculas/variantes.
+   ============================================================ */
+function normalizarFila(row) {
+  const get = (...keys) => {
+    for (const k of keys) {
+      if (row[k] !== undefined && row[k] !== null && row[k] !== "") return row[k];
     }
-  });
-
-  const porRegion = {};
-  filtrados.forEach(x => {
-    if (!porRegion[x.region]) porRegion[x.region] = { suma: 0, n: 0 };
-    porRegion[x.region].suma += x.ocupacion;
-    porRegion[x.region].n++;
-  });
-  const regs = Object.keys(porRegion).sort((a,b) => porRegion[b].suma/porRegion[b].n - porRegion[a].suma/porRegion[a].n);
-  const dataReg = regs.map(r => (porRegion[r].suma / porRegion[r].n).toFixed(1));
-
-  charts.regiones = new Chart($('#chartRegiones'), {
-    type: 'bar',
-    data: {
-      labels: regs,
-      datasets: [{
-        label: 'Ocupación promedio (%)',
-        data: dataReg,
-        backgroundColor: regs.map(r => r === 'Eje Cafetero' ? '#ed8936' : '#2c5f8a'),
-        borderRadius: 4
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        title: { display: true, text: 'Ocupación promedio por región (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-        legend: { display: false }
-      },
-      scales: { x: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
+    // búsqueda case-insensitive
+    const lower = Object.keys(row).reduce((acc, k) => {
+      acc[k.toLowerCase().trim()] = row[k];
+      return acc;
+    }, {});
+    for (const k of keys) {
+      const v = lower[k.toLowerCase().trim()];
+      if (v !== undefined && v !== null && v !== "") return v;
     }
-  });
-
-  const aniosUnicos = [...new Set(filtrados.map(x => x.anio))].sort();
-  const regionesUnicas = [...new Set(filtrados.map(x => x.region))].sort();
-  const coloresBar = ['#2c5f8a','#ed8936','#38a169','#e53e3e','#805ad5','#d69e2e','#3182ce','#dd6b20','#319795','#b83280','#4a5568','#2f855a'];
-
-  const datasetsAnual = regionesUnicas.map((reg, i) => ({
-    label: reg,
-    data: aniosUnicos.map(a => {
-      const items = filtrados.filter(x => x.anio === a && x.region === reg);
-      if (!items.length) return null;
-      return (items.reduce((s, x) => s + x.ocupacion, 0) / items.length).toFixed(1);
-    }),
-    backgroundColor: coloresBar[i % coloresBar.length],
-    borderRadius: 3
-  }));
-
-  charts.anual = new Chart($('#chartAnual'), {
-    type: 'bar',
-    data: { labels: aniosUnicos, datasets: datasetsAnual },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        title: { display: true, text: 'Ocupación promedio anual por región (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
-      },
-      scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
-    }
-  });
-
-  charts.promedios = new Chart($('#chartPromedios'), {
-    type: 'bar',
-    data: {
-      labels: regs,
-      datasets: [{
-        label: 'Ocupación promedio (%)',
-        data: dataReg,
-        backgroundColor: dataReg.map(v => {
-          const n = parseFloat(v);
-          if (n >= 60) return '#38a169';
-          if (n >= 40) return '#ed8936';
-          return '#e53e3e';
-        }),
-        borderRadius: 4
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        title: { display: true, text: 'Clasificación de regiones por ocupación', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-        legend: { display: false }
-      },
-      scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
-    }
-  });
-}
-
-/* ===== TABLAS ===== */
-function renderizarTablas(filtrados) {
-  const porRegion = {};
-  filtrados.forEach(x => {
-    if (!porRegion[x.region]) {
-      porRegion[x.region] = { ocupaciones: [], establecimientos: 0, habitaciones: 0, n: 0 };
-    }
-    porRegion[x.region].ocupaciones.push(x.ocupacion);
-    porRegion[x.region].establecimientos += (x.establecimientos || 0);
-    porRegion[x.region].habitaciones += (x.habitaciones || 0);
-    porRegion[x.region].n++;
-  });
-
-  const filasResumen = Object.keys(porRegion).sort().map(r => {
-    const o = porRegion[r].ocupaciones;
-    const prom = (o.reduce((a,b) => a+b, 0) / o.length).toFixed(1);
-    const max = Math.max(...o).toFixed(1);
-    const min = Math.min(...o).toFixed(1);
-    const destacado = r === 'Eje Cafetero' ? 'style="background:#fffaf0;font-weight:600;"' : '';
-    return `<tr ${destacado}>
-      <td>${r}</td><td>${prom}%</td><td>${max}%</td><td>${min}%</td>
-      <td>${porRegion[r].establecimientos.toLocaleString('es-CO')}</td>
-      <td>${porRegion[r].habitaciones.toLocaleString('es-CO')}</td>
-      <td>${porRegion[r].n}</td>
-    </tr>`;
-  }).join('');
-  $('#tbodyResumen').innerHTML = filasResumen || '<tr><td colspan="7" style="text-align:center;color:#a0aec0;">Sin datos</td></tr>';
-
-  const ordenados = [...filtrados].sort((a,b) => {
-    if (a.anio !== b.anio) return a.anio - b.anio;
-    return MESES_ORDEN.indexOf(a.mes) - MESES_ORDEN.indexOf(b.mes);
-  });
-  const mostrar = ordenados.slice(0, 200);
-  $('#contadorFilas').textContent = filtrados.length.toLocaleString('es-CO');
-
-  $('#tbodyDetalle').innerHTML = mostrar.map(x => `
-    <tr>
-      <td>${x.anio}</td><td>${x.mes}</td><td>${x.region}</td>
-      <td>${x.ocupacion.toFixed(2)}%</td>
-      <td>${x.establecimientos}</td><td>${x.habitaciones}</td>
-    </tr>
-  `).join('') || '<tr><td colspan="6" style="text-align:center;color:#a0aec0;">Sin datos</td></tr>';
-}
-
-/* ===== RENDER PRINCIPAL ===== */
-function renderizarTodo() {
-  const filtrados = aplicarFiltros();
-  $('#infoDataset').textContent = `${datosActuales.datos.length} registros · ${datosActuales.meta.archivo} · ${datosActuales.meta.fuente}`;
-  renderizarIndicadores();
-  renderizarGraficas(filtrados);
-  renderizarTablas(filtrados);
-}
-
-/* ===== SUBIR DATASET ===== */
-const zonaDrop = $('#zonaDrop');
-const inputDataset = $('#inputDataset');
-
-zonaDrop.addEventListener('click', () => inputDataset.click());
-zonaDrop.addEventListener('dragover', e => { e.preventDefault(); zonaDrop.classList.add('dragover'); });
-zonaDrop.addEventListener('dragleave', () => zonaDrop.classList.remove('dragover'));
-zonaDrop.addEventListener('drop', e => {
-  e.preventDefault();
-  zonaDrop.classList.remove('dragover');
-  if (e.dataTransfer.files.length) procesarDataset(e.dataTransfer.files[0]);
-});
-inputDataset.addEventListener('change', e => {
-  if (e.target.files.length) procesarDataset(e.target.files[0]);
-  e.target.value = '';
-});
-
-async function procesarDataset(file) {
-  try {
-    toast('Procesando ' + file.name + '...');
-    const data = await file.arrayBuffer();
-    const wb = XLSX.read(data);
-    const sheet = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet);
-
-    const normalizado = rows.map(r => {
-      const keys = Object.keys(r);
-      const find = (names) => {
-        for (const n of names) {
-          const k = keys.find(k => k.toLowerCase().includes(n.toLowerCase()));
-          if (k) return r[k];
-        }
-        return null;
-      };
-      return {
-        anio: parseInt(find(['Año','Anio','year'])) || 0,
-        mes: String(find(['Mes','Month']) || '').trim(),
-        region: String(find(['region']) || '').trim(),
-        ocupacion: parseFloat(find(['ocupacion','occupancy'])) || 0,
-        establecimientos: parseInt(find(['establecimientos'])) || 0,
-        habitaciones: parseInt(find(['habitaciones'])) || 0
-      };
-    }).filter(r => r.anio && r.mes && r.region);
-
-    if (!normalizado.length) throw new Error('No se encontraron filas válidas');
-
-    datosActuales = {
-      meta: {
-        archivo: file.name,
-        filas: normalizado.length,
-        regiones: [...new Set(normalizado.map(x => x.region))].length,
-        periodo: `${Math.min(...normalizado.map(x => x.anio))}-${Math.max(...normalizado.map(x => x.anio))}`,
-        fuente: 'Archivo subido por el usuario'
-      },
-      datos: normalizado
-    };
-
-    try { localStorage.setItem('dataset_actual', JSON.stringify(datosActuales)); } catch(e) {}
-
-    cargarFiltros();
-    renderizarTodo();
-    renderizarListaDatasets();
-    toast(` ${normalizado.length} registros cargados`, 'exito');
-  } catch (err) {
-    console.error(err);
-    toast('❌ Error: ' + err.message, 'error');
-  }
-}
-
-function renderizarListaDatasets() {
-  const cont = $('#listaDatasetsCargados');
-  if (!cont) return;
-  cont.innerHTML = `
-    <div class="doc-card" style="cursor:default;">
-      <div class="doc-icon"></div>
-      <div class="doc-info">
-        <div class="nombre">${datosActuales.meta.archivo} <span class="badge badge-cdn">ACTIVO</span></div>
-        <div class="meta">${datosActuales.meta.filas} registros · ${datosActuales.meta.regiones} regiones · ${datosActuales.meta.periodo} · ${datosActuales.meta.fuente}</div>
-      </div>
-    </div>
-  `;
-}
-
-$('#btnRestaurar').addEventListener('click', () => {
-  if (!confirm('¿Restaurar los datos originales del dataset_cruzado.xlsx?')) return;
-  datosActuales = JSON.parse(JSON.stringify(DATASET_PRECARGADO));
-  localStorage.removeItem('dataset_actual');
-  cargarFiltros();
-  renderizarTodo();
-  renderizarListaDatasets();
-  toast('Datos originales restaurados', 'exito');
-});
-
-/* ===== DOCUMENTOS ===== */
-const USUARIO = 'edutruj';
-const REPO = 'mineria-de-datos-terremoto';
-const RAMA = 'main';
-const API_TREE = `https://api.github.com/repos/${USUARIO}/${REPO}/git/trees/${RAMA}?recursive=1`;
-const API_RELEASES = `https://api.github.com/repos/${USUARIO}/${REPO}/releases`;
-const UMBRAL_CDN = 20 * 1024 * 1024;
-
-let docsRepo = [];
-let docsReleases = [];
-
-function iconoArchivo(nombre) {
-  const ext = nombre.split('.').pop().toLowerCase();
-  const mapa = {
-    pdf: '📕', xlsx: '📗', xls: '📗', csv: '📊',
-    doc: '📘', docx: '📘', ppt: '📙', pptx: '📙',
-    ipynb: '📓', md: '📝', txt: '📄',
-    png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️',
-    zip: '🗜️', rar: '🗜️', json: '⚙️', html: '🌐'
+    return null;
   };
-  return mapa[ext] || '📎';
+
+  const anio  = num(get("Año", "Anio", "anio", "year"));
+  const mesRaw = get("mes", "Mes", "Meses", "mes_nombre");
+  let mesNum = null;
+  if (typeof mesRaw === "number" && mesRaw >= 1 && mesRaw <= 12) {
+    mesNum = mesRaw;
+  } else if (mesRaw) {
+    const idx = MESES.findIndex(m =>
+      m.toLowerCase().startsWith(String(mesRaw).toLowerCase().slice(0, 3))
+    );
+    mesNum = idx >= 0 ? idx + 1 : null;
+  }
+  const mesNombre = mesNum ? MESES[mesNum - 1] : (mesRaw || null);
+
+  return {
+    anio: anio || null,
+    mes: mesNum,
+    mes_nombre: mesNombre,
+    region: get("region", "Región", "Region") || null,
+    ocupacion: parseOcupacion(get("ocupacion", "Ocupación", "Ocupacion", "ocupacion_pct")),
+    establecimientos: num(get("establecimientos", "Establecimientos")),
+    habitaciones: num(get("habitaciones", "Habitaciones")),
+  };
 }
 
-function formatearTamano(bytes) {
-  if (!bytes) return '';
-  const u = ['B', 'KB', 'MB', 'GB'];
-  let i = 0;
-  while (bytes >= 1024 && i < u.length - 1) { bytes /= 1024; i++; }
-  return bytes.toFixed(1) + ' ' + u[i];
+/* ============================================================
+   VALIDACIÓN DE INTEGRIDAD
+   ============================================================ */
+function validarIntegridad(data, nombreArchivo) {
+  const n = data.length;
+  const regiones = uniq(data.map(d => d.region)).length;
+  const anios = uniq(data.map(d => d.anio)).length;
+
+  // habitaciones vs establecimientos (sospecha de count duplicado)
+  const pares = data.filter(d =>
+    d.habitaciones > 0 && d.establecimientos > 0 &&
+    d.habitaciones === d.establecimientos
+  ).length;
+  const sospechaConteo = pares > 0 && pares / n > 0.8;
+
+  const nulosOcup = data.filter(d => d.ocupacion === null).length;
+
+  const ok = n >= ESPERADO * 0.95; // tolerancia 5%
+
+  let html = "";
+  if (ok) {
+    html = `<div class="banner ok">
+      ✔ Integridad verificada — ${n.toLocaleString()} registros ·
+      ${regiones} regiones · ${anios} años · cobertura completa.
+    </div>`;
+  } else {
+    html = `<div class="banner alerta">
+      ⚠ Dataset posiblemente recortado — ${n.toLocaleString()} registros
+      (esperados ≈ ${ESPERADO.toLocaleString()} para 12 regiones × 99 meses).
+      Revisa el archivo fuente.
+    </div>`;
+  }
+
+  if (sospechaConteo) {
+    html += `<div class="banner alerta">
+      ⚠ ${pares} de ${n} registros tienen habitaciones == establecimientos.
+      Probablemente el archivo se generó con <code>count</code> en ambas
+      columnas. Vuelve a correr el cruce corregido (usa <code>sum</code>
+      para habitaciones).
+    </div>`;
+  }
+
+  if (nulosOcup > 0) {
+    html += `<div class="banner alerta">
+      ⚠ ${nulosOcup} registros sin ocupación válida (nulos o texto no parseable).
+    </div>`;
+  }
+
+  document.getElementById("banner-calidad").innerHTML = html;
+  document.getElementById("fuente-datos").textContent =
+    `Datos cargados: ${n.toLocaleString()} registros · ${nombreArchivo} · EMA-DANE + RNT`;
 }
 
-function renderizarDocCard(doc) {
-  const nombre = doc.path.split('/').pop();
-  const esCarpeta = doc.type === 'tree';
-  const url = esCarpeta
-    ? `https://github.com/${USUARIO}/${REPO}/tree/${RAMA}/${doc.path}`
-    : (doc.url || `https://raw.githubusercontent.com/${USUARIO}/${REPO}/${RAMA}/${doc.path}`);
-  const icono = esCarpeta ? '' : iconoArchivo(nombre);
-  const tamano = doc.size ? formatearTamano(doc.size) : '';
-  let badge = '';
-  if (doc.esRelease) {
-    badge = doc.usandoCDN
-      ? '<span class="badge badge-cdn">CDN jsDelivr</span>'
-      : '<span class="badge badge-directo">GitHub directo</span>';
-  }
-  return `
-    <a class="doc-card" href="${url}" target="_blank" rel="noopener">
-      <div class="doc-icon">${icono}</div>
-      <div class="doc-info">
-        <div class="nombre">${nombre}${badge}</div>
-        <div class="meta">${doc.ruta || doc.path}${tamano ? ' · ' + tamano : ''}</div>
-      </div>
-    </a>
-  `;
+/* ============================================================
+   CARGA DE DATOS
+   ============================================================ */
+function procesarDatos(data) {
+  DATA = data;
+
+  // Poblar filtros
+  const regiones = uniq(data.map(d => d.region)).sort();
+  const anios = uniq(data.map(d => d.anio)).sort();
+  const meses = uniq(data.map(d => d.mes_nombre));
+
+  llenarSelect("filtro-region", regiones);
+  llenarSelect("filtro-anio", anios);
+  llenarSelect("filtro-mes", MESES.filter(m => meses.includes(m)));
+
+  renderTodo();
 }
 
-function renderizarDocs(lista) {
-  const cont = $('#listaDocsRepo');
-  if (!lista.length) {
-    cont.innerHTML = '<div class="vacio">No se encontraron documentos.</div>';
-    return;
-  }
-  const normales = lista.filter(d => !d.esRelease);
-  const releases = lista.filter(d => d.esRelease);
-  let html = '';
-  if (releases.length) {
-    html += `<div class="seccion-titulo"> Archivos pesados (GitHub Releases)</div>`;
-    html += '<div class="docs-grid">' + releases.map(renderizarDocCard).join('') + '</div>';
-  }
-  if (normales.length) {
-    html += `<div class="seccion-titulo"> Archivos del repositorio</div>`;
-    html += '<div class="docs-grid">' + normales.map(renderizarDocCard).join('') + '</div>';
-  }
-  cont.innerHTML = html;
-}
-
-async function cargarDocsTree() {
-  try {
-    const resp = await fetch(API_TREE);
-    if (!resp.ok) throw new Error('Error ' + resp.status);
-    const data = await resp.json();
-    docsRepo = (data.tree || []).filter(item => {
-      const p = item.path;
-      if (p.startsWith('.git') || p.startsWith('node_modules')) return false;
-      if (p === '.github' || p.startsWith('.github/')) return false;
-      return true;
-    }).map(item => ({ ...item, esRelease: false }));
-  } catch (err) {
-    console.error('Error tree:', err);
-    docsRepo = [];
-  }
-}
-
-async function cargarDocsReleases() {
-  try {
-    const resp = await fetch(API_RELEASES);
-    if (!resp.ok) throw new Error('Error ' + resp.status);
-    const releases = await resp.json();
-    docsReleases = [];
-    for (const release of releases) {
-      const assetsResp = await fetch(release.assets_url);
-      if (!assetsResp.ok) continue;
-      const assets = await assetsResp.json();
-      for (const asset of assets) {
-        if (asset.name === 'Source code (zip)' || asset.name === 'Source code (tar.gz)') continue;
-        const tag = release.tag_name;
-        const nombre = asset.name;
-        const tamano = asset.size || 0;
-        let url, usandoCDN;
-        if (tamano > 0 && tamano <= UMBRAL_CDN) {
-          url = `https://cdn.jsdelivr.net/gh/${USUARIO}/${REPO}@${tag}/${encodeURIComponent(nombre)}`;
-          usandoCDN = true;
-        } else {
-          url = asset.browser_download_url;
-          usandoCDN = false;
-        }
-        docsReleases.push({
-          path: nombre,
-          ruta: `${release.name || release.tag_name} / ${nombre}`,
-          type: 'blob', size: tamano,
-          url, esRelease: true, tag, usandoCDN
-        });
-      }
-    }
-  } catch (err) {
-    console.error('Error releases:', err);
-    docsReleases = [];
-  }
-}
-
-async function cargarDocumentos() {
-  const cont = $('#listaDocsRepo');
-  if (!cont) return;
-  await Promise.all([cargarDocsTree(), cargarDocsReleases()]);
-  const todos = [...docsRepo, ...docsReleases];
-  todos.sort((a, b) => {
-    if (a.esRelease !== b.esRelease) return a.esRelease ? -1 : 1;
-    return a.path.localeCompare(b.path);
+function llenarSelect(id, valores) {
+  const sel = document.getElementById(id);
+  const label = sel.options[0]?.textContent || "Todos";
+  sel.innerHTML = `<option value="">${id === "filtro-region" ? "Todas" : "Todos"}</option>`;
+  valores.forEach(v => {
+    const opt = document.createElement("option");
+    opt.value = v; opt.textContent = v;
+    sel.appendChild(opt);
   });
-  renderizarDocs(todos);
 }
 
-const buscadorRepo = $('#buscadorRepo');
-if (buscadorRepo) {
-  buscadorRepo.addEventListener('input', e => {
-    const q = e.target.value.toLowerCase().trim();
-    const todos = [...docsRepo, ...docsReleases];
-    if (!q) return renderizarDocs(todos);
-    const filtrados = todos.filter(d => {
-      const nombre = d.path.toLowerCase();
-      const ruta = (d.ruta || '').toLowerCase();
-      return nombre.includes(q) || ruta.includes(q);
+function getFiltros() {
+  return {
+    region: document.getElementById("filtro-region").value,
+    anio: document.getElementById("filtro-anio").value,
+    mes: document.getElementById("filtro-mes").value,
+  };
+}
+
+function filtrar(data) {
+  const f = getFiltros();
+  return data.filter(d =>
+    (!f.region || d.region === f.region) &&
+    (!f.anio || String(d.anio) === String(f.anio)) &&
+    (!f.mes || d.mes_nombre === f.mes)
+  );
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderTodo() {
+  const data = filtrar(DATA);
+  renderIndicadores(data);
+  renderEvolucion(data);
+  renderComparacionAnual(data);
+  renderPorRegion(data);
+  renderTablaResumen(data);
+  renderDetalle(data);
+}
+
+function renderIndicadores(data) {
+  const n = data.length;
+  const ocupValidas = data.filter(d => d.ocupacion !== null).map(d => d.ocupacion);
+  const prom = ocupValidas.length ? ocupValidas.reduce((a, b) => a + b, 0) / ocupValidas.length : null;
+  const max = ocupValidas.length ? Math.max(...ocupValidas) : null;
+  const est = data.reduce((a, d) => a + (d.establecimientos || 0), 0);
+  const hab = data.reduce((a, d) => a + (d.habitaciones || 0), 0);
+
+  const regiones = uniq(DATA.map(d => d.region)).length;
+  const anios = uniq(DATA.map(d => d.anio)).length;
+
+  const cards = [
+    { label: "Registros totales", value: n.toLocaleString(), sub: `${regiones} regiones × ${anios} años` },
+    { label: "Ocupación promedio", value: fmtPct(prom), sub: "Nacional (filtrado)" },
+    { label: "Ocupación máxima", value: fmtPct(max), sub: "Registro más alto" },
+    { label: "Establecimientos", value: est.toLocaleString(), sub: "Suma de registros" },
+    { label: "Habitaciones", value: hab.toLocaleString(), sub: "Suma de registros" },
+  ];
+
+  document.getElementById("cards-indicadores").innerHTML = cards.map(c => `
+    <div class="card">
+      <div class="label">${c.label}</div>
+      <div class="value">${c.value}</div>
+      <div class="sub">${c.sub}</div>
+    </div>
+  `).join("");
+}
+
+function destruir(id) {
+  if (charts[id]) { charts[id].destroy(); charts[id] = null; }
+}
+
+function renderEvolucion(data) {
+  // Agrupar por fecha (año-mes), promedio de ocupación
+  const grupos = {};
+  data.forEach(d => {
+    if (d.ocupacion === null || !d.anio || !d.mes) return;
+    const key = `${d.anio}-${String(d.mes).padStart(2, "0")}`;
+    if (!grupos[key]) grupos[key] = { suma: 0, n: 0 };
+    grupos[key].suma += d.ocupacion;
+    grupos[key].n += 1;
+  });
+  const labels = Object.keys(grupos).sort();
+  const valores = labels.map(k => grupos[k].suma / grupos[k].n);
+
+  destruir("evolucion");
+  const ctx = document.getElementById("chart-evolucion");
+  charts["evolucion"] = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Ocupación promedio",
+        data: valores,
+        borderColor: "#1f4e79",
+        backgroundColor: "rgba(31,78,121,.12)",
+        fill: true, tension: .25, pointRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true, max: 1,
+        ticks: { callback: v => (v * 100).toFixed(0) + "%" } } },
+      plugins: { tooltip: { callbacks: {
+        label: c => "Ocupación: " + (c.parsed.y * 100).toFixed(1) + "%"
+      } } }
+    }
+  });
+}
+
+function renderComparacionAnual(data) {
+  const regiones = uniq(data.map(d => d.region)).sort();
+  const anios = uniq(data.map(d => d.anio)).sort();
+
+  const datasets = regiones.map((reg, i) => {
+    const color = `hsl(${(i * 360 / regiones.length) % 360}, 60%, 50%)`;
+    const vals = anios.map(a => {
+      const sub = data.filter(d => d.region === reg && d.anio === a && d.ocupacion !== null);
+      return sub.length ? sub.reduce((s, d) => s + d.ocupacion, 0) / sub.length : null;
     });
-    renderizarDocs(filtrados);
+    return { label: reg, data: vals, backgroundColor: color };
+  });
+
+  destruir("anual");
+  const ctx = document.getElementById("chart-anual");
+  charts["anual"] = new Chart(ctx, {
+    type: "bar",
+    data: { labels: anios, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true, max: 1,
+        ticks: { callback: v => (v * 100).toFixed(0) + "%" } } },
+      plugins: { tooltip: { callbacks: {
+        label: c => `${c.dataset.label}: ${(c.parsed.y * 100).toFixed(1)}%`
+      } } }
+    }
   });
 }
 
-/* ===== INIT ===== */
-(function init() {
-  try {
-    const guardado = localStorage.getItem('dataset_actual');
-    if (guardado) {
-      const parsed = JSON.parse(guardado);
-      if (parsed && parsed.datos && parsed.datos.length) {
-        datosActuales = parsed;
-      }
+function renderPorRegion(data) {
+  const regiones = uniq(data.map(d => d.region));
+  const promedios = regiones.map(r => {
+    const sub = data.filter(d => d.region === r && d.ocupacion !== null);
+    return sub.length ? sub.reduce((s, d) => s + d.ocupacion, 0) / sub.length : null;
+  });
+
+  // ordenar desc
+  const pares = regiones.map((r, i) => ({ r, v: promedios[i] }))
+    .filter(p => p.v !== null)
+    .sort((a, b) => b.v - a.v);
+
+  destruir("region");
+  const ctx = document.getElementById("chart-region");
+  charts["region"] = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: pares.map(p => p.r),
+      datasets: [{
+        label: "Ocupación promedio",
+        data: pares.map(p => p.v),
+        backgroundColor: "#1f4e79"
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true, maintainAspectRatio: false,
+      scales: { x: { beginAtZero: true, max: 1,
+        ticks: { callback: v => (v * 100).toFixed(0) + "%" } } },
+      plugins: { tooltip: { callbacks: {
+        label: c => "Promedio: " + (c.parsed.x * 100).toFixed(1) + "%"
+      } } }
     }
-  } catch(e) {}
+  });
+}
 
-  cargarFiltros();
-  renderizarTodo();
-  renderizarListaDatosYListo();
-  cargarDocumentos();
+function renderTablaResumen(data) {
+  const regiones = uniq(data.map(d => d.region)).sort();
+  const tbody = document.querySelector("#tabla-resumen tbody");
+  tbody.innerHTML = "";
 
-  function renderizarListaDatosYListo() {
-    renderizarListaDatasets();
+  regiones.forEach(r => {
+    const sub = data.filter(d => d.region === r);
+    const vals = sub.filter(d => d.ocupacion !== null).map(d => d.ocupacion);
+    const prom = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    const max = vals.length ? Math.max(...vals) : null;
+    const min = vals.length ? Math.min(...vals) : null;
+    const est = sub.reduce((a, d) => a + (d.establecimientos || 0), 0);
+    const hab = sub.reduce((a, d) => a + (d.habitaciones || 0), 0);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r}</td>
+      <td>${fmtPct(prom)}</td>
+      <td>${fmtPct(max)}</td>
+      <td>${fmtPct(min)}</td>
+      <td>${est.toLocaleString()}</td>
+      <td>${hab.toLocaleString()}</td>
+      <td>${sub.length}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderDetalle(data) {
+  document.getElementById("detalle-info").textContent =
+    `Mostrando ${data.length.toLocaleString()} registros filtrados.`;
+
+  const tbody = document.querySelector("#tabla-detalle tbody");
+  tbody.innerHTML = "";
+  const limite = 500; // rendimiento
+  data.slice(0, limite).forEach(d => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${d.anio ?? "—"}</td>
+      <td>${d.mes_nombre ?? "—"}</td>
+      <td>${d.region ?? "—"}</td>
+      <td>${fmtPct(d.ocupacion)}</td>
+      <td>${d.establecimientos.toLocaleString()}</td>
+      <td>${d.habitaciones.toLocaleString()}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  if (data.length > limite) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="6" style="text-align:center;color:#777;">
+      … ${data.length - limite} registros más (usa filtros para acotar).</td>`;
+    tbody.appendChild(tr);
   }
-})();
+}
+
+/* ============================================================
+   EVENTOS DE FILTRO
+   ============================================================ */
+["filtro-region", "filtro-anio", "filtro-mes"].forEach(id => {
+  document.getElementById(id).addEventListener("change", renderTodo);
+});
+
+/* ============================================================
+   SUBIDA DE ARCHIVO
+   ============================================================ */
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("file-input");
+
+dropzone.addEventListener("click", () => fileInput.click());
+dropzone.addEventListener("dragover", e => {
+  e.preventDefault(); dropzone.style.background = "#cfe2f0";
+});
+dropzone.addEventListener("dragleave", () => {
+  dropzone.style.background = "var(--azul-claro)";
+});
+dropzone.addEventListener("drop", e => {
+  e.preventDefault();
+  dropzone.style.background = "var(--azul-claro)";
+  if (e.dataTransfer.files.length) manejarArchivo(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener("change", e => {
+  if (e.target.files.length) manejarArchivo(e.target.files[0]);
+});
+
+function manejarArchivo(file) {
+  const nombre = file.name;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const wb = XLSX.read(ev.target.result, { type: "array" });
+      const hoja = wb.Sheets[wb.SheetNames[0]];
+      const filas = XLSX.utils.sheet_to_json(hoja, { defval: null });
+      if (!filas.length) throw new Error("Hoja vacía");
+      const data = filas.map(normalizarFila).filter(d => d.region && d.anio);
+      if (!data.length) throw new Error("No se encontraron columnas válidas");
+      validarIntegridad(data, nombre);
+      procesarDatos(data);
+      document.getElementById("archivo-activo").style.display = "flex";
+      document.getElementById("archivo-nombre").innerHTML =
+        `${nombre} <span class="badge">ACTIVO</span>`;
+    } catch (err) {
+      document.getElementById("banner-calidad").innerHTML =
+        `<div class="banner alerta">✖ Error al leer el archivo: ${err.message}</div>`;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ============================================================
+   RESTAURAR DATASET ORIGINAL
+   ============================================================ */
+document.getElementById("btn-restaurar").addEventListener("click", () => {
+  cargarDatasetOriginal();
+});
+
+async function cargarDatasetOriginal() {
+  try {
+    const resp = await fetch("dataset_cruzado.xlsx");
+    if (!resp.ok) throw new Error("No se encontró dataset_cruzado.xlsx en el repo");
+    const buf = await resp.arrayBuffer();
+    const wb = XLSX.read(buf, { type: "array" });
+    const hoja = wb.Sheets[wb.SheetNames[0]];
+    const filas = XLSX.utils.sheet_to_json(hoja, { defval: null });
+    const data = filas.map(normalizarFila).filter(d => d.region && d.anio);
+    validarIntegridad(data, "dataset_cruzado.xlsx");
+    procesarDatos(data);
+    document.getElementById("archivo-activo").style.display = "none";
+  } catch (err) {
+    document.getElementById("banner-calidad").innerHTML =
+      `<div class="banner alerta">✖ No se pudo cargar el dataset original: ${err.message}.
+       Verifica que <code>dataset_cruzado.xlsx</code> esté en la raíz del repo.</div>`;
+  }
+}
+
+/* ============================================================
+   CARGA INICIAL
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", cargarDatasetOriginal);
 </script>
 
 </body>
