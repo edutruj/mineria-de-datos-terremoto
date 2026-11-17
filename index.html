@@ -131,6 +131,7 @@
   .version-lista .tag { flex-shrink: 0; background: var(--gris); color: var(--azul); padding: 0.15rem 0.55rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
   .version-lista .tag.nueva { background: #e6fffa; color: #234e52; }
   .version-lista .tag.mejora { background: #ebf8ff; color: #2a4365; }
+  .version-lista .tag.fix { background: #fff5f5; color: #742a2a; }
 
   /* ===== TOAST ===== */
   .toast { position: fixed; bottom: 20px; right: 20px; background: var(--azul); color: #fff; padding: 0.9rem 1.2rem; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 2000; font-size: 0.9rem; transform: translateY(120%); transition: transform 0.3s ease; max-width: 340px; }
@@ -138,9 +139,27 @@
   .toast.exito { background: var(--verde); }
   .toast.error { background: var(--rojo); }
 
+  /* ===== ESTADOS ===== */
   .vacio { text-align: center; color: #a0aec0; padding: 2.5rem 1rem; font-style: italic; background: var(--gris); border-radius: 8px; border: 1px dashed var(--borde); }
   .estado-carga { text-align: center; color: #718096; padding: 2rem; font-style: italic; }
-  
+
+  .buscador { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--borde); border-radius: 8px; font-size: 0.95rem; font-family: inherit; margin-bottom: 0.5rem; }
+  .buscador:focus { outline: none; border-color: var(--azul-claro); box-shadow: 0 0 0 3px rgba(44,95,138,0.15); }
+
+  /* ===== LISTA DE DOCUMENTOS ===== */
+  .docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .doc-card { display: flex; align-items: center; gap: 1rem; background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: 1rem 1.25rem; text-decoration: none; color: var(--texto); transition: all 0.2s; }
+  .doc-card:hover { border-color: var(--azul-claro); box-shadow: 0 4px 12px rgba(26,58,92,0.12); transform: translateY(-2px); }
+  .doc-icon { flex-shrink: 0; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: var(--gris); }
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-info .nombre { font-weight: 600; font-size: 0.92rem; word-break: break-word; margin-bottom: 0.15rem; }
+  .doc-info .meta { font-size: 0.78rem; color: #718096; }
+  .badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.68rem; font-weight: 600; margin-left: 0.35rem; vertical-align: middle; }
+  .badge-cdn { background: #e6fffa; color: #234e52; }
+  .badge-directo { background: #fffaf0; color: #7b341e; }
+  .seccion-titulo { display: flex; align-items: center; gap: 0.5rem; margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--borde); color: var(--azul); font-size: 1.1rem; font-weight: 700; }
+  .seccion-desc { font-size: 0.85rem; color: #718096; margin: 0.5rem 0 0.75rem; }
+
   footer { text-align: center; padding: 2rem 1rem; color: #718096; font-size: 0.85rem; border-top: 1px solid var(--borde); margin-top: 3rem; }
 </style>
 </head>
@@ -178,12 +197,13 @@
 
   <!-- ==================== PESTAÑA: DATOS ==================== -->
   <section id="tab-datos" class="tab-panel active">
+
     <div class="aviso" id="avisoDatos">
-      <strong>Sube tu dataset para generar el análisis automáticamente.</strong> Ve a <em>Editar → Dataset</em> o haz clic en el botón de abajo.
+      <strong>Sube tu dataset para generar el análisis automáticamente.</strong> Ve a <em>Editar → Importar dataset</em> o haz clic en el botón de abajo. Acepta Excel (.xlsx, .xls) o CSV.
     </div>
 
     <div class="barra-acciones">
-      <button class="btn btn-primary" id="btnSubirDatasetTop">📤 Subir dataset manual</button>
+      <button class="btn btn-primary" id="btnSubirDatasetTop">📤 Subir dataset (Excel/CSV)</button>
       <input type="file" id="inputDatasetTop" accept=".xlsx,.xls,.csv" hidden>
       <button class="btn btn-outline" id="btnRecargarRepo">🔄 Recargar datos del repositorio</button>
       <div class="spacer"></div>
@@ -197,20 +217,31 @@
     <div class="grid-indicadores" id="gridIndicadores"></div>
 
     <h2>Evolución mensual — Eje Cafetero vs Nacional</h2>
-    <div class="chart-container tall"><canvas id="chartEvolucion"></canvas></div>
+    <div class="chart-container tall">
+      <canvas id="chartEvolucion"></canvas>
+    </div>
 
     <h2>Comparativa por región (último año completo)</h2>
-    <div class="chart-container tall"><canvas id="chartRegiones"></canvas></div>
+    <div class="chart-container tall">
+      <canvas id="chartRegiones"></canvas>
+    </div>
 
     <h2>Estacionalidad — promedio por mes</h2>
-    <div class="chart-container tall"><canvas id="chartEstacionalidad"></canvas></div>
+    <div class="chart-container tall">
+      <canvas id="chartEstacionalidad"></canvas>
+    </div>
 
     <h2>Datos por región</h2>
     <div class="tabla-wrap">
       <table id="tablaRegiones">
         <thead>
           <tr>
-            <th>Región</th><th>Ocupación actual (%)</th><th>Ocupación histórica (%)</th><th>Var. vs año anterior</th><th>Establecimientos</th><th>Registros</th>
+            <th>Región</th>
+            <th>Ocupación actual (%)</th>
+            <th>Ocupación histórica (%)</th>
+            <th>Var. vs año anterior</th>
+            <th>Establecimientos</th>
+            <th>Registros</th>
           </tr>
         </thead>
         <tbody id="tbodyRegiones"></tbody>
@@ -228,8 +259,10 @@
   <!-- ==================== PESTAÑA: DOCUMENTOS ==================== -->
   <section id="tab-documentos" class="tab-panel">
     <h2>📁 Documentos del proyecto</h2>
-    <p>Archivos y documentos cargados en el repositorio.</p>
-    <input type="text" class="buscador" id="buscadorRepo" placeholder="🔍 Buscar documento...">
+    <p>Archivos y documentos cargados en el repositorio, ordenados por tipo y fecha.</p>
+
+    <input type="text" class="buscador" id="buscadorRepo" placeholder="🔍 Buscar documento por nombre...">
+
     <div id="lista-docs">
       <div class="estado-carga">Cargando documentos desde el repositorio...</div>
     </div>
@@ -238,7 +271,7 @@
   <!-- ==================== PESTAÑA: EDITAR ==================== -->
   <section id="tab-editar" class="tab-panel">
     <h2>✏️ Modo edición</h2>
-    <p>Sube tu dataset, ajusta textos y personaliza el análisis.</p>
+    <p>Sube tu dataset, ajusta textos y personaliza el análisis. Los cambios se guardan en tu navegador.</p>
 
     <div class="barra-acciones">
       <button class="btn btn-success" id="btnGuardar">💾 Guardar cambios</button>
@@ -249,39 +282,51 @@
       <button class="btn btn-danger" id="btnReset">🗑️ Restaurar por defecto</button>
     </div>
 
+    <!-- SUB-TABS -->
     <div class="sub-tabs">
       <button class="sub-tab active" data-sub="dataset">📤 Dataset</button>
       <button class="sub-tab" data-sub="textos">📝 Textos</button>
     </div>
 
+    <!-- SUB-PANEL: Dataset -->
     <div id="sub-dataset" class="sub-panel active">
-      <div class="aviso info"><strong>Sube tu archivo cruzado.</strong> Se detectarán automáticamente las columnas.</div>
+      <div class="aviso info">
+        <strong>Sube tu archivo cruzado.</strong> Se aceptan <code>.xlsx</code>, <code>.xls</code> y <code>.csv</code>.
+        La página detectará automáticamente las columnas.
+      </div>
+
       <div class="zona-drop" id="zonaDrop">
         <div class="icono-grande">📊</div>
-        <p><strong>Arrastra tu archivo aquí</strong> o haz clic</p>
+        <p><strong>Arrastra tu archivo aquí</strong> o haz clic para seleccionar</p>
+        <small>Acepta Excel y CSV con el dataset cruzado</small>
         <input type="file" id="inputDataset" accept=".xlsx,.xls,.csv" hidden>
       </div>
+
       <div id="infoArchivoCargado"></div>
+
       <h3>Vista previa de los datos cargados</h3>
-      <div id="previewDataset"><div class="vacio">Aún no has cargado ningún dataset.</div></div>
+      <div id="previewDataset">
+        <div class="vacio">Aún no has cargado ningún dataset.</div>
+      </div>
     </div>
 
+    <!-- SUB-PANEL: Textos -->
     <div id="sub-textos" class="sub-panel">
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Título principal</label>
-        <input type="text" id="editTitulo" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;">
+        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Título principal</label>
+        <input type="text" id="editTitulo" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;">
       </div>
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Subtítulo</label>
-        <input type="text" id="editSubtitulo" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;">
+        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Subtítulo (autores)</label>
+        <input type="text" id="editSubtitulo" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;">
       </div>
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Contexto</label>
-        <input type="text" id="editContexto" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;">
+        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Contexto</label>
+        <input type="text" id="editContexto" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;">
       </div>
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Pregunta de decisión</label>
-        <textarea id="editPregunta" rows="4" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;"></textarea>
+        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Pregunta de decisión</label>
+        <textarea id="editPregunta" rows="4" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;"></textarea>
       </div>
     </div>
   </section>
@@ -292,9 +337,9 @@
     <div class="version-card">
       <h3>📌 Versión actual <span class="version-tag">v2.0.0</span></h3>
       <ul class="version-lista">
-        <li><span class="tag nueva">NUEVO</span><span>Carga automática del dataset desde el repositorio.</span></li>
-        <li><span class="tag nueva">NUEVO</span><span>Gráficas y análisis automático.</span></li>
-        <li><span class="tag mejora">MEJORA</span><span>Diseño responsive y modo oscuro de menú.</span></li>
+        <li><span class="tag nueva">NUEVO</span><span>Subida de datasets Excel/CSV y análisis automático.</span></li>
+        <li><span class="tag nueva">NUEVO</span><span>Generación automática de gráficas.</span></li>
+        <li><span class="tag nueva">NUEVO</span><span>Detección de hallazgos y vulnerabilidades en los datos.</span></li>
       </ul>
     </div>
   </section>
@@ -321,12 +366,6 @@ function toast(msg, tipo = 'info') {
   setTimeout(() => t.classList.remove('activo'), 2800);
 }
 
-function iconoArchivo(nombre) {
-  const ext = nombre.split('.').pop().toLowerCase();
-  const m = { pdf: '📕', xlsx: '📗', xls: '📗', csv: '📊', doc: '📘', docx: '📘', ipynb: '📓', md: '📝', png: '🖼️', jpg: '🖼️', html: '🌐', json: '⚙️' };
-  return m[ext] || '📎';
-}
-
 function fmtNum(n, dec = 1) {
   if (n === null || n === undefined || isNaN(n)) return '—';
   return Number(n).toLocaleString('es-CO', { minimumFractionDigits: dec, maximumFractionDigits: dec });
@@ -335,7 +374,7 @@ function fmtNum(n, dec = 1) {
 /* ============================================================
    ESTADO POR DEFECTO
 ============================================================ */
-const STORAGE_KEY = 'risaralda_datos_v3';
+const STORAGE_KEY = 'risaralda_datos_v4';
 
 const POR_DEFECTO = {
   titulo: 'Turismo y Ocupación Hotelera en Risaralda',
@@ -343,7 +382,7 @@ const POR_DEFECTO = {
   contexto: 'Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026',
   aviso: '<strong>Sube tu dataset para generar el análisis automáticamente.</strong>',
   pregunta: '¿Qué meses del año y qué segmentos de establecimientos de alojamiento en Risaralda / Eje Cafetero presentan la mayor vulnerabilidad (caídas de ocupación e ingresos reales) según los datos históricos, para priorizar la reactivación tras el terremoto de agosto de 2026?',
-  estado: 'Cargando datos...',
+  estado: 'Estado: sin dataset cargado. Sube tu archivo cruzado en Editar → Dataset.',
   indicadores: [],
   regiones: [],
   fuentes: [
@@ -397,7 +436,7 @@ $$('.tab-btn').forEach(btn => {
 });
 
 /* ============================================================
-   SUB-TABS
+   SUB-TABS EN EDITAR
 ============================================================ */
 $$('.sub-tab').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -409,80 +448,79 @@ $$('.sub-tab').forEach(btn => {
 });
 
 /* ============================================================
-   PROCESAMIENTO DE DATOS
+   MOTOR DE ANÁLISIS (Adaptado a 05_turismo_colombia_prediccion.xlsx)
 ============================================================ */
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MESES_CORTOS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
-function normalizarMes(m) {
-  if (!m) return null;
-  const s = String(m).trim().toLowerCase();
-  const idx = MESES.findIndex(x => x.toLowerCase() === s);
-  if (idx >= 0) return MESES[idx];
-  const idx3 = MESES.findIndex(x => x.toLowerCase().startsWith(s.slice(0, 3)));
-  return idx3 >= 0 ? MESES[idx3] : null;
-}
-
-function detectarColumnas(headers) {
-  const h = headers.map(x => String(x).toLowerCase().trim());
-  const find = (opciones) => {
-    for (const op of opciones) { const idx = h.findIndex(x => x === op); if (idx >= 0) return idx; }
-    for (const op of opciones) { const idx = h.findIndex(x => x.includes(op)); if (idx >= 0) return idx; }
-    return -1;
-  };
-  return {
-    anio: find(['año','ano','year','a\u00f1o']),
-    mes: find(['mes','meses','month']),
-    region: find(['region','región','regiones','departamento']),
-    ocupacion: find(['ocupacion','ocupación','occupancy']),
-    establecimientos: find(['establecimientos','establecimiento']),
-    habitaciones: find(['habitaciones','habitacion'])
-  };
-}
-
 function procesarDataset(filas, headers, nombreArchivo) {
-  const cols = detectarColumnas(headers);
-  if (cols.anio < 0 || cols.mes < 0 || cols.region < 0) {
-    throw new Error('Faltan columnas mínimas: Año, Mes, Región');
+  // Detectar columnas basándonos en los encabezados
+  const h = headers.map(x => String(x).toLowerCase().trim());
+  const idx = (nombre) => h.indexOf(nombre.toLowerCase().trim());
+  
+  const cAnio = idx('Año');
+  const cMes = idx('numero_mes');
+  const cEst = idx('establecimientos');
+  const cHab = idx('habitaciones');
+  const cReal = idx('real');
+  const cPred = idx('prediccion');
+  const cProb = idx('probabilidad_alta');
+
+  if (cAnio < 0 || cMes < 0 || cReal < 0) {
+    throw new Error("El archivo no tiene las columnas mínimas requeridas (Año, numero_mes, real).");
   }
+
+  // Identificar dinámicamente las columnas de región (empiezan con 'region_')
+  const regionCols = [];
+  h.forEach((colName, i) => {
+    if (colName.startsWith('region_')) {
+      regionCols.push({ index: i, nombre: headers[i].replace('region_', '') });
+    }
+  });
 
   const registros = [];
   for (const fila of filas) {
-    const anio = parseInt(fila[cols.anio]);
-    const mes = normalizarMes(fila[cols.mes]);
-    const region = fila[cols.region] ? String(fila[cols.region]).trim() : '';
+    const anio = parseInt(fila[cAnio]);
+    const mes = parseInt(fila[cMes]);
+    if (!anio || isNaN(mes) || mes < 1 || mes > 12) continue;
 
-    if (!anio || !mes || !region) continue;
-    if (anio < 2000 || anio > 2100) continue;
-
-    const ocupRaw = cols.ocupacion >= 0 ? fila[cols.ocupacion] : null;
-    let ocupacion = null;
-    if (ocupRaw !== '' && ocupRaw !== '-' && ocupRaw !== null && ocupRaw !== undefined) {
-        const limpieza = String(ocupRaw).replace('%', '').replace(',', '.').trim();
-        ocupacion = parseFloat(limpieza);
-        // Si viene en 0.45, lo sube a 45. Si ya es 45, lo deja.
-        if (ocupacion !== null && !isNaN(ocupacion) && ocupacion <= 1) ocupacion *= 100;
+    // Encontrar a qué región pertenece esta fila (donde el valor sea 1)
+    let regionNombre = 'Desconocida';
+    for (const rc of regionCols) {
+      if (parseInt(fila[rc.index]) === 1) {
+        regionNombre = rc.nombre;
+        break;
+      }
     }
 
-    const est = cols.establecimientos >= 0 ? parseInt(fila[cols.establecimientos]) : null;
-    const hab = cols.habitaciones >= 0 ? parseInt(fila[cols.habitaciones]) : null;
+    const real = cReal >= 0 ? parseFloat(fila[cReal]) : null;
+    const pred = cPred >= 0 ? parseFloat(fila[cPred]) : null;
+    const prob = cProb >= 0 ? parseFloat(fila[cProb]) : null;
+    const est = cEst >= 0 ? parseInt(fila[cEst]) : null;
+    const hab = cHab >= 0 ? parseInt(fila[cHab]) : null;
+
+    // Ocupación será 'real' * 100 para manejar porcentajes (asumiendo que real viene 0-1)
+    // Si 'real' ya viene en porcentaje, lo dejamos así. 
+    const ocupacionPct = (real !== null && real <= 1) ? real * 100 : real;
 
     registros.push({
-      anio, mes, mesNum: MESES.indexOf(mes) + 1, region,
-      ocupacion: (ocupacion !== null && !isNaN(ocupacion)) ? ocupacion : null,
-      establecimientos: (est && !isNaN(est)) ? est : null,
-      habitaciones: (hab && !isNaN(hab)) ? hab : null
+      anio, mes, mesNum: mes, 
+      region: regionNombre,
+      ocupacion: ocupacionPct,
+      prediccion: pred,
+      probabilidad: prob,
+      establecimientos: est,
+      habitaciones: hab
     });
   }
 
-  if (!registros.length) throw new Error('No hay registros válidos');
+  if (!registros.length) throw new Error('No se encontraron registros válidos');
 
   const regionesUnicas = [...new Set(registros.map(r => r.region))].sort();
   const aniosUnicos = [...new Set(registros.map(r => r.anio))].sort((a, b) => a - b);
   const ultimoAnio = aniosUnicos[aniosUnicos.length - 1];
-  
+
   const regionEje = regionesUnicas.find(r => r.toLowerCase().includes('eje cafetero')) || regionesUnicas[0];
-  const regionNacional = regionesUnicas.find(r => r.toLowerCase().includes('nacional')) || null;
 
   function promedioOcupacion(region, anio) {
     const vals = registros.filter(r => r.region === region && r.anio === anio && r.ocupacion !== null).map(r => r.ocupacion);
@@ -495,13 +533,13 @@ function procesarDataset(filas, headers, nombreArchivo) {
 
   const indEjeActual = promedioOcupacion(regionEje, ultimoAnio);
   const indEjeHist = promedioHistorico(regionEje);
-  const indNalActual = regionNacional ? promedioOcupacion(regionNacional, ultimoAnio) : null;
 
   const promediosPorMesEje = {};
   for (let i = 1; i <= 12; i++) {
     const vals = registros.filter(r => r.region === regionEje && r.mesNum === i && r.ocupacion !== null).map(r => r.ocupacion);
     promediosPorMesEje[i] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
   }
+  
   let mesMasCritico = null, mesMasCriticoVal = Infinity;
   let mesMasFuerte = null, mesMasFuerteVal = -Infinity;
   for (const [m, v] of Object.entries(promediosPorMesEje)) {
@@ -516,29 +554,24 @@ function procesarDataset(filas, headers, nombreArchivo) {
     { id: 'i_mes_critico', label: 'Mes más crítico (Eje)', valor: mesMasCritico ? MESES[mesMasCritico - 1] + ' (' + fmtNum(mesMasCriticoVal, 1) + '%)' : '—', valorChico: true },
     { id: 'i_mes_fuerte', label: 'Mes más fuerte (Eje)', valor: mesMasFuerte ? MESES[mesMasFuerte - 1] + ' (' + fmtNum(mesMasFuerteVal, 1) + '%)' : '—', valorChico: true }
   ];
-  if (indNalActual !== null) indicadores.splice(1, 0, { id: 'i_nal_act', label: `Ocupación Nacional (${ultimoAnio})`, valor: fmtNum(indNalActual, 1) + '%' });
 
-  const regiones = regionesUnicas.map((nombre, idx) => {
+  const regiones = regionesUnicas.map((nombre, i) => {
     const actual = promedioOcupacion(nombre, ultimoAnio);
     const historico = promedioHistorico(nombre);
     return {
-      id: 'reg_' + idx, nombre, ocupacionActual: actual, ocupacionHistorica: historico,
+      id: 'reg_' + i, nombre, ocupacionActual: actual, ocupacionHistorica: historico,
       registros: registros.filter(r => r.region === nombre).length,
       establecimientos: registros.filter(r => r.region === nombre && r.anio === ultimoAnio && r.establecimientos).map(r => r.establecimientos).sort((a,b)=>b-a)[0] || null
     };
   });
 
   const hallazgos = [];
-  if (mesMasCritico) hallazgos.push({ tipo: 'info', titulo: 'Estacionalidad crítica', texto: `<strong>${MESES[mesMasCritico - 1]}</strong> es el mes con menor ocupación histórica en <strong>${regionEje}</strong> (${fmtNum(mesMasCriticoVal,1)}%).` });
-  if (indNalActual !== null && indEjeActual !== null) {
-    const brecha = indEjeActual - indNalActual;
-    hallazgos.push({ tipo: brecha < 0 ? 'alerta' : 'positivo', titulo: 'Brecha vs. nacional', texto: `<strong>${regionEje}</strong> está ${brecha >= 0 ? 'por encima' : 'por debajo'} del nacional en <strong>${fmtNum(Math.abs(brecha), 1)} pts</strong>.` });
-  }
-
+  if (mesMasCritico) hallazgos.push({ tipo: 'info', titulo: 'Estacionalidad crítica', texto: `<strong>${MESES[mesMasCritico - 1]}</strong> es el mes con menor ocupación en <strong>${regionEje}</strong> (${fmtNum(mesMasCriticoVal,1)}%).` });
+  
   return {
-    registros, regiones, anios: aniosUnicos, ultimoAnio, regionEje, regionNacional,
+    registros, regiones, anios: aniosUnicos, ultimoAnio, regionEje,
     promediosPorMesEje, indicadores, hallazgos,
-    datasetMeta: { nombreArchivo, totalRegistros: registros.length, totalRegiones: regionesUnicas.length, anioInicio: aniosUnicos[0], anioFin: ultimoAnio, columnasDetectadas: cols, fechaCarga: new Date().toISOString() }
+    datasetMeta: { nombreArchivo, totalRegistros: registros.length, totalRegiones: regionesUnicas.length, anioInicio: aniosUnicos[0], anioFin: ultimoAnio, fechaCarga: new Date().toISOString() }
   };
 }
 
@@ -693,31 +726,31 @@ function renderizarEditor() {
   if (datos.datasetMeta) {
     $('#infoArchivoCargado').innerHTML = `<div class="aviso exito"><strong>✅ Archivo:</strong> ${datos.datasetMeta.nombreArchivo}</div>`;
     const preview = datos.registros.slice(0, 10);
-    $('#previewDataset').innerHTML = `<div class="tabla-wrap"><table><thead><tr><th>Año</th><th>Mes</th><th>Región</th><th>Ocupación</th></tr></thead><tbody>${preview.map(r => `<tr><td>${r.anio}</td><td>${r.mes}</td><td>${r.region}</td><td>${fmtNum(r.ocupacion, 1)}%</td></tr>`).join('')}</tbody></table></div>`;
+    $('#previewDataset').innerHTML = `<div class="tabla-wrap"><table><thead><tr><th>Año</th><th>Mes</th><th>Región</th><th>Ocupación</th></tr></thead><tbody>${preview.map(r => `<tr><td>${r.anio}</td><td>${MESES[r.mesNum-1]}</td><td>${r.region}</td><td>${fmtNum(r.ocupacion, 1)}%</td></tr>`).join('')}</tbody></table></div>`;
   }
 }
 
 /* ============================================================
-   LÓGICA DE CARGA AUTOMÁTICA DESDE GITHUB
+   CARGA AUTOMÁTICA
 ============================================================ */
 async function cargarDesdeGitHub() {
   try {
-    toast('Buscando dataset en el repositorio...');
-    // Intenta leer el archivo dataset_cruzado.xlsx desde la raíz del repo
-    const url = 'https://edutruj.github.io/mineria-de-datos-terremoto/dataset_cruzado.xlsx';
+    toast('Buscando archivo en el repositorio...');
+    // Buscamos el nuevo archivo que subiste
+    const url = 'https://edutruj.github.io/mineria-de-datos-terremoto/05_turismo_colombia_prediccion.xlsx';
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Archivo no encontrado en el repo');
+    if (!response.ok) throw new Error('No encontrado');
     const blob = await response.blob();
-    const file = new File([blob], 'dataset_cruzado.xlsx');
+    const file = new File([blob], '05_turismo_colombia_prediccion.xlsx');
     await cargarDataset(file);
   } catch (err) {
     console.warn('Carga automática falló:', err.message);
-    toast('Haz clic en "Subir dataset manual" para cargar el archivo.', 'info');
+    toast('Haz clic en "Subir dataset" para cargar tu archivo manualmente.', 'info');
   }
 }
 
 /* ============================================================
-   EVENTOS DE LA INTERFAZ
+   EVENTOS
 ============================================================ */
 $('#btnSubirDatasetTop').addEventListener('click', () => $('#inputDatasetTop').click());
 $('#inputDatasetTop').addEventListener('change', e => { if (e.target.files.length) cargarDataset(e.target.files[0]); });
@@ -746,7 +779,6 @@ $('#btnReset').addEventListener('click', () => {
 // ARRANCAR
 document.addEventListener('DOMContentLoaded', () => {
   renderizarDatos();
-  // Si no hay datos cargados en localStorage, intentar cargar desde GitHub
   if (!datos.datasetMeta) {
     cargarDesdeGitHub();
   }
