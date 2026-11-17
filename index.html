@@ -14,41 +14,79 @@
     --texto: #222;
     --ok: #2e7d32;
     --alerta: #c62828;
+    --borde: #e3e6ea;
   }
   * { box-sizing: border-box; }
   body { font-family: "Segoe UI", Roboto, Arial, sans-serif; margin: 0; color: var(--texto); background: #fff; line-height: 1.5; }
-  header { background: var(--azul); color: #fff; padding: 28px 24px; }
-  header h1 { margin: 0 0 6px; font-size: 1.7rem; }
-  header p { margin: 2px 0; opacity: .9; font-size: .95rem; }
+  
+  /* MENÚ SUPERIOR (NAVBAR) */
+  nav { background: #fff; border-bottom: 1px solid var(--borde); padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 60px; }
+  .nav-brand { font-weight: 700; color: var(--azul); font-size: 1.1rem; text-decoration: none; }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a { text-decoration: none; color: #555; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--azul); }
+
+  header { background: var(--azul); color: #fff; padding: 40px 24px; }
+  header h1 { margin: 0 0 8px; font-size: 1.8rem; }
+  header p { margin: 2px 0; opacity: .9; font-size: 1rem; }
+  
   main { max-width: 1200px; margin: 0 auto; padding: 24px; }
-  section { margin-bottom: 36px; }
-  h2 { color: var(--azul); border-bottom: 2px solid var(--azul-claro); padding-bottom: 6px; font-size: 1.25rem; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 18px 0; }
-  .card { background: var(--gris); border-radius: 10px; padding: 16px; border-left: 5px solid var(--azul); }
-  .card .label { font-size: .8rem; color: #555; text-transform: uppercase; letter-spacing: .5px; }
-  .card .value { font-size: 1.6rem; font-weight: 700; color: var(--azul); margin-top: 4px; }
-  .card .sub { font-size: .8rem; color: #666; margin-top: 2px; }
-  .filtros { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 18px; }
-  .filtros label { font-size: .85rem; display: flex; flex-direction: column; gap: 4px; }
-  .filtros select, .filtros input { padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; min-width: 130px; }
-  .chart-box { position: relative; height: 340px; margin: 12px 0 24px; }
-  table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 10px; }
-  th, td { padding: 8px 10px; border-bottom: 1px solid #e3e6ea; text-align: left; }
+  section { margin-bottom: 48px; scroll-margin-top: 70px; }
+  h2 { color: var(--azul); border-bottom: 2px solid var(--azul-claro); padding-bottom: 8px; font-size: 1.4rem; margin-top: 0; }
+  
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0; }
+  .card { background: var(--gris); border-radius: 10px; padding: 20px; border-left: 5px solid var(--azul); }
+  .card .label { font-size: .85rem; color: #555; text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+  .card .value { font-size: 1.8rem; font-weight: 700; color: var(--azul); margin-top: 6px; }
+  .card .sub { font-size: .85rem; color: #666; margin-top: 4px; }
+  
+  .filtros { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0 24px; background: var(--gris); padding: 16px; border-radius: 8px; }
+  .filtros label { font-size: .9rem; display: flex; flex-direction: column; gap: 6px; font-weight: 500; }
+  .filtros select { padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; min-width: 150px; background: #fff; }
+  
+  .chart-box { position: relative; height: 380px; margin: 16px 0 32px; background: #fff; padding: 16px; border-radius: 10px; border: 1px solid var(--borde); }
+  
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-top: 12px; background: #fff; }
+  th, td { padding: 12px 14px; border-bottom: 1px solid var(--borde); text-align: left; }
   th { background: var(--azul-claro); color: var(--azul); font-weight: 600; }
   tr:hover td { background: #fafcfe; }
-  .banner { padding: 12px 16px; border-radius: 8px; margin: 14px 0; font-size: .9rem; }
+  
+  .banner { padding: 14px 18px; border-radius: 8px; margin: 16px 0; font-size: .95rem; font-weight: 500; }
   .banner.ok { background: #e8f5e9; color: var(--ok); border-left: 4px solid var(--ok); }
   .banner.alerta { background: #ffebee; color: var(--alerta); border-left: 4px solid var(--alerta); }
-  .dropzone { border: 2px dashed var(--azul); border-radius: 12px; padding: 28px; text-align: center; color: var(--azul); background: var(--azul-claro); cursor: pointer; transition: background .2s; }
+  
+  .dropzone { border: 2px dashed var(--azul); border-radius: 12px; padding: 40px; text-align: center; color: var(--azul); background: var(--azul-claro); cursor: pointer; transition: background .2s; font-weight: 500; }
   .dropzone:hover { background: #cfe2f0; }
-  .archivo-activo { margin-top: 12px; padding: 10px 14px; background: var(--gris); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: .9rem; }
-  .archivo-activo .badge { background: var(--ok); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: .75rem; margin-left: 8px; }
-  button { background: var(--azul); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: .88rem; }
+  
+  .archivo-activo { margin-top: 16px; padding: 12px 16px; background: var(--gris); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: .95rem; border: 1px solid var(--borde); }
+  .archivo-activo .badge { background: var(--ok); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: .75rem; margin-left: 10px; font-weight: 600; }
+  
+  button { background: var(--azul); color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: .9rem; font-weight: 500; transition: background .2s; }
   button:hover { background: #163a5a; }
-  footer { text-align: center; padding: 20px; color: #777; font-size: .8rem; }
+  
+  details { background: var(--gris); padding: 16px 20px; border-radius: 10px; margin: 16px 0; border: 1px solid var(--borde); }
+  summary { cursor: pointer; font-weight: 600; color: var(--azul); font-size: 1.05rem; }
+  pre { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: .85rem; line-height: 1.5; margin-top: 16px; }
+  
+  footer { text-align: center; padding: 30px; color: #777; font-size: .9rem; border-top: 1px solid var(--borde); background: var(--gris); }
 </style>
 </head>
 <body>
+
+<!-- MENÚ SUPERIOR RESTAURADO -->
+<nav>
+  <div class="nav-container">
+    <a href="#" class="nav-brand">Minería de Datos · Risaralda</a>
+    <div class="nav-links">
+      <a href="#indicadores">Indicadores</a>
+      <a href="#graficos">Gráficos</a>
+      <a href="#tabla">Tabla Resumen</a>
+      <a href="#documentos">Documentos</a>
+      <a href="#subir">Subir Datos</a>
+    </div>
+  </div>
+</nav>
 
 <header>
   <h1>Turismo y Ocupación Hotelera en Risaralda</h1>
@@ -60,12 +98,12 @@
 <main>
   <div id="banner-calidad"></div>
 
-  <section>
+  <section id="indicadores">
     <h2>Indicadores clave</h2>
     <div class="cards" id="cards-indicadores"></div>
   </section>
 
-  <section>
+  <section id="filtros">
     <h2>Filtros interactivos</h2>
     <div class="filtros">
       <label>Región <select id="filtro-region"><option value="">Todas</option></select></label>
@@ -74,22 +112,18 @@
     </div>
   </section>
 
-  <section>
+  <section id="graficos">
     <h2>Evolución mensual de ocupación</h2>
     <div class="chart-box"><canvas id="chart-evolucion"></canvas></div>
-  </section>
 
-  <section>
     <h2>Comparación anual por región</h2>
     <div class="chart-box"><canvas id="chart-anual"></canvas></div>
-  </section>
 
-  <section>
     <h2>Ocupación promedio por región</h2>
     <div class="chart-box"><canvas id="chart-region"></canvas></div>
   </section>
 
-  <section>
+  <section id="tabla">
     <h2>Tabla resumen por región</h2>
     <div style="overflow-x:auto;">
       <table id="tabla-resumen">
@@ -102,12 +136,10 @@
         <tbody></tbody>
       </table>
     </div>
-  </section>
 
-  <section>
-    <h2>Detalle de datos</h2>
+    <h2 style="margin-top:40px;">Detalle de datos</h2>
     <p id="detalle-info">Mostrando 0 registros filtrados.</p>
-    <div style="overflow-x:auto; max-height: 420px;">
+    <div style="overflow-x:auto; max-height: 500px;">
       <table id="tabla-detalle">
         <thead>
           <tr><th>Año</th><th>Mes</th><th>Región</th><th>Ocupación (%)</th><th>Establecimientos</th><th>Habitaciones</th></tr>
@@ -117,9 +149,107 @@
     </div>
   </section>
 
-  <section>
+  <section id="documentos">
+    <h2>Documentos y Códigos del Proyecto</h2>
+    <p>Archivos del repositorio y documentación del proceso de minería de datos aplicado al dataset cruzado (EMA-DANE + RNT).</p>
+    
+    <details open>
+      <summary>Ver código Python corregido del cruce</summary>
+<pre>
+# ============================================================
+# CRUCE EMA (ocupación) + RNT (establecimientos/habitaciones)
+# Versión corregida: tipos, % -> float, fecha, conteos
+# ============================================================
+import pandas as pd
+import numpy as np
+
+# --- 1. Carga de datos crudos ---
+rnt = pd.read_excel("../data/thwd-ivmp.xlsx")
+rnt = rnt.iloc[:, 0].str.split(",", expand=True)
+rnt.columns = [
+    "codigo_rnt", "estado_rnt", "razon_social_establecimiento",
+    "departamento", "cod_dpto", "municipio", "cod_mun", "nit",
+    "categoria", "sub_categoria", "habitaciones", "camas",
+    "num_emp1", "ano"
+]
+
+ema = pd.read_excel("../data/anex-EMA-jul2026 (1).xlsx", sheet_name=None)
+
+# --- 2. Limpieza hoja de ocupación mensual ---
+ocupacion = ema["4.2 Porc Mens Ocupación.reg"]
+ocupacion_limpia = ocupacion.copy()
+ocupacion_limpia.columns = ocupacion_limpia.iloc[10]
+ocupacion_limpia = ocupacion_limpia.iloc[11:]
+ocupacion_limpia.columns = ocupacion_limpia.columns.astype(str).str.strip()
+ocupacion_limpia = ocupacion_limpia.loc[:, ocupacion_limpia.columns.notna()]
+
+ocupacion_limpia["Año"] = ocupacion_limpia["Año"].ffill()
+ocupacion_limpia["Año"] = (ocupacion_limpia["Año"].astype(str).str.replace("p", "", regex=False))
+ocupacion_limpia["Año"] = pd.to_numeric(ocupacion_limpia["Año"], errors="coerce")
+
+# --- 3. Melt: ancho -> largo ---
+columnas_regiones = list(ocupacion_limpia.columns[3:15])
+ocupacion_long = pd.melt(
+    ocupacion_limpia,
+    id_vars=["Año", "Meses"],
+    value_vars=columnas_regiones,
+    var_name="region",
+    value_name="ocupacion"
+)
+
+# --- 4. CORRECCIÓN: ocupación texto -> float (0-1) ---
+ocupacion_long["ocupacion"] = (
+    ocupacion_long["ocupacion"].astype(str)
+    .str.replace("%", "", regex=False)
+    .str.replace(",", ".", regex=False)
+    .str.strip()
+)
+ocupacion_long["ocupacion"] = (pd.to_numeric(ocupacion_long["ocupacion"], errors="coerce") / 100)
+
+# --- 5. CORRECCIÓN: unificar nombre de columna ---
+ocupacion_long = ocupacion_long.rename(columns={"Meses": "mes_nombre"})
+
+# --- 6. CORRECCIÓN: construir fecha real ---
+mes_map = {"Enero":1,"Febrero":2,"Marzo":3,"Abril":4,"Mayo":5,"Junio":6,"Julio":7,"Agosto":8,"Septiembre":9,"Octubre":10,"Noviembre":11,"Diciembre":12}
+ocupacion_long["mes"] = ocupacion_long["mes_nombre"].map(mes_map)
+ocupacion_long["fecha"] = pd.to_datetime(dict(year=ocupacion_long["Año"], month=ocupacion_long["mes"], day=1), errors="coerce")
+
+# --- 7. RNT: filtrar alojamientos ---
+rnt_hoteles = rnt[rnt["categoria"].str.contains("ALOJAMIENTO", case=False, na=False)].copy()
+for col in rnt_hoteles.columns:
+    rnt_hoteles[col] = (rnt_hoteles[col].astype(str).str.replace('"', "", regex=False).str.strip())
+
+# --- 8. Mapeo departamentos -> regiones DANE ---
+mapa_region = {
+    "ANTIOQUIA": "Antioquia", "ATLANTICO": "Caribe", "CESAR": "Caribe", "MAGDALENA": "Caribe", "LA GUAJIRA": "Caribe",
+    "CALDAS": "Eje Cafetero", "QUINDIO": "Eje Cafetero", "RISARALDA": "Eje Cafetero",
+    "VALLE DEL CAUCA": "Pacífico", "CAUCA": "Pacífico", "NARIÑO": "Pacífico", "CHOCO": "Pacífico",
+    "SANTANDER": "Santanderes", "NORTE DE SANTANDER": "Santanderes", "META": "Llanos Orinoquía", "ARAUCA": "Llanos Orinoquía",
+    "CASANARE": "Llanos Orinoquía", "VICHADA": "Llanos Orinoquía", "AMAZONAS": "Amazonía", "CAQUETA": "Amazonía", "PUTUMAYO": "Amazonía",
+    "GUAINIA": "Amazonía", "GUAVIARE": "Amazonía", "VAUPES": "Amazonía", "BOGOTA": "Bogotá D.C.",
+    "CUNDINAMARCA": "Central", "BOYACA": "Central", "HUILA": "Central", "TOLIMA": "Central",
+    "CORDOBA": "Golfo Morrosquillo y Sabana", "SUCRE": "Golfo Morrosquillo y Sabana",
+    "SAN ANDRES Y PROVIDENCIA": "San Andrés y Providencia", "BOLIVAR": "Cartagena"
+}
+rnt_hoteles["region"] = (rnt_hoteles["departamento"].str.upper().map(mapa_region))
+
+# --- 9. CORRECCIÓN: resumen RNT (nunique + sum) ---
+rnt_hoteles["habitaciones"] = pd.to_numeric(rnt_hoteles["habitaciones"], errors="coerce")
+rnt_resumen = (rnt_hoteles.groupby("region", as_index=False).agg(establecimientos=("codigo_rnt", "nunique"), habitaciones=("habitaciones", "sum")))
+
+# --- 10. Cruce final ---
+dataset_final = pd.merge(ocupacion_long, rnt_resumen, on="region", how="left", indicator=True)
+
+# --- 11. Verificación y exportación ---
+print(f"Filas esperadas: {12 * 99} | Filas obtenidas: {len(dataset_final)}")
+dataset_final.to_excel("../data/dataset_cruzado.xlsx", index=False)
+</pre>
+    </details>
+  </section>
+
+  <section id="subir">
     <h2>Subir nuevo dataset</h2>
-    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code>dataset_cruzado.xlsx</code>.</p>
+    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code>dataset_cruzado.xlsx</code>. La página actualizará todos los gráficos automáticamente.</p>
     <p><strong>Columnas esperadas:</strong> Año, Meses (o mes), region, ocupacion, establecimientos, habitaciones.</p>
     <div class="dropzone" id="dropzone">
       Arrastra tu archivo aquí o haz clic para seleccionar<br>
@@ -134,7 +264,8 @@
 </main>
 
 <footer>
-  Minería de Datos · Risaralda — Terremoto de Pereira 2026 · EMA-DANE + RNT
+  Minería de Datos · Risaralda — Terremoto de Pereira 2026 · EMA-DANE + RNT<br>
+  Desarrollado con HTML, CSS y JS nativo.
 </footer>
 
 <script>
@@ -186,7 +317,7 @@ function validarIntegridad(data, nombreArchivo) {
   const ok = n >= ESPERADO * 0.95;
   let html = ok ? `<div class="banner ok">✔ Integridad verificada — ${n.toLocaleString()} registros cargados correctamente.</div>` 
                 : `<div class="banner alerta">⚠ Dataset recortado — ${n.toLocaleString()} registros (esperados ~${ESPERADO}).</div>`;
-  if (sospecha) html += `<div class="banner alerta">⚠ Habitaciones == Establecimientos en muchas filas. Revisa el cruce.</div>`;
+  if (sospecha) html += `<div class="banner alerta">⚠ Habitaciones == Establecimientos en muchas filas. Ejecuta el cruce corregido (usa <code>sum</code>).</div>`;
   document.getElementById("banner-calidad").innerHTML = html;
   document.getElementById("fuente-datos").textContent = `Datos cargados: ${n.toLocaleString()} registros · ${nombreArchivo}`;
 }
