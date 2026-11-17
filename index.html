@@ -18,102 +18,36 @@
     --naranja: #ed8936;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: var(--texto);
-    background: #fff;
-    line-height: 1.6;
-  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var(--texto); background: #fff; line-height: 1.6; }
 
   /* ===== TOP BAR ===== */
-  header.top-bar {
-    background: var(--azul);
-    padding: 0 1rem;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
-  .top-bar-inner {
-    max-width: 1200px; margin: 0 auto;
-    display: flex; justify-content: space-between;
-    align-items: center; position: relative;
-  }
-  .logo {
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .menu-toggle {
-    background: transparent; border: none; color: #fff;
-    font-size: 1.5rem; padding: 0.9rem 1rem;
-    cursor: pointer; border-radius: 6px;
-    transition: background 0.2s;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
+  header.top-bar { background: var(--azul); padding: 0 1rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  .top-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; position: relative; }
+  .logo { color: #fff; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; }
+  .menu-toggle { background: transparent; border: none; color: #fff; font-size: 1.5rem; padding: 0.9rem 1rem; cursor: pointer; border-radius: 6px; transition: background 0.2s; display: flex; align-items: center; gap: 0.5rem; }
   .menu-toggle:hover { background: rgba(255,255,255,0.1); }
   .menu-toggle .etiqueta { font-size: 0.9rem; font-weight: 500; }
   .hamburguesa { display: inline-flex; flex-direction: column; gap: 4px; }
-  .hamburguesa span {
-    width: 22px; height: 2px; background: #fff;
-    border-radius: 2px; transition: all 0.3s ease;
-  }
+  .hamburguesa span { width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s ease; }
   .menu-toggle.abierto .hamburguesa span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
   .menu-toggle.abierto .hamburguesa span:nth-child(2) { opacity: 0; }
   .menu-toggle.abierto .hamburguesa span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-  .menu-desplegable {
-    position: absolute; top: 100%; right: 1rem;
-    background: #fff; border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    overflow: hidden; min-width: 240px;
-    opacity: 0; transform: translateY(-10px);
-    pointer-events: none; transition: all 0.25s ease;
-    border: 1px solid var(--borde);
-  }
-  .menu-desplegable.abierto {
-    opacity: 1; transform: translateY(0.5rem); pointer-events: auto;
-  }
-  .menu-desplegable button {
-    display: flex; align-items: center; gap: 0.7rem;
-    width: 100%; padding: 0.85rem 1.1rem;
-    background: transparent; border: none;
-    color: var(--texto); font-size: 0.95rem; font-weight: 500;
-    text-align: left; cursor: pointer; font-family: inherit;
-    transition: background 0.15s;
-  }
+  .menu-desplegable { position: absolute; top: 100%; right: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; min-width: 240px; opacity: 0; transform: translateY(-10px); pointer-events: none; transition: all 0.25s ease; border: 1px solid var(--borde); }
+  .menu-desplegable.abierto { opacity: 1; transform: translateY(0.5rem); pointer-events: auto; }
+  .menu-desplegable button { display: flex; align-items: center; gap: 0.7rem; width: 100%; padding: 0.85rem 1.1rem; background: transparent; border: none; color: var(--texto); font-size: 0.95rem; font-weight: 500; text-align: left; cursor: pointer; font-family: inherit; transition: background 0.15s; }
   .menu-desplegable button:hover { background: var(--gris); color: var(--azul); }
-  .menu-desplegable button.active {
-    background: #eef4fa; color: var(--azul); font-weight: 600;
-    border-left: 3px solid var(--azul-claro);
-    padding-left: calc(1.1rem - 3px);
-  }
+  .menu-desplegable button.active { background: #eef4fa; color: var(--azul); font-weight: 600; border-left: 3px solid var(--azul-claro); padding-left: calc(1.1rem - 3px); }
   .menu-desplegable button .icono { font-size: 1.05rem; width: 22px; text-align: center; }
   .menu-separador { height: 1px; background: var(--borde); margin: 0.3rem 0; }
-  .menu-version {
-    padding: 0.7rem 1.1rem; font-size: 0.78rem;
-    color: #718096; display: flex; align-items: center;
-    gap: 0.5rem; background: var(--gris);
-  }
-  .menu-version .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--verde);
-    box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
-  }
+  .menu-version { padding: 0.7rem 1.1rem; font-size: 0.78rem; color: #718096; display: flex; align-items: center; gap: 0.5rem; background: var(--gris); }
+  .menu-version .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 3px rgba(56,161,105,0.2); }
 
   /* ===== HEADER PÁGINA ===== */
-  header.page-header {
-    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%);
-    color: #fff; padding: 2.5rem 1.5rem; text-align: center;
-  }
+  header.page-header { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%); color: #fff; padding: 2.5rem 1.5rem; text-align: center; }
   header.page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
   header.page-header p { opacity: 0.9; font-size: 0.95rem; }
-  header.page-header .contexto {
-    display: inline-block; margin-top: 0.75rem;
-    background: rgba(255,255,255,0.15);
-    padding: 0.35rem 1rem; border-radius: 20px; font-size: 0.85rem;
-  }
+  header.page-header .contexto { display: inline-block; margin-top: 0.75rem; background: rgba(255,255,255,0.15); padding: 0.35rem 1rem; border-radius: 20px; font-size: 0.85rem; }
 
   /* ===== LAYOUT ===== */
   main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
@@ -124,276 +58,90 @@
   h2 { color: var(--azul); margin: 2rem 0 1rem; font-size: 1.35rem; }
   h3 { color: var(--azul-claro); margin: 1.5rem 0 0.75rem; font-size: 1.05rem; }
 
-  .aviso {
-    background: #fffaf0; border-left: 4px solid var(--naranja);
-    padding: 1rem 1.25rem; border-radius: 4px;
-    margin: 1.5rem 0; font-size: 0.95rem;
-  }
+  .aviso { background: #fffaf0; border-left: 4px solid var(--naranja); padding: 1rem 1.25rem; border-radius: 4px; margin: 1.5rem 0; font-size: 0.95rem; }
   .aviso.exito { background: #f0fff4; border-left-color: var(--verde); }
   .aviso.info { background: #ebf8ff; border-left-color: var(--azul-claro); }
 
   /* ===== INDICADORES ===== */
-  .grid-indicadores {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem; margin: 1.5rem 0;
-  }
-  .card-indicador {
-    background: var(--gris); border: 1px solid var(--borde);
-    border-radius: 8px; padding: 1.25rem; text-align: center;
-    transition: all 0.2s;
-  }
-  .card-indicador.destacado {
-    background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
-    border-color: var(--azul-claro);
-  }
+  .grid-indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .card-indicador { background: var(--gris); border: 1px solid var(--borde); border-radius: 8px; padding: 1.25rem; text-align: center; transition: all 0.2s; }
+  .card-indicador.destacado { background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%); border-color: var(--azul-claro); }
   .card-indicador .label { font-size: 0.8rem; color: #718096; margin-bottom: 0.5rem; }
-  .card-indicador .valor {
-    font-size: 1.5rem; font-weight: 700; color: var(--azul);
-    word-break: break-word;
-  }
+  .card-indicador .valor { font-size: 1.5rem; font-weight: 700; color: var(--azul); word-break: break-word; }
   .card-indicador .valor.chico { font-size: 1.1rem; }
-  .card-indicador .delta {
-    font-size: 0.78rem; margin-top: 0.3rem;
-    display: inline-flex; align-items: center; gap: 0.2rem;
-  }
+  .card-indicador .delta { font-size: 0.78rem; margin-top: 0.3rem; display: inline-flex; align-items: center; gap: 0.2rem; }
   .card-indicador .delta.positivo { color: var(--verde); }
   .card-indicador .delta.negativo { color: var(--rojo); }
 
   /* ===== GRÁFICAS ===== */
-  .charts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem; margin: 1.5rem 0;
-  }
-  @media (max-width: 800px) { .charts-grid { grid-template-columns: 1fr; } }
-  .chart-container {
-    background: #fff; border: 1px solid var(--borde);
-    border-radius: 8px; padding: 1.25rem;
-    position: relative; height: 380px;
-  }
+  .chart-container { background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: 1.25rem; position: relative; height: 380px; }
   .chart-container.tall { height: 460px; }
 
   /* ===== TABLAS ===== */
   .tabla-wrap { overflow-x: auto; margin: 1.5rem 0; }
-  table {
-    width: 100%; border-collapse: collapse;
-    font-size: 0.9rem; min-width: 600px;
-  }
-  th, td {
-    padding: 0.7rem 0.9rem; text-align: left;
-    border-bottom: 1px solid var(--borde);
-  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 600px; }
+  th, td { padding: 0.7rem 0.9rem; text-align: left; border-bottom: 1px solid var(--borde); }
   th { background: var(--azul); color: #fff; font-weight: 600; font-size: 0.85rem; }
   tr:hover td { background: var(--gris); }
   td.num { text-align: right; font-variant-numeric: tabular-nums; }
   td.pendiente { color: #a0aec0; font-style: italic; }
   td.positivo { color: var(--verde); font-weight: 600; }
   td.negativo { color: var(--rojo); font-weight: 600; }
-  td .mini-barra {
-    display: inline-block; height: 8px;
-    background: var(--azul-claro); border-radius: 4px;
-    vertical-align: middle; margin-right: 0.4rem;
-  }
 
   ul.fuentes { padding-left: 1.5rem; margin: 1rem 0; }
   ul.fuentes li { margin-bottom: 0.5rem; }
 
   /* ===== BOTONES ===== */
-  .btn {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.55rem 1.1rem; border-radius: 6px;
-    border: none; cursor: pointer; font-size: 0.9rem;
-    font-weight: 500; font-family: inherit;
-    transition: all 0.15s ease; text-decoration: none;
-  }
+  .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 500; font-family: inherit; transition: all 0.15s ease; text-decoration: none; }
   .btn-primary { background: var(--azul); color: #fff; }
   .btn-primary:hover { background: var(--azul-claro); }
   .btn-success { background: var(--verde); color: #fff; }
   .btn-success:hover { background: #2f855a; }
   .btn-danger { background: var(--rojo); color: #fff; }
   .btn-danger:hover { background: #c53030; }
-  .btn-outline {
-    background: transparent; color: var(--azul);
-    border: 1px solid var(--borde);
-  }
+  .btn-outline { background: transparent; color: var(--azul); border: 1px solid var(--borde); }
   .btn-outline:hover { background: var(--gris); border-color: var(--azul-claro); }
   .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.82rem; }
 
-  .barra-acciones {
-    display: flex; flex-wrap: wrap; gap: 0.5rem;
-    align-items: center; margin: 1rem 0;
-    padding: 0.85rem; background: var(--gris);
-    border-radius: 8px;
-  }
+  .barra-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1rem 0; padding: 0.85rem; background: var(--gris); border-radius: 8px; }
   .barra-acciones .spacer { flex: 1; }
 
   /* ===== ZONA DE SUBIDA ===== */
-  .zona-drop {
-    border: 2px dashed var(--borde);
-    border-radius: 12px;
-    padding: 2.5rem 1.5rem;
-    text-align: center;
-    background: var(--gris);
-    transition: all 0.2s;
-    cursor: pointer;
-    margin: 1.5rem 0;
-  }
-  .zona-drop:hover, .zona-drop.dragover {
-    border-color: var(--azul-claro);
-    background: #eef4fa;
-    transform: scale(1.01);
-  }
+  .zona-drop { border: 2px dashed var(--borde); border-radius: 12px; padding: 2.5rem 1.5rem; text-align: center; background: var(--gris); transition: all 0.2s; cursor: pointer; margin: 1.5rem 0; }
+  .zona-drop:hover, .zona-drop.dragover { border-color: var(--azul-claro); background: #eef4fa; transform: scale(1.01); }
   .zona-drop .icono-grande { font-size: 3rem; margin-bottom: 0.5rem; }
   .zona-drop p { color: #4a5568; margin-bottom: 0.3rem; }
   .zona-drop small { color: #a0aec0; }
 
   /* ===== TABS INTERNAS ===== */
-  .sub-tabs {
-    display: flex; gap: 0.25rem;
-    border-bottom: 2px solid var(--borde);
-    margin: 1.5rem 0 1rem;
-    overflow-x: auto;
-  }
-  .sub-tab {
-    background: transparent; border: none;
-    padding: 0.7rem 1.1rem;
-    color: #718096; font-size: 0.9rem;
-    font-weight: 500; cursor: pointer;
-    border-bottom: 3px solid transparent;
-    font-family: inherit; white-space: nowrap;
-    transition: all 0.2s;
-  }
+  .sub-tabs { display: flex; gap: 0.25rem; border-bottom: 2px solid var(--borde); margin: 1.5rem 0 1rem; overflow-x: auto; }
+  .sub-tab { background: transparent; border: none; padding: 0.7rem 1.1rem; color: #718096; font-size: 0.9rem; font-weight: 500; cursor: pointer; border-bottom: 3px solid transparent; font-family: inherit; white-space: nowrap; transition: all 0.2s; }
   .sub-tab:hover { color: var(--azul); }
-  .sub-tab.active {
-    color: var(--azul);
-    border-bottom-color: var(--azul-claro);
-  }
+  .sub-tab.active { color: var(--azul); border-bottom-color: var(--azul-claro); }
   .sub-panel { display: none; }
   .sub-panel.active { display: block; }
 
   /* ===== VERSIÓN ===== */
-  .version-card {
-    background: #fff; border: 1px solid var(--borde);
-    border-radius: 12px; padding: 1.5rem;
-    margin: 1rem 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  }
-  .version-card h3 {
-    margin-top: 0; color: var(--azul);
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .version-tag {
-    display: inline-block; background: var(--azul); color: #fff;
-    padding: 0.2rem 0.7rem; border-radius: 12px;
-    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px;
-  }
+  .version-card { background: #fff; border: 1px solid var(--borde); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .version-card h3 { margin-top: 0; color: var(--azul); display: flex; align-items: center; gap: 0.5rem; }
+  .version-tag { display: inline-block; background: var(--azul); color: #fff; padding: 0.2rem 0.7rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; }
   .version-lista { list-style: none; margin: 1rem 0 0; padding: 0; }
-  .version-lista li {
-    display: flex; gap: 0.75rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--borde);
-    font-size: 0.9rem;
-  }
+  .version-lista li { display: flex; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--borde); font-size: 0.9rem; }
   .version-lista li:last-child { border-bottom: none; }
-  .version-lista .tag {
-    flex-shrink: 0; background: var(--gris); color: var(--azul);
-    padding: 0.15rem 0.55rem; border-radius: 6px;
-    font-size: 0.75rem; font-weight: 600;
-  }
+  .version-lista .tag { flex-shrink: 0; background: var(--gris); color: var(--azul); padding: 0.15rem 0.55rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
   .version-lista .tag.nueva { background: #e6fffa; color: #234e52; }
   .version-lista .tag.mejora { background: #ebf8ff; color: #2a4365; }
-  .version-lista .tag.fix { background: #fff5f5; color: #742a2a; }
 
   /* ===== TOAST ===== */
-  .toast {
-    position: fixed; bottom: 20px; right: 20px;
-    background: var(--azul); color: #fff;
-    padding: 0.9rem 1.2rem; border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    z-index: 2000; font-size: 0.9rem;
-    transform: translateY(120%);
-    transition: transform 0.3s ease;
-    max-width: 340px;
-  }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--azul); color: #fff; padding: 0.9rem 1.2rem; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 2000; font-size: 0.9rem; transform: translateY(120%); transition: transform 0.3s ease; max-width: 340px; }
   .toast.activo { transform: translateY(0); }
   .toast.exito { background: var(--verde); }
   .toast.error { background: var(--rojo); }
 
-  /* ===== ESTADOS ===== */
-  .vacio {
-    text-align: center; color: #a0aec0;
-    padding: 2.5rem 1rem; font-style: italic;
-    background: var(--gris); border-radius: 8px;
-    border: 1px dashed var(--borde);
-  }
-  .estado-carga {
-    text-align: center; color: #718096;
-    padding: 2rem; font-style: italic;
-  }
-
-  .buscador {
-    width: 100%; padding: 0.75rem 1rem;
-    border: 1px solid var(--borde); border-radius: 8px;
-    font-size: 0.95rem; font-family: inherit;
-    margin-bottom: 0.5rem;
-  }
-  .buscador:focus {
-    outline: none; border-color: var(--azul-claro);
-    box-shadow: 0 0 0 3px rgba(44,95,138,0.15);
-  }
-
-  /* ===== LISTA DE DOCUMENTOS ===== */
-  .docs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem; margin-top: 1rem;
-  }
-  .doc-card {
-    display: flex; align-items: center; gap: 1rem;
-    background: #fff; border: 1px solid var(--borde);
-    border-radius: 8px; padding: 1rem 1.25rem;
-    text-decoration: none; color: var(--texto);
-    transition: all 0.2s;
-  }
-  .doc-card:hover {
-    border-color: var(--azul-claro);
-    box-shadow: 0 4px 12px rgba(26,58,92,0.12);
-    transform: translateY(-2px);
-  }
-  .doc-icon {
-    flex-shrink: 0; width: 44px; height: 44px;
-    border-radius: 8px; display: flex;
-    align-items: center; justify-content: center;
-    font-size: 1.3rem; background: var(--gris);
-  }
-  .doc-info { flex: 1; min-width: 0; }
-  .doc-info .nombre {
-    font-weight: 600; font-size: 0.92rem;
-    word-break: break-word; margin-bottom: 0.15rem;
-  }
-  .doc-info .meta { font-size: 0.78rem; color: #718096; }
-  .badge {
-    display: inline-block; padding: 0.1rem 0.5rem;
-    border-radius: 10px; font-size: 0.68rem;
-    font-weight: 600; margin-left: 0.35rem;
-    vertical-align: middle;
-  }
-  .badge-cdn { background: #e6fffa; color: #234e52; }
-  .badge-directo { background: #fffaf0; color: #7b341e; }
-  .seccion-titulo {
-    display: flex; align-items: center; gap: 0.5rem;
-    margin-top: 2rem; padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--borde);
-    color: var(--azul); font-size: 1.1rem; font-weight: 700;
-  }
-  .seccion-desc { font-size: 0.85rem; color: #718096; margin: 0.5rem 0 0.75rem; }
-
-  footer {
-    text-align: center; padding: 2rem 1rem;
-    color: #718096; font-size: 0.85rem;
-    border-top: 1px solid var(--borde); margin-top: 3rem;
-  }
+  .vacio { text-align: center; color: #a0aec0; padding: 2.5rem 1rem; font-style: italic; background: var(--gris); border-radius: 8px; border: 1px dashed var(--borde); }
+  .estado-carga { text-align: center; color: #718096; padding: 2rem; font-style: italic; }
+  
+  footer { text-align: center; padding: 2rem 1rem; color: #718096; font-size: 0.85rem; border-top: 1px solid var(--borde); margin-top: 3rem; }
 </style>
 </head>
 <body>
@@ -430,14 +178,14 @@
 
   <!-- ==================== PESTAÑA: DATOS ==================== -->
   <section id="tab-datos" class="tab-panel active">
-
     <div class="aviso" id="avisoDatos">
-      <strong>Sube tu dataset para generar el análisis automáticamente.</strong> Ve a <em>Editar → Importar dataset</em> o haz clic en el botón de abajo. Acepta Excel (.xlsx, .xls) o CSV.
+      <strong>Sube tu dataset para generar el análisis automáticamente.</strong> Ve a <em>Editar → Dataset</em> o haz clic en el botón de abajo.
     </div>
 
     <div class="barra-acciones">
-      <button class="btn btn-primary" id="btnSubirDatasetTop">📤 Subir dataset (Excel/CSV)</button>
+      <button class="btn btn-primary" id="btnSubirDatasetTop">📤 Subir dataset manual</button>
       <input type="file" id="inputDatasetTop" accept=".xlsx,.xls,.csv" hidden>
+      <button class="btn btn-outline" id="btnRecargarRepo">🔄 Recargar datos del repositorio</button>
       <div class="spacer"></div>
       <span id="infoDataset" style="font-size:0.85rem;color:#718096;"></span>
     </div>
@@ -449,31 +197,20 @@
     <div class="grid-indicadores" id="gridIndicadores"></div>
 
     <h2>Evolución mensual — Eje Cafetero vs Nacional</h2>
-    <div class="chart-container tall">
-      <canvas id="chartEvolucion"></canvas>
-    </div>
+    <div class="chart-container tall"><canvas id="chartEvolucion"></canvas></div>
 
     <h2>Comparativa por región (último año completo)</h2>
-    <div class="chart-container tall">
-      <canvas id="chartRegiones"></canvas>
-    </div>
+    <div class="chart-container tall"><canvas id="chartRegiones"></canvas></div>
 
     <h2>Estacionalidad — promedio por mes</h2>
-    <div class="chart-container tall">
-      <canvas id="chartEstacionalidad"></canvas>
-    </div>
+    <div class="chart-container tall"><canvas id="chartEstacionalidad"></canvas></div>
 
     <h2>Datos por región</h2>
     <div class="tabla-wrap">
       <table id="tablaRegiones">
         <thead>
           <tr>
-            <th>Región</th>
-            <th>Ocupación actual (%)</th>
-            <th>Ocupación histórica (%)</th>
-            <th>Var. vs año anterior</th>
-            <th>Establecimientos</th>
-            <th>Registros</th>
+            <th>Región</th><th>Ocupación actual (%)</th><th>Ocupación histórica (%)</th><th>Var. vs año anterior</th><th>Establecimientos</th><th>Registros</th>
           </tr>
         </thead>
         <tbody id="tbodyRegiones"></tbody>
@@ -491,10 +228,8 @@
   <!-- ==================== PESTAÑA: DOCUMENTOS ==================== -->
   <section id="tab-documentos" class="tab-panel">
     <h2>📁 Documentos del proyecto</h2>
-    <p>Archivos y documentos cargados en el repositorio, ordenados por tipo y fecha.</p>
-
-    <input type="text" class="buscador" id="buscadorRepo" placeholder="🔍 Buscar documento por nombre...">
-
+    <p>Archivos y documentos cargados en el repositorio.</p>
+    <input type="text" class="buscador" id="buscadorRepo" placeholder="🔍 Buscar documento...">
     <div id="lista-docs">
       <div class="estado-carga">Cargando documentos desde el repositorio...</div>
     </div>
@@ -503,7 +238,7 @@
   <!-- ==================== PESTAÑA: EDITAR ==================== -->
   <section id="tab-editar" class="tab-panel">
     <h2>✏️ Modo edición</h2>
-    <p>Sube tu dataset, ajusta textos y personaliza el análisis. Los cambios se guardan en tu navegador.</p>
+    <p>Sube tu dataset, ajusta textos y personaliza el análisis.</p>
 
     <div class="barra-acciones">
       <button class="btn btn-success" id="btnGuardar">💾 Guardar cambios</button>
@@ -514,126 +249,52 @@
       <button class="btn btn-danger" id="btnReset">🗑️ Restaurar por defecto</button>
     </div>
 
-    <!-- SUB-TABS -->
     <div class="sub-tabs">
       <button class="sub-tab active" data-sub="dataset">📤 Dataset</button>
       <button class="sub-tab" data-sub="textos">📝 Textos</button>
-      <button class="sub-tab" data-sub="indicadores">📊 Indicadores</button>
-      <button class="sub-tab" data-sub="regiones">🗺️ Regiones</button>
-      <button class="sub-tab" data-sub="fuentes">📚 Fuentes</button>
     </div>
 
-    <!-- SUB-PANEL: Dataset -->
     <div id="sub-dataset" class="sub-panel active">
-      <div class="aviso info">
-        <strong>Sube tu archivo cruzado.</strong> Se aceptan <code>.xlsx</code>, <code>.xls</code> y <code>.csv</code>.
-        La página detectará automáticamente las columnas <em>Año, Mes, Región, Ocupación, Establecimientos, Habitaciones</em>.
-      </div>
-
+      <div class="aviso info"><strong>Sube tu archivo cruzado.</strong> Se detectarán automáticamente las columnas.</div>
       <div class="zona-drop" id="zonaDrop">
         <div class="icono-grande">📊</div>
-        <p><strong>Arrastra tu archivo aquí</strong> o haz clic para seleccionar</p>
-        <small>Acepta Excel y CSV con el dataset cruzado</small>
+        <p><strong>Arrastra tu archivo aquí</strong> o haz clic</p>
         <input type="file" id="inputDataset" accept=".xlsx,.xls,.csv" hidden>
       </div>
-
       <div id="infoArchivoCargado"></div>
-
       <h3>Vista previa de los datos cargados</h3>
-      <div id="previewDataset">
-        <div class="vacio">Aún no has cargado ningún dataset.</div>
-      </div>
+      <div id="previewDataset"><div class="vacio">Aún no has cargado ningún dataset.</div></div>
     </div>
 
-    <!-- SUB-PANEL: Textos -->
     <div id="sub-textos" class="sub-panel">
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Título principal</label>
-        <input type="text" id="editTitulo" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;">
+        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Título principal</label>
+        <input type="text" id="editTitulo" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;">
       </div>
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Subtítulo (autores)</label>
-        <input type="text" id="editSubtitulo" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;">
+        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Subtítulo</label>
+        <input type="text" id="editSubtitulo" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;">
       </div>
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Contexto</label>
-        <input type="text" id="editContexto" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;">
+        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Contexto</label>
+        <input type="text" id="editContexto" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;">
       </div>
       <div style="margin: 1rem 0;">
-        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Pregunta de decisión</label>
-        <textarea id="editPregunta" rows="4" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;"></textarea>
+        <label style="display:block;font-weight:600;margin-bottom:0.35rem;">Pregunta de decisión</label>
+        <textarea id="editPregunta" rows="4" style="width:100%;padding:0.6rem;border:1px solid var(--borde);border-radius:6px;"></textarea>
       </div>
-      <div style="margin: 1rem 0;">
-        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Aviso superior</label>
-        <textarea id="editAviso" rows="3" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;"></textarea>
-      </div>
-      <div style="margin: 1rem 0;">
-        <label style="display:block;font-size:0.85rem;font-weight:600;color:var(--azul);margin-bottom:0.35rem;">Estado del proyecto</label>
-        <input type="text" id="editEstado" style="width:100%;padding:0.6rem 0.8rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit;font-size:0.9rem;">
-      </div>
-    </div>
-
-    <!-- SUB-PANEL: Indicadores -->
-    <div id="sub-indicadores" class="sub-panel">
-      <p style="font-size:0.9rem;color:#718096;margin-bottom:1rem;">
-        Los indicadores se generan automáticamente desde el dataset. Puedes renombrarlos o agregar manualmente.
-      </p>
-      <div id="editIndicadores"></div>
-      <button class="btn btn-outline btn-sm" id="btnAddIndicador" style="margin-top:0.5rem;">➕ Agregar indicador</button>
-    </div>
-
-    <!-- SUB-PANEL: Regiones -->
-    <div id="sub-regiones" class="sub-panel">
-      <p style="font-size:0.9rem;color:#718096;margin-bottom:1rem;">
-        Regiones detectadas en tu dataset. Puedes renombrarlas.
-      </p>
-      <div id="editRegiones"></div>
-    </div>
-
-    <!-- SUB-PANEL: Fuentes -->
-    <div id="sub-fuentes" class="sub-panel">
-      <div id="editFuentes"></div>
-      <button class="btn btn-outline btn-sm" id="btnAddFuente" style="margin-top:0.5rem;">➕ Agregar fuente</button>
     </div>
   </section>
 
   <!-- ==================== PESTAÑA: VERSIÓN ==================== -->
   <section id="tab-version" class="tab-panel">
     <h2>ℹ️ Información de versión</h2>
-
     <div class="version-card">
       <h3>📌 Versión actual <span class="version-tag">v2.0.0</span></h3>
-      <p style="color:#718096;font-size:0.9rem;margin-top:0.5rem;">
-        Análisis automático de turismo y ocupación hotelera en Risaralda
-      </p>
       <ul class="version-lista">
-        <li><span class="tag nueva">NUEVO</span><span>Subida de datasets Excel/CSV y análisis automático.</span></li>
-        <li><span class="tag nueva">NUEVO</span><span>Generación automática de gráficas (evolución, regiones, estacionalidad).</span></li>
-        <li><span class="tag nueva">NUEVO</span><span>Detección de hallazgos y vulnerabilidades en los datos.</span></li>
-        <li><span class="tag nueva">NUEVO</span><span>Cálculo de indicadores clave automáticamente.</span></li>
-        <li><span class="tag mejora">MEJORA</span><span>Modo edición por sub-pestañas (dataset, textos, indicadores, regiones, fuentes).</span></li>
-        <li><span class="tag mejora">MEJORA</span><span>Persistencia de datos en localStorage.</span></li>
-        <li><span class="tag">v1.0.0</span><span>Versión inicial con menú expandible y documentos.</span></li>
-      </ul>
-    </div>
-
-    <div class="version-card">
-      <h3>🛠️ Tecnologías</h3>
-      <ul class="version-lista">
-        <li><span class="tag">HTML5</span><span>Estructura semántica.</span></li>
-        <li><span class="tag">CSS3</span><span>Diseño responsive con variables CSS.</span></li>
-        <li><span class="tag">JS</span><span>Vanilla JavaScript sin frameworks.</span></li>
-        <li><span class="tag">Chart.js</span><span>Gráficas interactivas.</span></li>
-        <li><span class="tag">SheetJS</span><span>Lectura de Excel y CSV en el navegador.</span></li>
-        <li><span class="tag">GitHub API</span><span>Listado de archivos del repositorio.</span></li>
-      </ul>
-    </div>
-
-    <div class="version-card">
-      <h3>👥 Autores</h3>
-      <ul class="version-lista">
-        <li><span class="tag">DEV</span><span>José Luis Brito Henao</span></li>
-        <li><span class="tag">DEV</span><span>Luis Eduardo Trujillo Agudelo</span></li>
+        <li><span class="tag nueva">NUEVO</span><span>Carga automática del dataset desde el repositorio.</span></li>
+        <li><span class="tag nueva">NUEVO</span><span>Gráficas y análisis automático.</span></li>
+        <li><span class="tag mejora">MEJORA</span><span>Diseño responsive y modo oscuro de menú.</span></li>
       </ul>
     </div>
   </section>
@@ -660,23 +321,9 @@ function toast(msg, tipo = 'info') {
   setTimeout(() => t.classList.remove('activo'), 2800);
 }
 
-function formatearTamano(bytes) {
-  if (!bytes) return '';
-  const u = ['B', 'KB', 'MB', 'GB'];
-  let i = 0;
-  while (bytes >= 1024 && i < u.length - 1) { bytes /= 1024; i++; }
-  return bytes.toFixed(1) + ' ' + u[i];
-}
-
 function iconoArchivo(nombre) {
   const ext = nombre.split('.').pop().toLowerCase();
-  const m = {
-    pdf: '📕', xlsx: '📗', xls: '📗', csv: '📊',
-    doc: '📘', docx: '📘', ppt: '📙', pptx: '📙',
-    ipynb: '📓', md: '📝', txt: '📄',
-    png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️',
-    zip: '🗜️', rar: '🗜️', json: '⚙️', html: '🌐'
-  };
+  const m = { pdf: '📕', xlsx: '📗', xls: '📗', csv: '📊', doc: '📘', docx: '📘', ipynb: '📓', md: '📝', png: '🖼️', jpg: '🖼️', html: '🌐', json: '⚙️' };
   return m[ext] || '📎';
 }
 
@@ -688,20 +335,20 @@ function fmtNum(n, dec = 1) {
 /* ============================================================
    ESTADO POR DEFECTO
 ============================================================ */
-const STORAGE_KEY = 'risaralda_datos_v2';
+const STORAGE_KEY = 'risaralda_datos_v3';
 
 const POR_DEFECTO = {
   titulo: 'Turismo y Ocupación Hotelera en Risaralda',
   subtitulo: 'Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo',
   contexto: 'Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026',
-  aviso: '<strong>Sube tu dataset para generar el análisis automáticamente.</strong> Ve a <em>Editar → Importar dataset</em> o haz clic en el botón de abajo. Acepta Excel (.xlsx, .xls) o CSV.',
+  aviso: '<strong>Sube tu dataset para generar el análisis automáticamente.</strong>',
   pregunta: '¿Qué meses del año y qué segmentos de establecimientos de alojamiento en Risaralda / Eje Cafetero presentan la mayor vulnerabilidad (caídas de ocupación e ingresos reales) según los datos históricos, para priorizar la reactivación tras el terremoto de agosto de 2026?',
-  estado: 'Estado: sin dataset cargado. Sube tu archivo cruzado en Editar → Dataset.',
+  estado: 'Cargando datos...',
   indicadores: [],
   regiones: [],
   fuentes: [
     { id: 'f1', texto: '<strong>EMA – DANE:</strong> Encuesta Mensual de Alojamiento (enero 2019 – julio 2026).' },
-    { id: 'f2', texto: '<strong>RNT:</strong> Registro Nacional de Turismo (establecimientos, categorías, habitaciones, camas).' }
+    { id: 'f2', texto: '<strong>RNT:</strong> Registro Nacional de Turismo.' }
   ],
   registros: [],
   datasetMeta: null
@@ -710,12 +357,8 @@ const POR_DEFECTO = {
 let datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || JSON.parse(JSON.stringify(POR_DEFECTO));
 
 function guardarDatos() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
-  } catch (e) {
-    console.warn('No se pudo guardar en localStorage:', e);
-    toast('Dataset muy grande, no se guardó en el navegador', 'error');
-  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(datos)); } 
+  catch (e) { console.warn('No se pudo guardar:', e); }
 }
 
 /* ============================================================
@@ -754,7 +397,7 @@ $$('.tab-btn').forEach(btn => {
 });
 
 /* ============================================================
-   SUB-TABS EN EDITAR
+   SUB-TABS
 ============================================================ */
 $$('.sub-tab').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -766,7 +409,7 @@ $$('.sub-tab').forEach(btn => {
 });
 
 /* ============================================================
-   MOTOR DE ANÁLISIS — Procesar dataset
+   PROCESAMIENTO DE DATOS
 ============================================================ */
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MESES_CORTOS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -783,14 +426,8 @@ function normalizarMes(m) {
 function detectarColumnas(headers) {
   const h = headers.map(x => String(x).toLowerCase().trim());
   const find = (opciones) => {
-    for (const op of opciones) {
-      const idx = h.findIndex(x => x === op);
-      if (idx >= 0) return idx;
-    }
-    for (const op of opciones) {
-      const idx = h.findIndex(x => x.includes(op));
-      if (idx >= 0) return idx;
-    }
+    for (const op of opciones) { const idx = h.findIndex(x => x === op); if (idx >= 0) return idx; }
+    for (const op of opciones) { const idx = h.findIndex(x => x.includes(op)); if (idx >= 0) return idx; }
     return -1;
   };
   return {
@@ -799,16 +436,14 @@ function detectarColumnas(headers) {
     region: find(['region','región','regiones','departamento']),
     ocupacion: find(['ocupacion','ocupación','occupancy']),
     establecimientos: find(['establecimientos','establecimiento']),
-    habitaciones: find(['habitaciones','habitacion']),
-    ingresos: find(['ingresos','ingreso','var ingresos'])
+    habitaciones: find(['habitaciones','habitacion'])
   };
 }
 
 function procesarDataset(filas, headers, nombreArchivo) {
   const cols = detectarColumnas(headers);
-
   if (cols.anio < 0 || cols.mes < 0 || cols.region < 0) {
-    throw new Error('No se detectaron las columnas mínimas: Año, Mes, Región');
+    throw new Error('Faltan columnas mínimas: Año, Mes, Región');
   }
 
   const registros = [];
@@ -819,15 +454,13 @@ function procesarDataset(filas, headers, nombreArchivo) {
 
     if (!anio || !mes || !region) continue;
     if (anio < 2000 || anio > 2100) continue;
-    if (region.toLowerCase().includes('fuente:') || region.toLowerCase().includes('nota:')) continue;
 
     const ocupRaw = cols.ocupacion >= 0 ? fila[cols.ocupacion] : null;
     let ocupacion = null;
     if (ocupRaw !== '' && ocupRaw !== '-' && ocupRaw !== null && ocupRaw !== undefined) {
-        // CORRECCIÓN: Limpiar símbolos de porcentaje y comas
         const limpieza = String(ocupRaw).replace('%', '').replace(',', '.').trim();
         ocupacion = parseFloat(limpieza);
-        // Si viene en escala 0-100 (ej: 45.5), se deja así. Si viene en 0-1, multiplicar x100.
+        // Si viene en 0.45, lo sube a 45. Si ya es 45, lo deja.
         if (ocupacion !== null && !isNaN(ocupacion) && ocupacion <= 1) ocupacion *= 100;
     }
 
@@ -835,53 +468,34 @@ function procesarDataset(filas, headers, nombreArchivo) {
     const hab = cols.habitaciones >= 0 ? parseInt(fila[cols.habitaciones]) : null;
 
     registros.push({
-      anio, mes, mesNum: MESES.indexOf(mes) + 1,
-      region,
+      anio, mes, mesNum: MESES.indexOf(mes) + 1, region,
       ocupacion: (ocupacion !== null && !isNaN(ocupacion)) ? ocupacion : null,
       establecimientos: (est && !isNaN(est)) ? est : null,
       habitaciones: (hab && !isNaN(hab)) ? hab : null
     });
   }
 
-  if (!registros.length) {
-    throw new Error('No se encontraron registros válidos en el dataset');
-  }
+  if (!registros.length) throw new Error('No hay registros válidos');
 
   const regionesUnicas = [...new Set(registros.map(r => r.region))].sort();
   const aniosUnicos = [...new Set(registros.map(r => r.anio))].sort((a, b) => a - b);
   const ultimoAnio = aniosUnicos[aniosUnicos.length - 1];
-  const anioAnterior = aniosUnicos[aniosUnicos.length - 2] || null;
-
-  const conteoPorAnio = {};
-  for (const r of registros) {
-    conteoPorAnio[r.anio] = (conteoPorAnio[r.anio] || 0) + 1;
-  }
-  const aniosCompletos = aniosUnicos.filter(a => conteoPorAnio[a] >= regionesUnicas.length * 12 - 5);
-
+  
   const regionEje = regionesUnicas.find(r => r.toLowerCase().includes('eje cafetero')) || regionesUnicas[0];
   const regionNacional = regionesUnicas.find(r => r.toLowerCase().includes('nacional')) || null;
 
-  const ultAnioCompleto = aniosCompletos[aniosCompletos.length - 1] || ultimoAnio;
-  const antAnioCompleto = aniosCompletos[aniosCompletos.length - 2] || null;
-
   function promedioOcupacion(region, anio) {
     const vals = registros.filter(r => r.region === region && r.anio === anio && r.ocupacion !== null).map(r => r.ocupacion);
-    if (!vals.length) return null;
-    return vals.reduce((a, b) => a + b, 0) / vals.length;
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
   }
-
   function promedioHistorico(region) {
     const vals = registros.filter(r => r.region === region && r.ocupacion !== null).map(r => r.ocupacion);
-    if (!vals.length) return null;
-    return vals.reduce((a, b) => a + b, 0) / vals.length;
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
   }
 
-  const indEjeActual = promedioOcupacion(regionEje, ultAnioCompleto);
-  const indEjeAnt = antAnioCompleto ? promedioOcupacion(regionEje, antAnioCompleto) : null;
+  const indEjeActual = promedioOcupacion(regionEje, ultimoAnio);
   const indEjeHist = promedioHistorico(regionEje);
-
-  const indNalActual = regionNacional ? promedioOcupacion(regionNacional, ultAnioCompleto) : null;
-  const indNalHist = regionNacional ? promedioHistorico(regionNacional) : null;
+  const indNalActual = regionNacional ? promedioOcupacion(regionNacional, ultimoAnio) : null;
 
   const promediosPorMesEje = {};
   for (let i = 1; i <= 12; i++) {
@@ -896,162 +510,35 @@ function procesarDataset(filas, headers, nombreArchivo) {
     if (v > mesMasFuerteVal) { mesMasFuerteVal = v; mesMasFuerte = parseInt(m); }
   }
 
-  const estEje = registros
-    .filter(r => r.region === regionEje && r.anio === ultAnioCompleto && r.establecimientos)
-    .map(r => r.establecimientos)
-    .sort((a, b) => b - a)[0] || null;
-
   const indicadores = [
-    {
-      id: 'i_eje_act',
-      label: `Ocupación Eje Cafetero (${ultAnioCompleto})`,
-      valor: indEjeActual !== null ? fmtNum(indEjeActual, 1) + '%' : '—',
-      delta: indEjeAnt !== null && indEjeActual !== null ? indEjeActual - indEjeAnt : null,
-      destacado: true
-    },
-    {
-      id: 'i_eje_hist',
-      label: 'Ocupación histórica Eje Cafetero',
-      valor: indEjeHist !== null ? fmtNum(indEjeHist, 1) + '%' : '—'
-    },
-    {
-      id: 'i_mes_critico',
-      label: 'Mes más crítico (Eje)',
-      valor: mesMasCritico ? MESES[mesMasCritico - 1] + ' (' + fmtNum(mesMasCriticoVal, 1) + '%)' : '—',
-      valorChico: true
-    },
-    {
-      id: 'i_mes_fuerte',
-      label: 'Mes más fuerte (Eje)',
-      valor: mesMasFuerte ? MESES[mesMasFuerte - 1] + ' (' + fmtNum(mesMasFuerteVal, 1) + '%)' : '—',
-      valorChico: true
-    }
+    { id: 'i_eje_act', label: `Ocupación Eje Cafetero (${ultimoAnio})`, valor: indEjeActual !== null ? fmtNum(indEjeActual, 1) + '%' : '—', destacado: true },
+    { id: 'i_eje_hist', label: 'Ocupación histórica Eje Cafetero', valor: indEjeHist !== null ? fmtNum(indEjeHist, 1) + '%' : '—' },
+    { id: 'i_mes_critico', label: 'Mes más crítico (Eje)', valor: mesMasCritico ? MESES[mesMasCritico - 1] + ' (' + fmtNum(mesMasCriticoVal, 1) + '%)' : '—', valorChico: true },
+    { id: 'i_mes_fuerte', label: 'Mes más fuerte (Eje)', valor: mesMasFuerte ? MESES[mesMasFuerte - 1] + ' (' + fmtNum(mesMasFuerteVal, 1) + '%)' : '—', valorChico: true }
   ];
-
-  if (indNalActual !== null) {
-    indicadores.splice(1, 0, {
-      id: 'i_nal_act',
-      label: `Ocupación Nacional (${ultAnioCompleto})`,
-      valor: fmtNum(indNalActual, 1) + '%'
-    });
-  }
-
-  if (estEje) {
-    indicadores.push({
-      id: 'i_est',
-      label: 'Establecimientos Eje (último año)',
-      valor: estEje.toLocaleString('es-CO')
-    });
-  }
+  if (indNalActual !== null) indicadores.splice(1, 0, { id: 'i_nal_act', label: `Ocupación Nacional (${ultimoAnio})`, valor: fmtNum(indNalActual, 1) + '%' });
 
   const regiones = regionesUnicas.map((nombre, idx) => {
-    const actual = promedioOcupacion(nombre, ultAnioCompleto);
-    const anterior = antAnioCompleto ? promedioOcupacion(nombre, antAnioCompleto) : null;
+    const actual = promedioOcupacion(nombre, ultimoAnio);
     const historico = promedioHistorico(nombre);
-    const totalReg = registros.filter(r => r.region === nombre).length;
-    const estReg = registros
-      .filter(r => r.region === nombre && r.anio === ultAnioCompleto && r.establecimientos)
-      .map(r => r.establecimientos)
-      .sort((a, b) => b - a)[0] || null;
-
     return {
-      id: 'reg_' + idx,
-      nombre,
-      ocupacionActual: actual,
-      ocupacionAnterior: anterior,
-      ocupacionHistorica: historico,
-      delta: (actual !== null && anterior !== null) ? actual - anterior : null,
-      establecimientos: estReg,
-      registros: totalReg
+      id: 'reg_' + idx, nombre, ocupacionActual: actual, ocupacionHistorica: historico,
+      registros: registros.filter(r => r.region === nombre).length,
+      establecimientos: registros.filter(r => r.region === nombre && r.anio === ultimoAnio && r.establecimientos).map(r => r.establecimientos).sort((a,b)=>b-a)[0] || null
     };
   });
 
   const hallazgos = [];
-
-  const regionesConCaida = regiones
-    .filter(r => r.delta !== null)
-    .sort((a, b) => a.delta - b.delta);
-  if (regionesConCaida.length) {
-    const peor = regionesConCaida[0];
-    if (peor.delta < 0) {
-      hallazgos.push({
-        tipo: 'alerta',
-        titulo: 'Mayor caída interanual',
-        texto: `<strong>${peor.nombre}</strong> registra la mayor caída de ocupación: ${fmtNum(peor.delta, 1)} puntos porcentuales (de ${fmtNum(peor.ocupacionAnterior,1)}% a ${fmtNum(peor.ocupacionActual,1)}%).`
-      });
-    }
-    const mejor = regionesConCaida[regionesConCaida.length - 1];
-    if (mejor.delta > 0) {
-      hallazgos.push({
-        tipo: 'positivo',
-        titulo: 'Mayor recuperación',
-        texto: `<strong>${mejor.nombre}</strong> muestra la mejor recuperación: +${fmtNum(mejor.delta, 1)} puntos porcentuales (de ${fmtNum(mejor.ocupacionAnterior,1)}% a ${fmtNum(mejor.ocupacionActual,1)}%).`
-      });
-    }
-  }
-
-  if (mesMasCritico) {
-    hallazgos.push({
-      tipo: 'info',
-      titulo: 'Estacionalidad crítica',
-      texto: `<strong>${MESES[mesMasCritico - 1]}</strong> es históricamente el mes con menor ocupación promedio en <strong>${regionEje}</strong> (${fmtNum(mesMasCriticoVal,1)}%). Es el mes prioritario para reactivación.`
-    });
-  }
-
+  if (mesMasCritico) hallazgos.push({ tipo: 'info', titulo: 'Estacionalidad crítica', texto: `<strong>${MESES[mesMasCritico - 1]}</strong> es el mes con menor ocupación histórica en <strong>${regionEje}</strong> (${fmtNum(mesMasCriticoVal,1)}%).` });
   if (indNalActual !== null && indEjeActual !== null) {
     const brecha = indEjeActual - indNalActual;
-    hallazgos.push({
-      tipo: brecha < 0 ? 'alerta' : 'positivo',
-      titulo: 'Brecha vs. nacional',
-      texto: `<strong>${regionEje}</strong> está ${brecha >= 0 ? 'por encima' : 'por debajo'} del promedio nacional en <strong>${fmtNum(Math.abs(brecha), 1)} puntos porcentuales</strong> (${fmtNum(indEjeActual,1)}% vs ${fmtNum(indNalActual,1)}%).`
-    });
-  }
-
-  const ocup2020 = promedioOcupacion(regionEje, 2020);
-  const ocup2019 = promedioOcupacion(regionEje, 2019);
-  if (ocup2020 !== null && ocup2019 !== null) {
-    const caida = ocup2020 - ocup2019;
-    hallazgos.push({
-      tipo: 'alerta',
-      titulo: 'Impacto pandemia (2020)',
-      texto: `La pandemia generó una caída de <strong>${fmtNum(caida, 1)} puntos</strong> en ${regionEje} (de ${fmtNum(ocup2019,1)}% a ${fmtNum(ocup2020,1)}%). Este es el precedente más similar al terremoto de 2026.`
-    });
-  }
-
-  if (aniosCompletos.length >= 3) {
-    const ult = promedioOcupacion(regionEje, aniosCompletos[aniosCompletos.length - 1]);
-    const pen = promedioOcupacion(regionEje, aniosCompletos[aniosCompletos.length - 2]);
-    const ant = promedioOcupacion(regionEje, aniosCompletos[aniosCompletos.length - 3]);
-    if (ult !== null && pen !== null && ant !== null) {
-      const tend = (ult - ant) / 2;
-      hallazgos.push({
-        tipo: tend < 0 ? 'alerta' : 'positivo',
-        titulo: 'Tendencia últimos 3 años',
-        texto: `${regionEje} muestra una tendencia ${tend < 0 ? 'negativa' : 'positiva'} de <strong>${fmtNum(tend, 2)} puntos/año</strong> en los últimos 3 años.`
-      });
-    }
+    hallazgos.push({ tipo: brecha < 0 ? 'alerta' : 'positivo', titulo: 'Brecha vs. nacional', texto: `<strong>${regionEje}</strong> está ${brecha >= 0 ? 'por encima' : 'por debajo'} del nacional en <strong>${fmtNum(Math.abs(brecha), 1)} pts</strong>.` });
   }
 
   return {
-    registros,
-    regiones,
-    anios: aniosUnicos,
-    aniosCompletos,
-    ultimoAnio: ultAnioCompleto,
-    regionEje,
-    regionNacional,
-    promediosPorMesEje,
-    indicadores,
-    hallazgos,
-    datasetMeta: {
-      nombreArchivo,
-      totalRegistros: registros.length,
-      totalRegiones: regionesUnicas.length,
-      anioInicio: aniosUnicos[0],
-      anioFin: ultAnioCompleto,
-      columnasDetectadas: cols,
-      fechaCarga: new Date().toISOString()
-    }
+    registros, regiones, anios: aniosUnicos, ultimoAnio, regionEje, regionNacional,
+    promediosPorMesEje, indicadores, hallazgos,
+    datasetMeta: { nombreArchivo, totalRegistros: registros.length, totalRegiones: regionesUnicas.length, anioInicio: aniosUnicos[0], anioFin: ultimoAnio, columnasDetectadas: cols, fechaCarga: new Date().toISOString() }
   };
 }
 
@@ -1064,13 +551,9 @@ async function leerArchivo(file) {
         const workbook = XLSX.read(data, { type: 'array' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const filas = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-        if (filas.length < 2) throw new Error('El archivo no tiene datos suficientes');
-        const headers = filas[0].map(h => String(h).trim());
-        const datos = filas.slice(1);
-        resolve({ headers, filas: datos });
-      } catch (err) {
-        reject(err);
-      }
+        if (filas.length < 2) throw new Error('Archivo vacío');
+        resolve({ headers: filas[0].map(h => String(h).trim()), filas: filas.slice(1) });
+      } catch (err) { reject(err); }
     };
     reader.onerror = reject;
     reader.readAsArrayBuffer(file);
@@ -1083,29 +566,22 @@ async function cargarDataset(file) {
     const { headers, filas } = await leerArchivo(file);
     const resultado = procesarDataset(filas, headers, file.name);
 
-    datos.registros = resultado.registros;
-    datos.regiones = resultado.regiones;
-    datos.indicadores = resultado.indicadores;
-    datos.hallazgos = resultado.hallazgos;
-    datos.anios = resultado.anios;
-    datos.aniosCompletos = resultado.aniosCompletos;
-    datos.ultimoAnio = resultado.ultimoAnio;
-    datos.regionEje = resultado.regionEje;
-    datos.regionNacional = resultado.regionNacional;
-    datos.promediosPorMesEje = resultado.promediosPorMesEje;
-    datos.datasetMeta = resultado.datasetMeta;
-    datos.estado = `Estado: ${resultado.datasetMeta.totalRegistros.toLocaleString('es-CO')} registros cargados · ${resultado.datasetMeta.totalRegiones} regiones · ${resultado.datasetMeta.anioInicio}–${resultado.datasetMeta.anioFin}.`;
+    Object.assign(datos, resultado);
+    datos.estado = `Estado: ${resultado.datasetMeta.totalRegistros} registros cargados · ${resultado.datasetMeta.totalRegiones} regiones.`;
 
     guardarDatos();
     renderizarDatos();
     renderizarEditor();
-    toast(`Dataset cargado: ${resultado.datasetMeta.totalRegistros} registros`, 'exito');
+    toast(`Dataset cargado exitosamente`, 'exito');
   } catch (err) {
     console.error(err);
     toast('Error al procesar: ' + err.message, 'error');
   }
 }
 
+/* ============================================================
+   RENDERIZAR
+============================================================ */
 let charts = {};
 
 function renderizarDatos() {
@@ -1117,8 +593,8 @@ function renderizarDatos() {
 
   if (datos.datasetMeta) {
     $('#avisoDatos').className = 'aviso exito';
-    $('#avisoDatos').innerHTML = `✅ <strong>Dataset cargado:</strong> ${datos.datasetMeta.nombreArchivo} — ${datos.datasetMeta.totalRegistros.toLocaleString('es-CO')} registros de ${datos.datasetMeta.totalRegiones} regiones (${datos.datasetMeta.anioInicio}–${datos.datasetMeta.anioFin}).`;
-    $('#infoDataset').textContent = `Última carga: ${new Date(datos.datasetMeta.fechaCarga).toLocaleString('es-CO')}`;
+    $('#avisoDatos').innerHTML = `✅ <strong>Dataset cargado:</strong> ${datos.datasetMeta.nombreArchivo} — ${datos.datasetMeta.totalRegistros.toLocaleString('es-CO')} registros.`;
+    $('#infoDataset').textContent = `Cargado: ${new Date(datos.datasetMeta.fechaCarga).toLocaleString('es-CO')}`;
   } else {
     $('#avisoDatos').className = 'aviso';
     $('#avisoDatos').innerHTML = datos.aviso;
@@ -1126,58 +602,41 @@ function renderizarDatos() {
   }
 
   if (datos.indicadores && datos.indicadores.length) {
-    $('#gridIndicadores').innerHTML = datos.indicadores.map(ind => {
-      let deltaHTML = '';
-      if (ind.delta !== null && ind.delta !== undefined) {
-        const clase = ind.delta >= 0 ? 'positivo' : 'negativo';
-        const signo = ind.delta >= 0 ? '+' : '';
-        deltaHTML = `<div class="delta ${clase}">${signo}${fmtNum(ind.delta, 1)} pts vs año anterior</div>`;
-      }
-      return `
-        <div class="card-indicador ${ind.destacado ? 'destacado' : ''}">
-          <div class="label">${ind.label}</div>
-          <div class="valor ${ind.valorChico ? 'chico' : ''}">${ind.valor}</div>
-          ${deltaHTML}
-        </div>
-      `;
-    }).join('');
+    $('#gridIndicadores').innerHTML = datos.indicadores.map(ind => `
+      <div class="card-indicador ${ind.destacado ? 'destacado' : ''}">
+        <div class="label">${ind.label}</div>
+        <div class="valor ${ind.valorChico ? 'chico' : ''}">${ind.valor}</div>
+      </div>
+    `).join('');
   } else {
-    $('#gridIndicadores').innerHTML = '<div class="vacio" style="grid-column:1/-1;">Sube un dataset para generar los indicadores automáticamente.</div>';
+    $('#gridIndicadores').innerHTML = '<div class="vacio" style="grid-column:1/-1;">Sin datos.</div>';
   }
 
   if (datos.regiones && datos.regiones.length) {
-    $('#tbodyRegiones').innerHTML = datos.regiones.map(r => {
-      const deltaClase = r.delta === null ? '' : (r.delta >= 0 ? 'positivo' : 'negativo');
-      const deltaTexto = r.delta === null ? '—' : (r.delta >= 0 ? '+' : '') + fmtNum(r.delta, 1) + ' pts';
-      return `
-        <tr>
-          <td><strong>${r.nombre}</strong></td>
-          <td class="num">${r.ocupacionActual !== null ? fmtNum(r.ocupacionActual, 1) + '%' : '—'}</td>
-          <td class="num">${r.ocupacionHistorica !== null ? fmtNum(r.ocupacionHistorica, 1) + '%' : '—'}</td>
-          <td class="num ${deltaClase}">${deltaTexto}</td>
-          <td class="num">${r.establecimientos ? r.establecimientos.toLocaleString('es-CO') : '—'}</td>
-          <td class="num">${r.registros.toLocaleString('es-CO')}</td>
-        </tr>
-      `;
-    }).join('');
+    $('#tbodyRegiones').innerHTML = datos.regiones.map(r => `
+      <tr>
+        <td><strong>${r.nombre}</strong></td>
+        <td class="num">${r.ocupacionActual !== null ? fmtNum(r.ocupacionActual, 1) + '%' : '—'}</td>
+        <td class="num">${r.ocupacionHistorica !== null ? fmtNum(r.ocupacionHistorica, 1) + '%' : '—'}</td>
+        <td class="num">—</td>
+        <td class="num">${r.establecimientos ? r.establecimientos.toLocaleString('es-CO') : '—'}</td>
+        <td class="num">${r.registros.toLocaleString('es-CO')}</td>
+      </tr>
+    `).join('');
   } else {
-    $('#tbodyRegiones').innerHTML = '<tr><td colspan="6" class="pendiente" style="text-align:center;">Sin datos — sube un dataset</td></tr>';
+    $('#tbodyRegiones').innerHTML = '<tr><td colspan="6" style="text-align:center;">Sin datos</td></tr>';
   }
 
   $('#listaFuentes').innerHTML = datos.fuentes.map(f => `<li>${f.texto}</li>`).join('');
 
   if (datos.hallazgos && datos.hallazgos.length) {
-    $('#hallazgos').innerHTML = datos.hallazgos.map(h => {
-      const clase = h.tipo === 'alerta' ? 'aviso' : h.tipo === 'positivo' ? 'aviso exito' : 'aviso info';
-      const icono = h.tipo === 'alerta' ? '⚠️' : h.tipo === 'positivo' ? '✅' : 'ℹ️';
-      return `
-        <div class="${clase}">
-          <strong>${icono} ${h.titulo}.</strong> ${h.texto}
-        </div>
-      `;
-    }).join('');
+    $('#hallazgos').innerHTML = datos.hallazgos.map(h => `
+      <div class="aviso ${h.tipo === 'positivo' ? 'exito' : h.tipo === 'alerta' ? '' : 'info'}">
+        <strong>${h.titulo}:</strong> ${h.texto}
+      </div>
+    `).join('');
   } else {
-    $('#hallazgos').innerHTML = '<div class="vacio">Sube un dataset para generar hallazgos automáticos.</div>';
+    $('#hallazgos').innerHTML = '<div class="vacio">Sin hallazgos.</div>';
   }
 
   actualizarGraficas();
@@ -1186,145 +645,41 @@ function renderizarDatos() {
 function actualizarGraficas() {
   Object.values(charts).forEach(c => { if (c) c.destroy(); });
   charts = {};
-
   if (!datos.registros || !datos.registros.length) return;
 
   const reg = datos.registros;
   const regionEje = datos.regionEje;
-  const regionNal = datos.regionNacional;
-  const anios = datos.anios || [];
-  const ultAnio = datos.ultimoAnio;
-
-  const labelsEvo = [];
-  const dataEje = [];
-  const dataNal = [];
-
-  for (const anio of anios) {
+  const labelsEvo = [], dataEje = [];
+  for (const anio of datos.anios) {
     for (let m = 1; m <= 12; m++) {
-      const regsEje = reg.filter(r => r.region === regionEje && r.anio === anio && r.mesNum === m && r.ocupacion !== null);
-      if (!regsEje.length) continue;
-      labelsEvo.push(MESES_CORTOS[m-1] + ' ' + String(anio).slice(2));
-      dataEje.push(regsEje[0].ocupacion);
-
-      if (regionNal) {
-        const regsNal = reg.filter(r => r.region === regionNal && r.anio === anio && r.mesNum === m && r.ocupacion !== null);
-        dataNal.push(regsNal.length ? regsNal[0].ocupacion : null);
+      const regs = reg.filter(r => r.region === regionEje && r.anio === anio && r.mesNum === m && r.ocupacion !== null);
+      if (regs.length) {
+        labelsEvo.push(MESES_CORTOS[m-1] + ' ' + String(anio).slice(2));
+        dataEje.push(regs[0].ocupacion);
       }
     }
   }
 
-  const ctxEvo = $('#chartEvolucion');
-  if (ctxEvo && labelsEvo.length) {
-    charts.evolucion = new Chart(ctxEvo, {
-      type: 'line',
-      data: {
-        labels: labelsEvo,
-        datasets: [
-          {
-            label: regionEje,
-            data: dataEje,
-            borderColor: '#ed8936',
-            backgroundColor: 'rgba(237,137,54,0.1)',
-            borderWidth: 2.5,
-            tension: 0.3,
-            pointRadius: 2,
-            pointHoverRadius: 5,
-            fill: true
-          },
-          ...(regionNal ? [{
-            label: regionNal,
-            data: dataNal,
-            borderColor: '#2c5f8a',
-            backgroundColor: 'rgba(44,95,138,0.05)',
-            borderWidth: 2,
-            tension: 0.3,
-            pointRadius: 2,
-            pointHoverRadius: 5,
-            fill: false
-          }] : [])
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          title: { display: true, text: `Evolución mensual de ocupación (${anios[0]}–${ultAnio})`, color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-          legend: { position: 'bottom' },
-          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmtNum(ctx.parsed.y, 1)}%` } }
-        },
-        scales: {
-          y: { beginAtZero: false, ticks: { callback: v => v + '%' } }
-        }
-      }
+  if ($('#chartEvolucion')) {
+    charts.evolucion = new Chart($('#chartEvolucion'), {
+      type: 'line', data: { labels: labelsEvo, datasets: [{ label: regionEje, data: dataEje, borderColor: '#ed8936', tension: 0.3, fill: true }] },
+      options: { responsive: true, maintainAspectRatio: false, scales: { y: { ticks: { callback: v => v + '%' } } } }
     });
   }
 
   const regsConDatos = datos.regiones.filter(r => r.ocupacionActual !== null).sort((a, b) => b.ocupacionActual - a.ocupacionActual);
-  const labelsReg = regsConDatos.map(r => r.nombre);
-  const dataReg = regsConDatos.map(r => r.ocupacionActual);
-  const coloresReg = regsConDatos.map(r =>
-    r.nombre === regionEje ? '#ed8936' : '#2c5f8a'
-  );
-
-  const ctxReg = $('#chartRegiones');
-  if (ctxReg && labelsReg.length) {
-    charts.regiones = new Chart(ctxReg, {
-      type: 'bar',
-      data: {
-        labels: labelsReg,
-        datasets: [{
-          label: `Ocupación ${ultAnio} (%)`,
-          data: dataReg,
-          backgroundColor: coloresReg,
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          title: { display: true, text: `Ocupación promedio por región (${ultAnio})`, color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => `${fmtNum(ctx.parsed.y, 1)}%` } }
-        },
-        scales: {
-          y: { beginAtZero: true, ticks: { callback: v => v + '%' } },
-          x: { ticks: { autoSkip: false, maxRotation: 60, minRotation: 45 } }
-        }
-      }
+  if ($('#chartRegiones')) {
+    charts.regiones = new Chart($('#chartRegiones'), {
+      type: 'bar', data: { labels: regsConDatos.map(r => r.nombre), datasets: [{ label: 'Ocupación %', data: regsConDatos.map(r => r.ocupacionActual), backgroundColor: '#2c5f8a' }] },
+      options: { responsive: true, maintainAspectRatio: false, scales: { y: { ticks: { callback: v => v + '%' } } } }
     });
   }
 
-  const promediosMes = datos.promediosPorMesEje || {};
-  const dataEst = MESES_CORTOS.map((_, i) => promediosMes[i+1] || null);
-  const maxMes = Math.max(...dataEst.filter(v => v !== null));
-  const coloresEst = dataEst.map(v =>
-    v === null ? '#a0aec0' : v === maxMes ? '#38a169' : v < 30 ? '#e53e3e' : '#2c5f8a'
-  );
-
-  const ctxEst = $('#chartEstacionalidad');
-  if (ctxEst) {
-    charts.estacionalidad = new Chart(ctxEst, {
-      type: 'bar',
-      data: {
-        labels: MESES_CORTOS,
-        datasets: [{
-          label: `Ocupación promedio ${regionEje} (%)`,
-          data: dataEst,
-          backgroundColor: coloresEst,
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          title: { display: true, text: `Estacionalidad — promedio histórico por mes`, color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => ctx.parsed.y !== null ? `${fmtNum(ctx.parsed.y, 1)}%` : 'Sin datos' } }
-        },
-        scales: {
-          y: { beginAtZero: true, ticks: { callback: v => v + '%' } }
-        }
-      }
+  const dataEst = MESES_CORTOS.map((_, i) => datos.promediosPorMesEje[i+1] || null);
+  if ($('#chartEstacionalidad')) {
+    charts.estacionalidad = new Chart($('#chartEstacionalidad'), {
+      type: 'bar', data: { labels: MESES_CORTOS, datasets: [{ label: 'Promedio %', data: dataEst, backgroundColor: '#38a169' }] },
+      options: { responsive: true, maintainAspectRatio: false, scales: { y: { ticks: { callback: v => v + '%' } } } }
     });
   }
 }
@@ -1334,45 +689,68 @@ function renderizarEditor() {
   $('#editSubtitulo').value = datos.subtitulo;
   $('#editContexto').value = datos.contexto;
   $('#editPregunta').value = datos.pregunta;
-  $('#editAviso').value = (datos.aviso || '').replace(/<[^>]+>/g, '');
-  $('#editEstado').value = datos.estado;
 
   if (datos.datasetMeta) {
-    $('#infoArchivoCargado').innerHTML = `
-      <div class="aviso exito">
-        <strong>✅ Archivo cargado:</strong> ${datos.datasetMeta.nombreArchivo}<br>
-        <small>${datos.datasetMeta.totalRegistros.toLocaleString('es-CO')} registros · ${datos.datasetMeta.totalRegiones} regiones · ${datos.datasetMeta.anioInicio}–${datos.datasetMeta.anioFin}</small>
-      </div>
-    `;
+    $('#infoArchivoCargado').innerHTML = `<div class="aviso exito"><strong>✅ Archivo:</strong> ${datos.datasetMeta.nombreArchivo}</div>`;
     const preview = datos.registros.slice(0, 10);
-    $('#previewDataset').innerHTML = `
-      <div class="tabla-wrap">
-        <table>
-          <thead><tr><th>Año</th><th>Mes</th><th>Región</th><th>Ocupación (%)</th><th>Establecimientos</th><th>Habitaciones</th></tr></thead>
-          <tbody>
-            ${preview.map(r => `
-              <tr>
-                <td>${r.anio}</td>
-                <td>${r.mes}</td>
-                <td>${r.region}</td>
-                <td class="num">${r.ocupacion !== null ? fmtNum(r.ocupacion, 2) : '—'}</td>
-                <td class="num">${r.establecimientos || '—'}</td>
-                <td class="num">${r.habitaciones || '—'}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-      <p style="font-size:0.85rem;color:#718096;margin-top:0.5rem;">Mostrando 10 de ${datos.registros.length.toLocaleString('es-CO')} registros.</p>
-    `;
-  } else {
-    $('#infoArchivoCargado').innerHTML = '';
-    $('#previewDataset').innerHTML = '<div class="vacio">Aún no has cargado ningún dataset.</div>';
+    $('#previewDataset').innerHTML = `<div class="tabla-wrap"><table><thead><tr><th>Año</th><th>Mes</th><th>Región</th><th>Ocupación</th></tr></thead><tbody>${preview.map(r => `<tr><td>${r.anio}</td><td>${r.mes}</td><td>${r.region}</td><td>${fmtNum(r.ocupacion, 1)}%</td></tr>`).join('')}</tbody></table></div>`;
   }
-
-  // Continuación del código para indicadores, regiones y fuentes...
-  // (Añade aquí los editores de indicadores, regiones y fuentes que ya tenías)
 }
+
+/* ============================================================
+   LÓGICA DE CARGA AUTOMÁTICA DESDE GITHUB
+============================================================ */
+async function cargarDesdeGitHub() {
+  try {
+    toast('Buscando dataset en el repositorio...');
+    // Intenta leer el archivo dataset_cruzado.xlsx desde la raíz del repo
+    const url = 'https://edutruj.github.io/mineria-de-datos-terremoto/dataset_cruzado.xlsx';
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Archivo no encontrado en el repo');
+    const blob = await response.blob();
+    const file = new File([blob], 'dataset_cruzado.xlsx');
+    await cargarDataset(file);
+  } catch (err) {
+    console.warn('Carga automática falló:', err.message);
+    toast('Haz clic en "Subir dataset manual" para cargar el archivo.', 'info');
+  }
+}
+
+/* ============================================================
+   EVENTOS DE LA INTERFAZ
+============================================================ */
+$('#btnSubirDatasetTop').addEventListener('click', () => $('#inputDatasetTop').click());
+$('#inputDatasetTop').addEventListener('change', e => { if (e.target.files.length) cargarDataset(e.target.files[0]); });
+$('#btnRecargarRepo').addEventListener('click', cargarDesdeGitHub);
+
+$('#zonaDrop').addEventListener('click', () => $('#inputDataset').click());
+$('#inputDataset').addEventListener('change', e => { if (e.target.files.length) cargarDataset(e.target.files[0]); });
+
+$('#btnGuardar').addEventListener('click', () => {
+  datos.titulo = $('#editTitulo').value;
+  datos.subtitulo = $('#editSubtitulo').value;
+  datos.contexto = $('#editContexto').value;
+  datos.pregunta = $('#editPregunta').value;
+  guardarDatos();
+  renderizarDatos();
+  toast('Cambios guardados', 'exito');
+});
+
+$('#btnReset').addEventListener('click', () => {
+  if(confirm('¿Borrar datos y restaurar todo por defecto?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+});
+
+// ARRANCAR
+document.addEventListener('DOMContentLoaded', () => {
+  renderizarDatos();
+  // Si no hay datos cargados en localStorage, intentar cargar desde GitHub
+  if (!datos.datasetMeta) {
+    cargarDesdeGitHub();
+  }
+});
 </script>
 </body>
 </html>
