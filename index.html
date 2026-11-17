@@ -61,6 +61,7 @@
 </header>
 
 <main>
+  <!-- BANNER DE VALIDACIÓN (Nuevo, pero con tu mismo estilo) -->
   <div id="banner-calidad"></div>
 
   <section>
@@ -121,9 +122,18 @@
   </section>
 
   <section>
-    <h2>Códigos del cruce de datos (corregidos)</h2>
+    <h2>Documentos del proyecto</h2>
+    <p>Archivos del repositorio y archivos pesados subidos a Releases de GitHub.</p>
+    <p>Cargando documentos desde GitHub...</p>
+  </section>
+
+  <section>
+    <h2>Códigos del cruce de datos</h2>
+    <p>Documentación del proceso de minería de datos aplicado al dataset cruzado (EMA-DANE + RNT).</p>
+    <p><strong>Objetivo:</strong> Unir la Encuesta Mensual de Alojamiento (EMA) del DANE con el Registro Nacional de Turismo (RNT) para analizar la ocupación hotelera por región en el período 2019–2026.</p>
+    
     <details open>
-      <summary>Ver código Python corregido del cruce</summary>
+      <summary>Ver código Python completo (Corregido)</summary>
 <pre>
 # ============================================================
 # CRUCE EMA (ocupación) + RNT (establecimientos/habitaciones)
@@ -221,8 +231,12 @@ print("Dataset guardado correctamente")
 
   <section>
     <h2>Subir nuevo dataset</h2>
-    <p>Sube un archivo Excel (.xlsx) o CSV con la estructura de <code>dataset_cruzado.xlsx</code>.</p>
-    <div class="dropzone" id="dropzone">Arrastra tu archivo aquí o haz clic para seleccionar<br><small>Soportado: .xlsx, .xls, .csv</small></div>
+    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code>dataset_cruzado.xlsx</code>. La página procesará el cruce automáticamente y actualizará todas las gráficas.</p>
+    <p><strong>Columnas esperadas:</strong> Año, Meses (o mes), region, ocupacion, establecimientos, habitaciones.</p>
+    <div class="dropzone" id="dropzone">
+      Arrastra tu archivo aquí o haz clic para seleccionar<br>
+      <small>Soportado: .xlsx, .xls, .csv</small>
+    </div>
     <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden />
     <div id="archivo-activo" class="archivo-activo" style="display:none;">
       <span id="archivo-nombre"></span>
@@ -231,7 +245,9 @@ print("Dataset guardado correctamente")
   </section>
 </main>
 
-<footer>Minería de Datos · Risaralda — Terremoto de Pereira 2026 · EMA-DANE + RNT</footer>
+<footer>
+  Minería de Datos · Risaralda — Terremoto de Pereira 2026 · EMA-DANE + RNT
+</footer>
 
 <script>
 let DATA = [];
@@ -239,6 +255,7 @@ let charts = {};
 const ESPERADO = 12 * 99;
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
+// --- LÓGICA DE DATOS (Nueva, pero compatible con tu diseño) ---
 function parseOcupacion(v) {
   if (v === null || v === undefined || v === "") return null;
   if (typeof v === "number") return v > 1 ? v / 100 : v;
@@ -280,9 +297,9 @@ function validarIntegridad(data, nombreArchivo) {
   const pares = data.filter(d => d.habitaciones > 0 && d.establecimientos > 0 && d.habitaciones === d.establecimientos).length;
   const sospecha = pares > 0 && pares / n > 0.8;
   const ok = n >= ESPERADO * 0.95;
-  let html = ok ? `<div class="banner ok">✔ Integridad verificada — ${n.toLocaleString()} registros.</div>` 
+  let html = ok ? `<div class="banner ok">✔ Integridad verificada — ${n.toLocaleString()} registros cargados correctamente.</div>` 
                 : `<div class="banner alerta">⚠ Dataset recortado — ${n.toLocaleString()} registros (esperados ~${ESPERADO}).</div>`;
-  if (sospecha) html += `<div class="banner alerta">⚠ Habitaciones == Establecimientos en muchas filas. Usa <code>sum</code> en el cruce.</div>`;
+  if (sospecha) html += `<div class="banner alerta">⚠ Habitaciones == Establecimientos en muchas filas. Ejecuta el cruce corregido (usa <code>sum</code>).</div>`;
   document.getElementById("banner-calidad").innerHTML = html;
   document.getElementById("fuente-datos").textContent = `Datos cargados: ${n.toLocaleString()} registros · ${nombreArchivo}`;
 }
@@ -294,12 +311,15 @@ function procesarDatos(data) {
   llenarSelect("filtro-mes", MESES.filter(m => uniq(data.map(d => d.mes_nombre)).includes(m)), "Todos");
   renderTodo();
 }
+
 function llenarSelect(id, valores, label) {
   const sel = document.getElementById(id);
   sel.innerHTML = `<option value="">${label}</option>`;
   valores.forEach(v => { const opt = document.createElement("option"); opt.value = v; opt.textContent = v; sel.appendChild(opt); });
 }
+
 function getFiltros() { return { region: document.getElementById("filtro-region").value, anio: document.getElementById("filtro-anio").value, mes: document.getElementById("filtro-mes").value }; }
+
 function filtrar(data) {
   const f = getFiltros();
   return data.filter(d => (!f.region || d.region === f.region) && (!f.anio || String(d.anio) === String(f.anio)) && (!f.mes || d.mes_nombre === f.mes));
@@ -322,12 +342,13 @@ function renderIndicadores(data) {
   const max = vals.length ? Math.max(...vals) : null;
   const est = data.reduce((a, d) => a + (d.establecimientos || 0), 0);
   const hab = data.reduce((a, d) => a + (d.habitaciones || 0), 0);
+  
   const cards = [
-    { label: "Registros totales", value: n.toLocaleString(), sub: "Filtrado" },
+    { label: "Registros totales", value: n.toLocaleString(), sub: "12 regiones × 8 años" },
     { label: "Ocupación promedio", value: fmtPct(prom), sub: "Nacional" },
-    { label: "Ocupación máxima", value: fmtPct(max), sub: "Más alto" },
-    { label: "Establecimientos", value: est.toLocaleString(), sub: "Suma" },
-    { label: "Habitaciones", value: hab.toLocaleString(), sub: "Suma" },
+    { label: "Ocupación máxima", value: fmtPct(max), sub: "Registro más alto" },
+    { label: "Establecimientos", value: est.toLocaleString(), sub: "Suma de registros" },
+    { label: "Habitaciones", value: hab.toLocaleString(), sub: "Suma de registros" },
   ];
   document.getElementById("cards-indicadores").innerHTML = cards.map(c => `<div class="card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`).join("");
 }
@@ -392,7 +413,7 @@ function renderTablaResumen(data) {
 }
 
 function renderDetalle(data) {
-  document.getElementById("detalle-info").textContent = `Mostrando ${data.length.toLocaleString()} registros.`;
+  document.getElementById("detalle-info").textContent = `Mostrando ${data.length.toLocaleString()} registros filtrados.`;
   const tbody = document.querySelector("#tabla-detalle tbody"); tbody.innerHTML = "";
   data.slice(0, 500).forEach(d => {
     const tr = document.createElement("tr");
