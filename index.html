@@ -743,10 +743,10 @@ print("Dataset guardado correctamente")</pre>
 
   <section id="tab-subir" class="tab-panel">
     <h2>📤 Subir nuevo dataset</h2>
-    <p>Sube un archivo Excel (.xlsx) o CSV con la misma estructura del <code class="inline">dataset_cruzado.xlsx</code>. La página procesará el cruce automáticamente y actualizará todas las gráficas.</p>
+    <p>Sube un archivo Excel o CSV con una fila de encabezados. Se detecta automáticamente la hoja y se aceptan variantes de nombres de columnas (con o sin tildes) y meses escritos o numerados.</p>
 
     <div class="aviso">
-      <strong>Columnas esperadas:</strong> <code class="inline">Año</code>, <code class="inline">Meses</code>, <code class="inline">region</code>, <code class="inline">ocupacion</code>, <code class="inline">establecimientos</code>, <code class="inline">habitaciones</code>.
+      <strong>Columnas requeridas:</strong> año, mes, región y ocupación. Establecimientos y habitaciones son opcionales.
     </div>
 
     <div class="zona-drop" id="zonaDrop">
@@ -1228,28 +1228,95 @@ async function procesarDataset(file) {
   try {
     toast('Procesando ' + file.name + '...');
     const data = await file.arrayBuffer();
-    const wb = XLSX.read(data);
-    const sheet = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet);
+    const wb = XLSX.read(data, { type: 'array', cellDates: true });
+    const columnas = {
+      anio: ['anio', 'ano', 'year'],
+      mes: ['mes', 'meses', 'month', 'months'],
+      region: ['region', 'zona'],
+      ocupacion: ['ocupacion', 'occupancy', 'occupation', 'porcentajeocupacion'],
+      establecimientos: ['establecimientos', 'establishments'],
+      habitaciones: ['habitaciones', 'rooms']
+    };
+    const normalizarTexto = value => String(value == null ? '' : value)
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[\uFEFF]/g, '').trim().toLowerCase();
+    const normalizarEncabezado = value => normalizarTexto(value).replace(/[^a-z0-9]/g, '');
+    const buscarColumna = (row, aliases) => {
+      const keys = Object.keys(row);
+      for (const alias of aliases) {
+        const key = keys.find(k => normalizarEncabezado(k) === alias);
+        if (key !== undefined) return row[key];
+      }
+      return null;
+    };
+    const parsearNumero = value => {
+      if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+      if (value == null || String(value).trim() === '') return null;
+      let text = String(value).trim().replace(/[%\s\u00a0]/g, '');
+      if (text.includes(',') && text.includes('.')) {
+        const decimal = text.lastIndexOf(',') > text.lastIndexOf('.') ? ',' : '.';
+        text = decimal === ','
+          ? text.replace(/\./g, '').replace(',', '.')
+          : text.replace(/,/g, '');
+      } else if (text.includes(',')) {
+        text = text.replace(',', '.');
+      }
+      const number = Number(text);
+      return Number.isFinite(number) ? number : null;
+    };
+    const normalizarMes = value => {
+      if (value instanceof Date && !Number.isNaN(value.getTime())) {
+        return MESES_ORDEN[value.getMonth()];
+      }
+      const raw = String(value == null ? '' : value).trim();
+      const monthNumber = parsearNumero(raw);
+      if (monthNumber !== null && Number.isInteger(monthNumber) && monthNumber >= 1 && monthNumber <= 12) {
+        return MESES_ORDEN[monthNumber - 1];
+      }
+      const month = normalizarTexto(raw).replace(/\.$/, '');
+      const index = MESES_ORDEN.findIndex(name => normalizarTexto(name) === month);
+      if (index >= 0) return MESES_ORDEN[index];
+      const abbreviations = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+      const abbreviationIndex = abbreviations.indexOf(month);
+      return abbreviationIndex >= 0 ? MESES_ORDEN[abbreviationIndex] : '';
+    };
 
-    const normalizado = rows.map(r => {
-      const keys = Object.keys(r);
-      const find = (names) => {
-        for (const n of names) {
-          const k = keys.find(k => k.toLowerCase().includes(n.toLowerCase()));
-          if (k) return r[k];
-        }
-        return null;
-      };
-      return {
-        anio: parseInt(find(['Año','Anio','year'])) || 0,
-        mes: String(find(['Mes','Month']) || '').trim(),
-        region: String(find(['region']) || '').trim(),
-        ocupacion: parseFloat(find(['ocupacion','occupancy'])) || 0,
-        establecimientos: parseInt(find(['establecimientos'])) || 0,
-        habitaciones: parseInt(find(['habitaciones'])) || 0
-      };
-    }).filter(r => r.anio && r.mes && r.region);
+    let rows = null;
+    for (const sheetName of wb.SheetNames) {
+      const candidateRows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: null, raw: true });
+      if (candidateRows.length && ['anio', 'mes', 'region', 'ocupacion'].every(field =>
+        candidateRows.some(row => Object.keys(row).some(key =>
+          columnas[field].includes(normalizarEncabezado(key))
+        ))
+      )) {
+        rows = candidateRows;
+        break;
+      }
+    }
+    if (!rows) throw new Error('No encontré una hoja con columnas de año, mes, región y ocupación.');
+
+    let filasOmitidas = 0;
+    const normalizado = rows.reduce((result, row) => {
+      const anio = parsearNumero(buscarColumna(row, columnas.anio));
+      const mes = normalizarMes(buscarColumna(row, columnas.mes));
+      const region = String(buscarColumna(row, columnas.region) || '').trim();
+      const ocupacion = parsearNumero(buscarColumna(row, columnas.ocupacion));
+      if (!anio && !mes && !region && ocupacion === null) return result;
+      if (!Number.isInteger(anio) || anio < 1900 || !mes || !region ||
+          ocupacion === null || ocupacion < 0 || ocupacion > 100) {
+        filasOmitidas++;
+        return result;
+      }
+      result.push({
+        anio,
+        mes,
+        region,
+        ocupacion,
+        establecimientos: parsearNumero(buscarColumna(row, columnas.establecimientos)) || 0,
+        habitaciones: parsearNumero(buscarColumna(row, columnas.habitaciones)) || 0
+      });
+      return result;
+    }, []);
 
     if (!normalizado.length) throw new Error('No se encontraron filas válidas');
 
@@ -1269,7 +1336,8 @@ async function procesarDataset(file) {
     cargarFiltros();
     renderizarTodo();
     renderizarListaDatasets();
-    toast(`✅ ${normalizado.length} registros cargados`, 'exito');
+    const avisoOmitidas = filasOmitidas ? ` · ${filasOmitidas} filas incompletas o inválidas omitidas` : '';
+    toast(`✅ ${normalizado.length} registros cargados${avisoOmitidas}`, filasOmitidas ? 'info' : 'exito');
   } catch (err) {
     console.error(err);
     toast('❌ Error: ' + err.message, 'error');
