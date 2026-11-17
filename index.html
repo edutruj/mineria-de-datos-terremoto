@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Turismo y Ocupación Hotelera en Risaralda</title>
+<title>Ocupación hotelera en Colombia | enfoque en Risaralda</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
@@ -442,9 +442,10 @@
 </header>
 
 <header class="page-header">
-  <h1>Turismo y Ocupación Hotelera en Risaralda</h1>
+  <h1>Ocupación hotelera en Colombia</h1>
+  <p>Enfoque del proyecto: Risaralda y el Eje Cafetero.</p>
   <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
-  <span class="contexto">Contexto: Terremoto de Pereira (Risaralda) — agosto de 2026</span>
+  <span class="contexto">Contexto de estudio: terremoto de Pereira — agosto de 2026</span>
 </header>
 
 <main>
@@ -452,6 +453,15 @@
   <section id="tab-datos" class="tab-panel active">
     <div class="aviso ok" id="avisoEstado">
       <strong>✅ Datos cargados:</strong> <span id="infoDataset"></span>
+    </div>
+
+    <div class="aviso" aria-label="Alcance y límites de los datos">
+      <strong>Cómo leer esta información:</strong>
+      la base original reúne 1,092 registros de 12 regiones entre enero de 2019 y julio de 2026.
+      Incluye 1,087 ocupaciones observadas y 5 faltantes reales de San Andrés (abril–agosto de 2020);
+      los faltantes no equivalen a ocupación cero.
+      <strong>El período termina antes del terremoto de agosto de 2026</strong>, así que estos datos no permiten medir su efecto posterior.
+      Esta nota describe la base original; si cargas otro archivo, el aviso «Datos cargados» identifica la fuente activa.
     </div>
 
     <h2>Indicadores clave</h2>
@@ -731,6 +741,7 @@ print("Dataset guardado correctamente")</pre>
       <li><strong>Meses de menor ocupación del Eje Cafetero:</strong> mayo (32.35%), abril (36.21%) y junio (37.15%), promedios mensuales 2019–2026.</li>
       <li><strong>Ingresos reales:</strong> la variación anual encadenada de julio 2026 frente a julio 2019 ubica al Eje Cafetero en +14.15% (3.º entre 11 regiones comparables).</li>
       <li><strong>Pronóstico estacional:</strong> el backtest ago.–oct. 2025 obtuvo MAPE de 5.49%; la proyección para 2026 es una referencia, no una medición del impacto del terremoto.</li>
+      <li><strong>Modelo de clasificación:</strong> el archivo <code class="inline">05_turismo_colombia_prediccion.xlsx</code> evalúa 327 casos de prueba para clasificar ocupación alta (60% o más); sus resultados no son una predicción futura.</li>
       <li><strong>Límite del análisis:</strong> la EMA publicada llega a julio de 2026 y no desagrega ocupación e ingresos mensuales por tipo de alojamiento.</li>
     </ul>
 
@@ -770,7 +781,7 @@ print("Dataset guardado correctamente")</pre>
 </main>
 
 <footer>
-  Proyecto de Minería de Datos · Turismo y Ocupación Hotelera en Risaralda · 2026
+  Proyecto de Minería de Datos · Ocupación hotelera en Colombia, enfoque en Risaralda · 2026
 </footer>
 
 <div class="toast" id="toast"></div>
