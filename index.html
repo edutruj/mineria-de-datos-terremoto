@@ -16,75 +16,39 @@
     --alerta: #c62828;
   }
   * { box-sizing: border-box; }
-  body {
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    margin: 0; color: var(--texto); background: #fff;
-    line-height: 1.5;
-  }
-  header {
-    background: var(--azul); color: #fff; padding: 28px 24px;
-  }
+  body { font-family: "Segoe UI", Roboto, Arial, sans-serif; margin: 0; color: var(--texto); background: #fff; line-height: 1.5; }
+  header { background: var(--azul); color: #fff; padding: 28px 24px; }
   header h1 { margin: 0 0 6px; font-size: 1.7rem; }
   header p { margin: 2px 0; opacity: .9; font-size: .95rem; }
   main { max-width: 1200px; margin: 0 auto; padding: 24px; }
   section { margin-bottom: 36px; }
-  h2 {
-    color: var(--azul); border-bottom: 2px solid var(--azul-claro);
-    padding-bottom: 6px; font-size: 1.25rem;
-  }
-  .cards {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px; margin: 18px 0;
-  }
-  .card {
-    background: var(--gris); border-radius: 10px; padding: 16px;
-    border-left: 5px solid var(--azul);
-  }
+  h2 { color: var(--azul); border-bottom: 2px solid var(--azul-claro); padding-bottom: 6px; font-size: 1.25rem; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 18px 0; }
+  .card { background: var(--gris); border-radius: 10px; padding: 16px; border-left: 5px solid var(--azul); }
   .card .label { font-size: .8rem; color: #555; text-transform: uppercase; letter-spacing: .5px; }
   .card .value { font-size: 1.6rem; font-weight: 700; color: var(--azul); margin-top: 4px; }
   .card .sub { font-size: .8rem; color: #666; margin-top: 2px; }
   .filtros { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 18px; }
   .filtros label { font-size: .85rem; display: flex; flex-direction: column; gap: 4px; }
-  .filtros select, .filtros input {
-    padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; min-width: 130px;
-  }
+  .filtros select, .filtros input { padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; min-width: 130px; }
   .chart-box { position: relative; height: 340px; margin: 12px 0 24px; }
   table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 10px; }
   th, td { padding: 8px 10px; border-bottom: 1px solid #e3e6ea; text-align: left; }
   th { background: var(--azul-claro); color: var(--azul); font-weight: 600; }
   tr:hover td { background: #fafcfe; }
-  .banner {
-    padding: 12px 16px; border-radius: 8px; margin: 14px 0; font-size: .9rem;
-  }
+  .banner { padding: 12px 16px; border-radius: 8px; margin: 14px 0; font-size: .9rem; }
   .banner.ok { background: #e8f5e9; color: var(--ok); border-left: 4px solid var(--ok); }
   .banner.alerta { background: #ffebee; color: var(--alerta); border-left: 4px solid var(--alerta); }
-  .dropzone {
-    border: 2px dashed var(--azul); border-radius: 12px; padding: 28px;
-    text-align: center; color: var(--azul); background: var(--azul-claro);
-    cursor: pointer; transition: background .2s;
-  }
+  .dropzone { border: 2px dashed var(--azul); border-radius: 12px; padding: 28px; text-align: center; color: var(--azul); background: var(--azul-claro); cursor: pointer; transition: background .2s; }
   .dropzone:hover { background: #cfe2f0; }
-  .archivo-activo {
-    margin-top: 12px; padding: 10px 14px; background: var(--gris);
-    border-radius: 8px; display: flex; justify-content: space-between;
-    align-items: center; font-size: .9rem;
-  }
-  .archivo-activo .badge {
-    background: var(--ok); color: #fff; padding: 2px 8px; border-radius: 10px;
-    font-size: .75rem; margin-left: 8px;
-  }
-  button {
-    background: var(--azul); color: #fff; border: none; padding: 8px 14px;
-    border-radius: 6px; cursor: pointer; font-size: .88rem;
-  }
+  .archivo-activo { margin-top: 12px; padding: 10px 14px; background: var(--gris); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: .9rem; }
+  .archivo-activo .badge { background: var(--ok); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: .75rem; margin-left: 8px; }
+  button { background: var(--azul); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: .88rem; }
   button:hover { background: #163a5a; }
   footer { text-align: center; padding: 20px; color: #777; font-size: .8rem; }
   details { background: var(--gris); padding: 14px 18px; border-radius: 10px; margin: 10px 0; }
   summary { cursor: pointer; font-weight: 600; color: var(--azul); }
-  pre {
-    background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 8px;
-    overflow-x: auto; font-size: .8rem; line-height: 1.45;
-  }
+  pre { background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: .8rem; line-height: 1.45; }
 </style>
 </head>
 <body>
@@ -97,33 +61,22 @@
 </header>
 
 <main>
-
-  <!-- ===== BANNER DE CALIDAD ===== -->
   <div id="banner-calidad"></div>
 
-  <!-- ===== INDICADORES ===== -->
   <section>
     <h2>Indicadores clave</h2>
     <div class="cards" id="cards-indicadores"></div>
   </section>
 
-  <!-- ===== FILTROS ===== -->
   <section>
     <h2>Filtros interactivos</h2>
     <div class="filtros">
-      <label>Región
-        <select id="filtro-region"><option value="">Todas</option></select>
-      </label>
-      <label>Año
-        <select id="filtro-anio"><option value="">Todos</option></select>
-      </label>
-      <label>Mes
-        <select id="filtro-mes"><option value="">Todos</option></select>
-      </label>
+      <label>Región <select id="filtro-region"><option value="">Todas</option></select></label>
+      <label>Año <select id="filtro-anio"><option value="">Todos</option></select></label>
+      <label>Mes <select id="filtro-mes"><option value="">Todos</option></select></label>
     </div>
   </section>
 
-  <!-- ===== GRÁFICOS ===== -->
   <section>
     <h2>Evolución mensual de ocupación</h2>
     <div class="chart-box"><canvas id="chart-evolucion"></canvas></div>
@@ -139,20 +92,14 @@
     <div class="chart-box"><canvas id="chart-region"></canvas></div>
   </section>
 
-  <!-- ===== TABLA RESUMEN ===== -->
   <section>
     <h2>Tabla resumen por región</h2>
     <div style="overflow-x:auto;">
       <table id="tabla-resumen">
         <thead>
           <tr>
-            <th>Región</th>
-            <th>Ocupación promedio (%)</th>
-            <th>Ocupación máxima (%)</th>
-            <th>Ocupación mínima (%)</th>
-            <th>Establecimientos</th>
-            <th>Habitaciones</th>
-            <th>Registros</th>
+            <th>Región</th><th>Ocupación promedio (%)</th><th>Ocupación máxima (%)</th>
+            <th>Ocupación mínima (%)</th><th>Establecimientos</th><th>Habitaciones</th><th>Registros</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -160,33 +107,25 @@
     </div>
   </section>
 
-  <!-- ===== DETALLE ===== -->
   <section>
     <h2>Detalle de datos</h2>
     <p id="detalle-info">Mostrando 0 registros filtrados.</p>
     <div style="overflow-x:auto; max-height: 420px;">
       <table id="tabla-detalle">
         <thead>
-          <tr>
-            <th>Año</th>
-            <th>Mes</th>
-            <th>Región</th>
-            <th>Ocupación (%)</th>
-            <th>Establecimientos</th>
-            <th>Habitaciones</th>
-          </tr>
+          <tr><th>Año</th><th>Mes</th><th>Región</th><th>Ocupación (%)</th><th>Establecimientos</th><th>Habitaciones</th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
   </section>
 
-  <!-- ===== DOCUMENTOS / CÓDIGO ===== -->
   <section>
     <h2>Códigos del cruce de datos (corregidos)</h2>
     <details open>
       <summary>Ver código Python corregido del cruce</summary>
-<pre># ============================================================
+<pre>
+# ============================================================
 # CRUCE EMA (ocupación) + RNT (establecimientos/habitaciones)
 # Versión corregida: tipos, % -> float, fecha, conteos
 # ============================================================
@@ -214,13 +153,8 @@ ocupacion_limpia.columns = ocupacion_limpia.columns.astype(str).str.strip()
 ocupacion_limpia = ocupacion_limpia.loc[:, ocupacion_limpia.columns.notna()]
 
 ocupacion_limpia["Año"] = ocupacion_limpia["Año"].ffill()
-ocupacion_limpia["Año"] = (
-    ocupacion_limpia["Año"].astype(str)
-    .str.replace("p", "", regex=False)
-)
-ocupacion_limpia["Año"] = pd.to_numeric(
-    ocupacion_limpia["Año"], errors="coerce"
-)
+ocupacion_limpia["Año"] = (ocupacion_limpia["Año"].astype(str).str.replace("p", "", regex=False))
+ocupacion_limpia["Año"] = pd.to_numeric(ocupacion_limpia["Año"], errors="coerce")
 
 # --- 3. Melt: ancho -> largo ---
 columnas_regiones = list(ocupacion_limpia.columns[3:15])
@@ -234,98 +168,49 @@ ocupacion_long = pd.melt(
 
 # --- 4. CORRECCIÓN: ocupación texto -> float (0-1) ---
 ocupacion_long["ocupacion"] = (
-    ocupacion_long["ocupacion"]
-    .astype(str)
+    ocupacion_long["ocupacion"].astype(str)
     .str.replace("%", "", regex=False)
     .str.replace(",", ".", regex=False)
     .str.strip()
 )
-ocupacion_long["ocupacion"] = (
-    pd.to_numeric(ocupacion_long["ocupacion"], errors="coerce") / 100
-)
+ocupacion_long["ocupacion"] = (pd.to_numeric(ocupacion_long["ocupacion"], errors="coerce") / 100)
 
 # --- 5. CORRECCIÓN: unificar nombre de columna ---
 ocupacion_long = ocupacion_long.rename(columns={"Meses": "mes_nombre"})
 
 # --- 6. CORRECCIÓN: construir fecha real ---
-mes_map = {
-    "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5,
-    "Junio": 6, "Julio": 7, "Agosto": 8, "Septiembre": 9,
-    "Octubre": 10, "Noviembre": 11, "Diciembre": 12
-}
+mes_map = {"Enero":1,"Febrero":2,"Marzo":3,"Abril":4,"Mayo":5,"Junio":6,"Julio":7,"Agosto":8,"Septiembre":9,"Octubre":10,"Noviembre":11,"Diciembre":12}
 ocupacion_long["mes"] = ocupacion_long["mes_nombre"].map(mes_map)
-ocupacion_long["fecha"] = pd.to_datetime(
-    dict(year=ocupacion_long["Año"],
-         month=ocupacion_long["mes"],
-         day=1),
-    errors="coerce"
-)
+ocupacion_long["fecha"] = pd.to_datetime(dict(year=ocupacion_long["Año"], month=ocupacion_long["mes"], day=1), errors="coerce")
 
 # --- 7. RNT: filtrar alojamientos ---
-rnt_hoteles = rnt[
-    rnt["categoria"].str.contains("ALOJAMIENTO", case=False, na=False)
-].copy()
+rnt_hoteles = rnt[rnt["categoria"].str.contains("ALOJAMIENTO", case=False, na=False)].copy()
 for col in rnt_hoteles.columns:
-    rnt_hoteles[col] = (
-        rnt_hoteles[col].astype(str)
-        .str.replace('"', "", regex=False)
-        .str.strip()
-    )
+    rnt_hoteles[col] = (rnt_hoteles[col].astype(str).str.replace('"', "", regex=False).str.strip())
 
 # --- 8. Mapeo departamentos -> regiones DANE ---
 mapa_region = {
-    "ANTIOQUIA": "Antioquia",
-    "ATLANTICO": "Caribe", "CESAR": "Caribe",
-    "MAGDALENA": "Caribe", "LA GUAJIRA": "Caribe",
-    "CALDAS": "Eje Cafetero", "QUINDIO": "Eje Cafetero",
-    "RISARALDA": "Eje Cafetero",
-    "VALLE DEL CAUCA": "Pacífico", "CAUCA": "Pacífico",
-    "NARIÑO": "Pacífico", "CHOCO": "Pacífico",
-    "SANTANDER": "Santanderes", "NORTE DE SANTANDER": "Santanderes",
-    "META": "Llanos Orinoquía", "ARAUCA": "Llanos Orinoquía",
-    "CASANARE": "Llanos Orinoquía", "VICHADA": "Llanos Orinoquía",
-    "AMAZONAS": "Amazonía", "CAQUETA": "Amazonía",
-    "PUTUMAYO": "Amazonía", "GUAINIA": "Amazonía",
-    "GUAVIARE": "Amazonía", "VAUPES": "Amazonía",
-    "BOGOTA": "Bogotá D.C.",
-    "CUNDINAMARCA": "Central", "BOYACA": "Central",
-    "HUILA": "Central", "TOLIMA": "Central",
-    "CORDOBA": "Golfo Morrosquillo y Sabana",
-    "SUCRE": "Golfo Morrosquillo y Sabana",
-    "SAN ANDRES Y PROVIDENCIA": "San Andrés y Providencia",
-    "BOLIVAR": "Cartagena"
+    "ANTIOQUIA": "Antioquia", "ATLANTICO": "Caribe", "CESAR": "Caribe", "MAGDALENA": "Caribe", "LA GUAJIRA": "Caribe",
+    "CALDAS": "Eje Cafetero", "QUINDIO": "Eje Cafetero", "RISARALDA": "Eje Cafetero",
+    "VALLE DEL CAUCA": "Pacífico", "CAUCA": "Pacífico", "NARIÑO": "Pacífico", "CHOCO": "Pacífico",
+    "SANTANDER": "Santanderes", "NORTE DE SANTANDER": "Santanderes", "META": "Llanos Orinoquía", "ARAUCA": "Llanos Orinoquía",
+    "CASANARE": "Llanos Orinoquía", "VICHADA": "Llanos Orinoquía", "AMAZONAS": "Amazonía", "CAQUETA": "Amazonía", "PUTUMAYO": "Amazonía",
+    "GUAINIA": "Amazonía", "GUAVIARE": "Amazonía", "VAUPES": "Amazonía", "BOGOTA": "Bogotá D.C.",
+    "CUNDINAMARCA": "Central", "BOYACA": "Central", "HUILA": "Central", "TOLIMA": "Central",
+    "CORDOBA": "Golfo Morrosquillo y Sabana", "SUCRE": "Golfo Morrosquillo y Sabana",
+    "SAN ANDRES Y PROVIDENCIA": "San Andrés y Providencia", "BOLIVAR": "Cartagena"
 }
-rnt_hoteles["region"] = (
-    rnt_hoteles["departamento"].str.upper().map(mapa_region)
-)
+rnt_hoteles["region"] = (rnt_hoteles["departamento"].str.upper().map(mapa_region))
 
 # --- 9. CORRECCIÓN: resumen RNT (nunique + sum) ---
-rnt_hoteles["habitaciones"] = pd.to_numeric(
-    rnt_hoteles["habitaciones"], errors="coerce"
-)
-rnt_resumen = (
-    rnt_hoteles
-    .groupby("region", as_index=False)
-    .agg(
-        establecimientos=("codigo_rnt", "nunique"),
-        habitaciones=("habitaciones", "sum")
-    )
-)
+rnt_hoteles["habitaciones"] = pd.to_numeric(rnt_hoteles["habitaciones"], errors="coerce")
+rnt_resumen = (rnt_hoteles.groupby("region", as_index=False).agg(establecimientos=("codigo_rnt", "nunique"), habitaciones=("habitaciones", "sum")))
 
 # --- 10. Cruce final ---
-dataset_final = pd.merge(
-    ocupacion_long, rnt_resumen,
-    on="region", how="left", indicator=True
-)
+dataset_final = pd.merge(ocupacion_long, rnt_resumen, on="region", how="left", indicator=True)
 
 # --- 11. Verificación de integridad ---
-esperado = 12 * 99  # 12 regiones x 99 meses
-print(f"Filas esperadas: {esperado}")
-print(f"Filas obtenidas: {len(dataset_final)}")
-print(dataset_final["_merge"].value_counts())
-print("Habitaciones == Establecimientos?",
-      (dataset_final["habitaciones"] ==
-       dataset_final["establecimientos"]).all())
+print(f"Filas esperadas: {12 * 99} | Filas obtenidas: {len(dataset_final)}")
 
 # --- 12. Exportación ---
 dataset_final.to_excel("../data/dataset_cruzado.xlsx", index=False)
@@ -334,110 +219,55 @@ print("Dataset guardado correctamente")
     </details>
   </section>
 
-  <!-- ===== SUBIR NUEVO DATASET ===== -->
   <section>
     <h2>Subir nuevo dataset</h2>
-    <p>Sube un archivo Excel (.xlsx) o CSV con la estructura de
-       <code>dataset_cruzado.xlsx</code>. La página valida integridad y
-       actualiza todas las gráficas.</p>
-    <p><strong>Columnas esperadas:</strong>
-      Año, mes (o Meses), region, ocupacion, establecimientos, habitaciones.</p>
-    <div class="dropzone" id="dropzone">
-      Arrastra tu archivo aquí o haz clic para seleccionar<br>
-      <small>Soportado: .xlsx, .xls, .csv</small>
-    </div>
+    <p>Sube un archivo Excel (.xlsx) o CSV con la estructura de <code>dataset_cruzado.xlsx</code>.</p>
+    <div class="dropzone" id="dropzone">Arrastra tu archivo aquí o haz clic para seleccionar<br><small>Soportado: .xlsx, .xls, .csv</small></div>
     <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden />
     <div id="archivo-activo" class="archivo-activo" style="display:none;">
       <span id="archivo-nombre"></span>
       <button id="btn-restaurar">Restaurar dataset original</button>
     </div>
   </section>
-
 </main>
 
-<footer>
-  Minería de Datos · Risaralda — Terremoto de Pereira 2026 · EMA-DANE + RNT
-</footer>
+<footer>Minería de Datos · Risaralda — Terremoto de Pereira 2026 · EMA-DANE + RNT</footer>
 
 <script>
-/* ============================================================
-   ESTADO GLOBAL
-   ============================================================ */
-let DATA = [];              // registros activos
-let charts = {};            // instancias Chart.js
-const ESPERADO = 12 * 99;   // 1.188 filas esperadas
+let DATA = [];
+let charts = {};
+const ESPERADO = 12 * 99;
+const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
-const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
-               "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-
-/* ============================================================
-   UTILIDADES
-   ============================================================ */
 function parseOcupacion(v) {
   if (v === null || v === undefined || v === "") return null;
-  if (typeof v === "number") {
-    // si ya viene 0-1 o 0-100
-    return v > 1 ? v / 100 : v;
-  }
+  if (typeof v === "number") return v > 1 ? v / 100 : v;
   let s = String(v).replace("%", "").replace(",", ".").trim();
   const n = parseFloat(s);
-  if (isNaN(n)) return null;
-  return n > 1 ? n / 100 : n;
+  return isNaN(n) ? null : (n > 1 ? n / 100 : n);
 }
-
 function num(v) {
   if (v === null || v === undefined || v === "") return 0;
   const n = parseFloat(String(v).replace(",", ".").replace(/[^\d.\-]/g, ""));
   return isNaN(n) ? 0 : n;
 }
+function fmtPct(v) { return (v === null || v === undefined || isNaN(v)) ? "—" : (v * 100).toFixed(1) + "%"; }
+function uniq(arr) { return [...new Set(arr)].filter(x => x !== null && x !== undefined && x !== ""); }
 
-function fmtPct(v) {
-  if (v === null || v === undefined || isNaN(v)) return "—";
-  return (v * 100).toFixed(1) + "%";
-}
-
-function uniq(arr) {
-  return [...new Set(arr)].filter(x => x !== null && x !== undefined && x !== "");
-}
-
-/* ============================================================
-   NORMALIZACIÓN DE REGISTROS
-   Acepta encabezados con tildes/mayúsculas/variantes.
-   ============================================================ */
 function normalizarFila(row) {
   const get = (...keys) => {
-    for (const k of keys) {
-      if (row[k] !== undefined && row[k] !== null && row[k] !== "") return row[k];
-    }
-    // búsqueda case-insensitive
-    const lower = Object.keys(row).reduce((acc, k) => {
-      acc[k.toLowerCase().trim()] = row[k];
-      return acc;
-    }, {});
-    for (const k of keys) {
-      const v = lower[k.toLowerCase().trim()];
-      if (v !== undefined && v !== null && v !== "") return v;
-    }
+    for (const k of keys) { if (row[k] !== undefined && row[k] !== null && row[k] !== "") return row[k]; }
+    const lower = Object.keys(row).reduce((acc, k) => { acc[k.toLowerCase().trim()] = row[k]; return acc; }, {});
+    for (const k of keys) { const v = lower[k.toLowerCase().trim()]; if (v !== undefined && v !== null && v !== "") return v; }
     return null;
   };
-
-  const anio  = num(get("Año", "Anio", "anio", "year"));
+  const anio = num(get("Año", "Anio", "anio", "year"));
   const mesRaw = get("mes", "Mes", "Meses", "mes_nombre");
   let mesNum = null;
-  if (typeof mesRaw === "number" && mesRaw >= 1 && mesRaw <= 12) {
-    mesNum = mesRaw;
-  } else if (mesRaw) {
-    const idx = MESES.findIndex(m =>
-      m.toLowerCase().startsWith(String(mesRaw).toLowerCase().slice(0, 3))
-    );
-    mesNum = idx >= 0 ? idx + 1 : null;
-  }
-  const mesNombre = mesNum ? MESES[mesNum - 1] : (mesRaw || null);
-
+  if (typeof mesRaw === "number" && mesRaw >= 1 && mesRaw <= 12) mesNum = mesRaw;
+  else if (mesRaw) { const idx = MESES.findIndex(m => m.toLowerCase().startsWith(String(mesRaw).toLowerCase().slice(0, 3))); mesNum = idx >= 0 ? idx + 1 : null; }
   return {
-    anio: anio || null,
-    mes: mesNum,
-    mes_nombre: mesNombre,
+    anio: anio || null, mes: mesNum, mes_nombre: mesNum ? MESES[mesNum - 1] : (mesRaw || null),
     region: get("region", "Región", "Region") || null,
     ocupacion: parseOcupacion(get("ocupacion", "Ocupación", "Ocupacion", "ocupacion_pct")),
     establecimientos: num(get("establecimientos", "Establecimientos")),
@@ -445,108 +275,36 @@ function normalizarFila(row) {
   };
 }
 
-/* ============================================================
-   VALIDACIÓN DE INTEGRIDAD
-   ============================================================ */
 function validarIntegridad(data, nombreArchivo) {
   const n = data.length;
-  const regiones = uniq(data.map(d => d.region)).length;
-  const anios = uniq(data.map(d => d.anio)).length;
-
-  // habitaciones vs establecimientos (sospecha de count duplicado)
-  const pares = data.filter(d =>
-    d.habitaciones > 0 && d.establecimientos > 0 &&
-    d.habitaciones === d.establecimientos
-  ).length;
-  const sospechaConteo = pares > 0 && pares / n > 0.8;
-
-  const nulosOcup = data.filter(d => d.ocupacion === null).length;
-
-  const ok = n >= ESPERADO * 0.95; // tolerancia 5%
-
-  let html = "";
-  if (ok) {
-    html = `<div class="banner ok">
-      ✔ Integridad verificada — ${n.toLocaleString()} registros ·
-      ${regiones} regiones · ${anios} años · cobertura completa.
-    </div>`;
-  } else {
-    html = `<div class="banner alerta">
-      ⚠ Dataset posiblemente recortado — ${n.toLocaleString()} registros
-      (esperados ≈ ${ESPERADO.toLocaleString()} para 12 regiones × 99 meses).
-      Revisa el archivo fuente.
-    </div>`;
-  }
-
-  if (sospechaConteo) {
-    html += `<div class="banner alerta">
-      ⚠ ${pares} de ${n} registros tienen habitaciones == establecimientos.
-      Probablemente el archivo se generó con <code>count</code> en ambas
-      columnas. Vuelve a correr el cruce corregido (usa <code>sum</code>
-      para habitaciones).
-    </div>`;
-  }
-
-  if (nulosOcup > 0) {
-    html += `<div class="banner alerta">
-      ⚠ ${nulosOcup} registros sin ocupación válida (nulos o texto no parseable).
-    </div>`;
-  }
-
+  const pares = data.filter(d => d.habitaciones > 0 && d.establecimientos > 0 && d.habitaciones === d.establecimientos).length;
+  const sospecha = pares > 0 && pares / n > 0.8;
+  const ok = n >= ESPERADO * 0.95;
+  let html = ok ? `<div class="banner ok">✔ Integridad verificada — ${n.toLocaleString()} registros.</div>` 
+                : `<div class="banner alerta">⚠ Dataset recortado — ${n.toLocaleString()} registros (esperados ~${ESPERADO}).</div>`;
+  if (sospecha) html += `<div class="banner alerta">⚠ Habitaciones == Establecimientos en muchas filas. Usa <code>sum</code> en el cruce.</div>`;
   document.getElementById("banner-calidad").innerHTML = html;
-  document.getElementById("fuente-datos").textContent =
-    `Datos cargados: ${n.toLocaleString()} registros · ${nombreArchivo} · EMA-DANE + RNT`;
+  document.getElementById("fuente-datos").textContent = `Datos cargados: ${n.toLocaleString()} registros · ${nombreArchivo}`;
 }
 
-/* ============================================================
-   CARGA DE DATOS
-   ============================================================ */
 function procesarDatos(data) {
   DATA = data;
-
-  // Poblar filtros
-  const regiones = uniq(data.map(d => d.region)).sort();
-  const anios = uniq(data.map(d => d.anio)).sort();
-  const meses = uniq(data.map(d => d.mes_nombre));
-
-  llenarSelect("filtro-region", regiones);
-  llenarSelect("filtro-anio", anios);
-  llenarSelect("filtro-mes", MESES.filter(m => meses.includes(m)));
-
+  llenarSelect("filtro-region", uniq(data.map(d => d.region)).sort(), "Todas");
+  llenarSelect("filtro-anio", uniq(data.map(d => d.anio)).sort(), "Todos");
+  llenarSelect("filtro-mes", MESES.filter(m => uniq(data.map(d => d.mes_nombre)).includes(m)), "Todos");
   renderTodo();
 }
-
-function llenarSelect(id, valores) {
+function llenarSelect(id, valores, label) {
   const sel = document.getElementById(id);
-  const label = sel.options[0]?.textContent || "Todos";
-  sel.innerHTML = `<option value="">${id === "filtro-region" ? "Todas" : "Todos"}</option>`;
-  valores.forEach(v => {
-    const opt = document.createElement("option");
-    opt.value = v; opt.textContent = v;
-    sel.appendChild(opt);
-  });
+  sel.innerHTML = `<option value="">${label}</option>`;
+  valores.forEach(v => { const opt = document.createElement("option"); opt.value = v; opt.textContent = v; sel.appendChild(opt); });
 }
-
-function getFiltros() {
-  return {
-    region: document.getElementById("filtro-region").value,
-    anio: document.getElementById("filtro-anio").value,
-    mes: document.getElementById("filtro-mes").value,
-  };
-}
-
+function getFiltros() { return { region: document.getElementById("filtro-region").value, anio: document.getElementById("filtro-anio").value, mes: document.getElementById("filtro-mes").value }; }
 function filtrar(data) {
   const f = getFiltros();
-  return data.filter(d =>
-    (!f.region || d.region === f.region) &&
-    (!f.anio || String(d.anio) === String(f.anio)) &&
-    (!f.mes || d.mes_nombre === f.mes)
-  );
+  return data.filter(d => (!f.region || d.region === f.region) && (!f.anio || String(d.anio) === String(f.anio)) && (!f.mes || d.mes_nombre === f.mes));
 }
 
-/* ============================================================
-   RENDER
-   ============================================================ */
 function renderTodo() {
   const data = filtrar(DATA);
   renderIndicadores(data);
@@ -559,278 +317,135 @@ function renderTodo() {
 
 function renderIndicadores(data) {
   const n = data.length;
-  const ocupValidas = data.filter(d => d.ocupacion !== null).map(d => d.ocupacion);
-  const prom = ocupValidas.length ? ocupValidas.reduce((a, b) => a + b, 0) / ocupValidas.length : null;
-  const max = ocupValidas.length ? Math.max(...ocupValidas) : null;
+  const vals = data.filter(d => d.ocupacion !== null).map(d => d.ocupacion);
+  const prom = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  const max = vals.length ? Math.max(...vals) : null;
   const est = data.reduce((a, d) => a + (d.establecimientos || 0), 0);
   const hab = data.reduce((a, d) => a + (d.habitaciones || 0), 0);
-
-  const regiones = uniq(DATA.map(d => d.region)).length;
-  const anios = uniq(DATA.map(d => d.anio)).length;
-
   const cards = [
-    { label: "Registros totales", value: n.toLocaleString(), sub: `${regiones} regiones × ${anios} años` },
-    { label: "Ocupación promedio", value: fmtPct(prom), sub: "Nacional (filtrado)" },
-    { label: "Ocupación máxima", value: fmtPct(max), sub: "Registro más alto" },
-    { label: "Establecimientos", value: est.toLocaleString(), sub: "Suma de registros" },
-    { label: "Habitaciones", value: hab.toLocaleString(), sub: "Suma de registros" },
+    { label: "Registros totales", value: n.toLocaleString(), sub: "Filtrado" },
+    { label: "Ocupación promedio", value: fmtPct(prom), sub: "Nacional" },
+    { label: "Ocupación máxima", value: fmtPct(max), sub: "Más alto" },
+    { label: "Establecimientos", value: est.toLocaleString(), sub: "Suma" },
+    { label: "Habitaciones", value: hab.toLocaleString(), sub: "Suma" },
   ];
-
-  document.getElementById("cards-indicadores").innerHTML = cards.map(c => `
-    <div class="card">
-      <div class="label">${c.label}</div>
-      <div class="value">${c.value}</div>
-      <div class="sub">${c.sub}</div>
-    </div>
-  `).join("");
+  document.getElementById("cards-indicadores").innerHTML = cards.map(c => `<div class="card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`).join("");
 }
 
-function destruir(id) {
-  if (charts[id]) { charts[id].destroy(); charts[id] = null; }
-}
+function destruir(id) { if (charts[id]) { charts[id].destroy(); charts[id] = null; } }
 
 function renderEvolucion(data) {
-  // Agrupar por fecha (año-mes), promedio de ocupación
   const grupos = {};
   data.forEach(d => {
     if (d.ocupacion === null || !d.anio || !d.mes) return;
     const key = `${d.anio}-${String(d.mes).padStart(2, "0")}`;
     if (!grupos[key]) grupos[key] = { suma: 0, n: 0 };
-    grupos[key].suma += d.ocupacion;
-    grupos[key].n += 1;
+    grupos[key].suma += d.ocupacion; grupos[key].n += 1;
   });
   const labels = Object.keys(grupos).sort();
   const valores = labels.map(k => grupos[k].suma / grupos[k].n);
-
   destruir("evolucion");
-  const ctx = document.getElementById("chart-evolucion");
-  charts["evolucion"] = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "Ocupación promedio",
-        data: valores,
-        borderColor: "#1f4e79",
-        backgroundColor: "rgba(31,78,121,.12)",
-        fill: true, tension: .25, pointRadius: 2,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: { y: { beginAtZero: true, max: 1,
-        ticks: { callback: v => (v * 100).toFixed(0) + "%" } } },
-      plugins: { tooltip: { callbacks: {
-        label: c => "Ocupación: " + (c.parsed.y * 100).toFixed(1) + "%"
-      } } }
-    }
+  charts["evolucion"] = new Chart(document.getElementById("chart-evolucion"), {
+    type: "line", data: { labels, datasets: [{ label: "Ocupación promedio", data: valores, borderColor: "#1f4e79", backgroundColor: "rgba(31,78,121,.12)", fill: true, tension: .25, pointRadius: 2 }] },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 1, ticks: { callback: v => (v * 100).toFixed(0) + "%" } } } }
   });
 }
 
 function renderComparacionAnual(data) {
   const regiones = uniq(data.map(d => d.region)).sort();
   const anios = uniq(data.map(d => d.anio)).sort();
-
-  const datasets = regiones.map((reg, i) => {
-    const color = `hsl(${(i * 360 / regiones.length) % 360}, 60%, 50%)`;
-    const vals = anios.map(a => {
-      const sub = data.filter(d => d.region === reg && d.anio === a && d.ocupacion !== null);
-      return sub.length ? sub.reduce((s, d) => s + d.ocupacion, 0) / sub.length : null;
-    });
-    return { label: reg, data: vals, backgroundColor: color };
-  });
-
+  const datasets = regiones.map((reg, i) => ({
+    label: reg, backgroundColor: `hsl(${(i * 360 / regiones.length) % 360}, 60%, 50%)`,
+    data: anios.map(a => { const sub = data.filter(d => d.region === reg && d.anio === a && d.ocupacion !== null); return sub.length ? sub.reduce((s, d) => s + d.ocupacion, 0) / sub.length : null; })
+  }));
   destruir("anual");
-  const ctx = document.getElementById("chart-anual");
-  charts["anual"] = new Chart(ctx, {
-    type: "bar",
-    data: { labels: anios, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: { y: { beginAtZero: true, max: 1,
-        ticks: { callback: v => (v * 100).toFixed(0) + "%" } } },
-      plugins: { tooltip: { callbacks: {
-        label: c => `${c.dataset.label}: ${(c.parsed.y * 100).toFixed(1)}%`
-      } } }
-    }
+  charts["anual"] = new Chart(document.getElementById("chart-anual"), {
+    type: "bar", data: { labels: anios, datasets },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 1, ticks: { callback: v => (v * 100).toFixed(0) + "%" } } } }
   });
 }
 
 function renderPorRegion(data) {
-  const regiones = uniq(data.map(d => d.region));
-  const promedios = regiones.map(r => {
+  const promedios = uniq(data.map(d => d.region)).map(r => {
     const sub = data.filter(d => d.region === r && d.ocupacion !== null);
-    return sub.length ? sub.reduce((s, d) => s + d.ocupacion, 0) / sub.length : null;
-  });
-
-  // ordenar desc
-  const pares = regiones.map((r, i) => ({ r, v: promedios[i] }))
-    .filter(p => p.v !== null)
-    .sort((a, b) => b.v - a.v);
-
+    return { r, v: sub.length ? sub.reduce((s, d) => s + d.ocupacion, 0) / sub.length : null };
+  }).filter(p => p.v !== null).sort((a, b) => b.v - a.v);
   destruir("region");
-  const ctx = document.getElementById("chart-region");
-  charts["region"] = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: pares.map(p => p.r),
-      datasets: [{
-        label: "Ocupación promedio",
-        data: pares.map(p => p.v),
-        backgroundColor: "#1f4e79"
-      }]
-    },
-    options: {
-      indexAxis: "y",
-      responsive: true, maintainAspectRatio: false,
-      scales: { x: { beginAtZero: true, max: 1,
-        ticks: { callback: v => (v * 100).toFixed(0) + "%" } } },
-      plugins: { tooltip: { callbacks: {
-        label: c => "Promedio: " + (c.parsed.x * 100).toFixed(1) + "%"
-      } } }
-    }
+  charts["region"] = new Chart(document.getElementById("chart-region"), {
+    type: "bar", data: { labels: promedios.map(p => p.r), datasets: [{ label: "Promedio", data: promedios.map(p => p.v), backgroundColor: "#1f4e79" }] },
+    options: { indexAxis: "y", responsive: true, maintainAspectRatio: false, scales: { x: { beginAtZero: true, max: 1, ticks: { callback: v => (v * 100).toFixed(0) + "%" } } } }
   });
 }
 
 function renderTablaResumen(data) {
-  const regiones = uniq(data.map(d => d.region)).sort();
-  const tbody = document.querySelector("#tabla-resumen tbody");
-  tbody.innerHTML = "";
-
-  regiones.forEach(r => {
+  const tbody = document.querySelector("#tabla-resumen tbody"); tbody.innerHTML = "";
+  uniq(data.map(d => d.region)).sort().forEach(r => {
     const sub = data.filter(d => d.region === r);
     const vals = sub.filter(d => d.ocupacion !== null).map(d => d.ocupacion);
-    const prom = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
-    const max = vals.length ? Math.max(...vals) : null;
-    const min = vals.length ? Math.min(...vals) : null;
-    const est = sub.reduce((a, d) => a + (d.establecimientos || 0), 0);
-    const hab = sub.reduce((a, d) => a + (d.habitaciones || 0), 0);
-
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${r}</td>
-      <td>${fmtPct(prom)}</td>
-      <td>${fmtPct(max)}</td>
-      <td>${fmtPct(min)}</td>
-      <td>${est.toLocaleString()}</td>
-      <td>${hab.toLocaleString()}</td>
-      <td>${sub.length}</td>
-    `;
+    tr.innerHTML = `<td>${r}</td><td>${fmtPct(vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null)}</td>
+      <td>${fmtPct(vals.length ? Math.max(...vals) : null)}</td><td>${fmtPct(vals.length ? Math.min(...vals) : null)}</td>
+      <td>${sub.reduce((a, d) => a + (d.establecimientos || 0), 0).toLocaleString()}</td>
+      <td>${sub.reduce((a, d) => a + (d.habitaciones || 0), 0).toLocaleString()}</td><td>${sub.length}</td>`;
     tbody.appendChild(tr);
   });
 }
 
 function renderDetalle(data) {
-  document.getElementById("detalle-info").textContent =
-    `Mostrando ${data.length.toLocaleString()} registros filtrados.`;
-
-  const tbody = document.querySelector("#tabla-detalle tbody");
-  tbody.innerHTML = "";
-  const limite = 500; // rendimiento
-  data.slice(0, limite).forEach(d => {
+  document.getElementById("detalle-info").textContent = `Mostrando ${data.length.toLocaleString()} registros.`;
+  const tbody = document.querySelector("#tabla-detalle tbody"); tbody.innerHTML = "";
+  data.slice(0, 500).forEach(d => {
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${d.anio ?? "—"}</td>
-      <td>${d.mes_nombre ?? "—"}</td>
-      <td>${d.region ?? "—"}</td>
-      <td>${fmtPct(d.ocupacion)}</td>
-      <td>${d.establecimientos.toLocaleString()}</td>
-      <td>${d.habitaciones.toLocaleString()}</td>
-    `;
+    tr.innerHTML = `<td>${d.anio ?? "—"}</td><td>${d.mes_nombre ?? "—"}</td><td>${d.region ?? "—"}</td>
+      <td>${fmtPct(d.ocupacion)}</td><td>${d.establecimientos.toLocaleString()}</td><td>${d.habitaciones.toLocaleString()}</td>`;
     tbody.appendChild(tr);
   });
-  if (data.length > limite) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td colspan="6" style="text-align:center;color:#777;">
-      … ${data.length - limite} registros más (usa filtros para acotar).</td>`;
-    tbody.appendChild(tr);
-  }
 }
 
-/* ============================================================
-   EVENTOS DE FILTRO
-   ============================================================ */
-["filtro-region", "filtro-anio", "filtro-mes"].forEach(id => {
-  document.getElementById(id).addEventListener("change", renderTodo);
-});
+["filtro-region", "filtro-anio", "filtro-mes"].forEach(id => document.getElementById(id).addEventListener("change", renderTodo));
 
-/* ============================================================
-   SUBIDA DE ARCHIVO
-   ============================================================ */
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("file-input");
-
 dropzone.addEventListener("click", () => fileInput.click());
-dropzone.addEventListener("dragover", e => {
-  e.preventDefault(); dropzone.style.background = "#cfe2f0";
-});
-dropzone.addEventListener("dragleave", () => {
-  dropzone.style.background = "var(--azul-claro)";
-});
-dropzone.addEventListener("drop", e => {
-  e.preventDefault();
-  dropzone.style.background = "var(--azul-claro)";
-  if (e.dataTransfer.files.length) manejarArchivo(e.dataTransfer.files[0]);
-});
-fileInput.addEventListener("change", e => {
-  if (e.target.files.length) manejarArchivo(e.target.files[0]);
-});
+dropzone.addEventListener("dragover", e => { e.preventDefault(); dropzone.style.background = "#cfe2f0"; });
+dropzone.addEventListener("dragleave", () => dropzone.style.background = "var(--azul-claro)");
+dropzone.addEventListener("drop", e => { e.preventDefault(); dropzone.style.background = "var(--azul-claro)"; if (e.dataTransfer.files.length) manejarArchivo(e.dataTransfer.files[0]); });
+fileInput.addEventListener("change", e => { if (e.target.files.length) manejarArchivo(e.target.files[0]); });
 
 function manejarArchivo(file) {
-  const nombre = file.name;
   const reader = new FileReader();
   reader.onload = ev => {
     try {
       const wb = XLSX.read(ev.target.result, { type: "array" });
-      const hoja = wb.Sheets[wb.SheetNames[0]];
-      const filas = XLSX.utils.sheet_to_json(hoja, { defval: null });
-      if (!filas.length) throw new Error("Hoja vacía");
+      const filas = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: null });
       const data = filas.map(normalizarFila).filter(d => d.region && d.anio);
-      if (!data.length) throw new Error("No se encontraron columnas válidas");
-      validarIntegridad(data, nombre);
+      if (!data.length) throw new Error("No hay columnas válidas");
+      validarIntegridad(data, file.name);
       procesarDatos(data);
       document.getElementById("archivo-activo").style.display = "flex";
-      document.getElementById("archivo-nombre").innerHTML =
-        `${nombre} <span class="badge">ACTIVO</span>`;
-    } catch (err) {
-      document.getElementById("banner-calidad").innerHTML =
-        `<div class="banner alerta">✖ Error al leer el archivo: ${err.message}</div>`;
-    }
+      document.getElementById("archivo-nombre").innerHTML = `${file.name} <span class="badge">ACTIVO</span>`;
+    } catch (err) { document.getElementById("banner-calidad").innerHTML = `<div class="banner alerta">✖ Error: ${err.message}</div>`; }
   };
   reader.readAsArrayBuffer(file);
 }
 
-/* ============================================================
-   RESTAURAR DATASET ORIGINAL
-   ============================================================ */
-document.getElementById("btn-restaurar").addEventListener("click", () => {
-  cargarDatasetOriginal();
-});
+document.getElementById("btn-restaurar").addEventListener("click", cargarDatasetOriginal);
 
 async function cargarDatasetOriginal() {
   try {
     const resp = await fetch("dataset_cruzado.xlsx");
-    if (!resp.ok) throw new Error("No se encontró dataset_cruzado.xlsx en el repo");
+    if (!resp.ok) throw new Error("No se encontró dataset_cruzado.xlsx");
     const buf = await resp.arrayBuffer();
     const wb = XLSX.read(buf, { type: "array" });
-    const hoja = wb.Sheets[wb.SheetNames[0]];
-    const filas = XLSX.utils.sheet_to_json(hoja, { defval: null });
+    const filas = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: null });
     const data = filas.map(normalizarFila).filter(d => d.region && d.anio);
     validarIntegridad(data, "dataset_cruzado.xlsx");
     procesarDatos(data);
     document.getElementById("archivo-activo").style.display = "none";
-  } catch (err) {
-    document.getElementById("banner-calidad").innerHTML =
-      `<div class="banner alerta">✖ No se pudo cargar el dataset original: ${err.message}.
-       Verifica que <code>dataset_cruzado.xlsx</code> esté en la raíz del repo.</div>`;
-  }
+  } catch (err) { document.getElementById("banner-calidad").innerHTML = `<div class="banner alerta">✖ Error al cargar: ${err.message}</div>`; }
 }
 
-/* ============================================================
-   CARGA INICIAL
-   ============================================================ */
 document.addEventListener("DOMContentLoaded", cargarDatasetOriginal);
 </script>
-
 </body>
 </html>
