@@ -600,7 +600,7 @@
       <div class="num">6</div>
       <div class="contenido">
         <h4>Cruce de datasets (merge)</h4>
-        <p>Se unen ambos DataFrames por la columna <code class="inline">region</code> con <code class="inline">how="left"</code>, obteniendo un dataset final de <strong>1188 filas × 7 columnas</strong> (12 regiones × 99 meses).</p>
+        <p>El dataset limpio vigente contiene <strong>1,092 filas × 9 columnas</strong>: 12 regiones y 91 meses, de enero de 2019 a julio de 2026. La libreta principal documenta el cruce, las validaciones y la limpieza.</p>
       </div>
     </div>
 
@@ -608,11 +608,12 @@
       <div class="num">7</div>
       <div class="contenido">
         <h4>Exportación</h4>
-        <p>El resultado se guarda como <code class="inline">dataset_cruzado.xlsx</code> listo para análisis y visualización.</p>
+        <p>El resultado limpio se guarda como <code class="inline">02_turismo_colombia_limpio.xlsx</code> y alimenta el dashboard.</p>
       </div>
     </div>
 
-    <h3>🐍 Código Python completo</h3>
+    <h3>🐍 Código Python de referencia</h3>
+    <p>El siguiente fragmento resume la versión inicial del cruce. Para reproducir los resultados vigentes, usa la <a href="https://github.com/edutruj/mineria-de-datos-terremoto/blob/main/Turismov1.2/Turismov1/notebooks/Mineria_Datos_Turismo_Colombia.ipynb" target="_blank" rel="noopener">libreta principal</a>, que incluye limpieza y validación del dataset actualizado.</p>
     <pre class="code-block"># 1. Carga de librerías
 import pandas as pd
 import numpy as np
@@ -704,38 +705,38 @@ print("Dataset guardado correctamente")</pre>
     <div class="grid-indicadores">
       <div class="card-indicador">
         <div class="label">Registros totales</div>
-        <div class="valor">1,188</div>
-        <div class="sub">12 regiones × 99 meses</div>
+        <div class="valor">1,092</div>
+        <div class="sub">12 regiones × 91 meses (ene. 2019–jul. 2026)</div>
       </div>
       <div class="card-indicador">
-        <div class="label">Cobertura</div>
-        <div class="valor">100%</div>
-        <div class="sub">Sin valores huérfanos</div>
+        <div class="label">Ocupaciones disponibles</div>
+        <div class="valor">1,087</div>
+        <div class="sub">5 faltantes: San Andrés, abr.–ago. 2020</div>
       </div>
       <div class="card-indicador">
         <div class="label">Período</div>
         <div class="valor">2019–2026</div>
-        <div class="sub">7 años y 3 meses</div>
+        <div class="sub">Hasta julio de 2026; no mide el efecto posterior al sismo</div>
       </div>
       <div class="card-indicador">
         <div class="label">Columnas finales</div>
-        <div class="valor">7</div>
-        <div class="sub">Año, Mes, Región, Ocupación, etc.</div>
+        <div class="valor">9</div>
+        <div class="sub">Ocupación y capacidad regional</div>
       </div>
     </div>
 
     <h3>🎯 Hallazgos clave</h3>
     <ul style="padding-left:1.5rem; margin:1rem 0; font-size:0.92rem;">
-      <li><strong>2020:</strong> Caída drástica de ocupación por pandemia (mínimo: abril, 8.77% en Bogotá).</li>
-      <li><strong>Eje Cafetero (Risaralda):</strong> Ocupación promedio ~44%, con recuperación gradual post-2020.</li>
-      <li><strong>Cartagena y San Andrés:</strong> Ocupaciones más altas del país (60-75%).</li>
-      <li><strong>Recuperación 2022–2026:</strong> Retorno a niveles pre-pandemia en la mayoría de regiones.</li>
-      <li><strong>2026 (terremoto):</strong> Se espera caída en Eje Cafetero, especialmente en meses post-agosto.</li>
+      <li><strong>Eje Cafetero:</strong> Ocupación media de 40.57% en el período disponible.</li>
+      <li><strong>Meses de menor ocupación del Eje Cafetero:</strong> mayo (32.35%), abril (36.21%) y junio (37.15%), promedios mensuales 2019–2026.</li>
+      <li><strong>Ingresos reales:</strong> la variación anual encadenada de julio 2026 frente a julio 2019 ubica al Eje Cafetero en +14.15% (3.º entre 11 regiones comparables).</li>
+      <li><strong>Pronóstico estacional:</strong> el backtest ago.–oct. 2025 obtuvo MAPE de 5.49%; la proyección para 2026 es una referencia, no una medición del impacto del terremoto.</li>
+      <li><strong>Límite del análisis:</strong> la EMA publicada llega a julio de 2026 y no desagrega ocupación e ingresos mensuales por tipo de alojamiento.</li>
     </ul>
 
     <h3>📥 Descargar código</h3>
     <p>
-      <a class="btn btn-primary" href="https://github.com/edutruj/mineria-de-datos-terremoto/blob/main/notebooks/Notebook_Adquisicion_FINAL.ipynb" target="_blank" rel="noopener">
+      <a class="btn btn-primary" href="https://github.com/edutruj/mineria-de-datos-terremoto/blob/main/Turismov1.2/Turismov1/notebooks/Mineria_Datos_Turismo_Colombia.ipynb" target="_blank" rel="noopener">
         📓 Ver notebook completo en GitHub
       </a>
     </p>
@@ -743,7 +744,7 @@ print("Dataset guardado correctamente")</pre>
 
   <section id="tab-subir" class="tab-panel">
     <h2>📤 Subir nuevo dataset</h2>
-    <p>Sube un archivo Excel o CSV con una fila de encabezados. Se detecta automáticamente la hoja y se aceptan variantes de nombres de columnas (con o sin tildes) y meses escritos o numerados.</p>
+    <p>Sube un archivo Excel o CSV con una fila de encabezados. Se detecta automáticamente la hoja y se aceptan variantes de nombres de columnas (con o sin tildes) y meses escritos o numerados. El archivo queda guardado solo en este navegador; no se publica ni se comparte en GitHub.</p>
 
     <div class="aviso">
       <strong>Columnas requeridas:</strong> año, mes, región y ocupación. Establecimientos y habitaciones son opcionales.
@@ -762,7 +763,7 @@ print("Dataset guardado correctamente")</pre>
     </div>
 
     <h3>Restaurar dataset original</h3>
-    <p style="font-size:0.88rem;color:#718096;">Vuelve a los datos de <code class="inline">dataset_cruzado.xlsx</code> precargados.</p>
+    <p style="font-size:0.88rem;color:#718096;">Vuelve al dataset limpio EMA-DANE + RNT incluido en el repositorio.</p>
     <button class="btn btn-danger" id="btnRestaurar">🗑️ Restaurar datos originales</button>
   </section>
 
@@ -780,11 +781,11 @@ print("Dataset guardado correctamente")</pre>
 ============================================================ */
 const DATASET_PRECARGADO = {
   meta: {
-    archivo: 'dataset_cruzado.xlsx',
-    filas: 1188,
+    archivo: 'Muestra de respaldo',
+    filas: 0,
     regiones: 12,
     periodo: '2019-2026',
-    fuente: 'EMA-DANE + RNT'
+    fuente: 'Muestra de respaldo'
   },
   datos: [
     { anio: 2019, mes: 'Enero', region: 'Bogotá D.C.', ocupacion: 44.80, establecimientos: 49, habitaciones: 49 },
@@ -881,8 +882,11 @@ const DATASET_PRECARGADO = {
   ]
 };
 
+DATASET_PRECARGADO.meta.filas = DATASET_PRECARGADO.datos.length;
+
 let datosActuales = JSON.parse(JSON.stringify(DATASET_PRECARGADO));
 let charts = {};
+const DATASET_INICIAL_URL = 'Turismov1.2/Turismov1/data/02_turismo_colombia_limpio.xlsx';
 
 const MESES_ORDEN = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
@@ -930,17 +934,32 @@ $$('.tab-btn').forEach(btn => {
 /* ===== INDICADORES ===== */
 function calcularIndicadores() {
   const d = datosActuales.datos;
-  const ocupaciones = d.map(x => x.ocupacion).filter(v => v > 0);
+  const ocupaciones = d.map(x => x.ocupacion).filter(Number.isFinite);
   const prom = ocupaciones.length ? ocupaciones.reduce((a,b) => a+b, 0) / ocupaciones.length : 0;
-  const max = Math.max(...ocupaciones);
-  const min = Math.min(...ocupaciones.filter(v => v > 0));
+  const max = ocupaciones.length ? Math.max(...ocupaciones) : 0;
+  const min = ocupaciones.length ? Math.min(...ocupaciones) : 0;
   const regiones = [...new Set(d.map(x => x.region))].length;
   const anios = [...new Set(d.map(x => x.anio))].length;
-  const establecimientos = d.reduce((s, x) => s + (x.establecimientos || 0), 0);
-  const habitaciones = d.reduce((s, x) => s + (x.habitaciones || 0), 0);
+  const ultimosPorRegion = obtenerUltimosRegistrosPorRegion(d);
+  const establecimientos = ultimosPorRegion.reduce((s, x) => s + (x.establecimientos || 0), 0);
+  const habitaciones = ultimosPorRegion.reduce((s, x) => s + (x.habitaciones || 0), 0);
   const ejeCaf = d.filter(x => x.region === 'Eje Cafetero');
   const promEje = ejeCaf.length ? ejeCaf.reduce((s, x) => s + x.ocupacion, 0) / ejeCaf.length : 0;
   return { prom, max, min, regiones, anios, establecimientos, habitaciones, promEje, total: d.length };
+}
+
+function obtenerUltimosRegistrosPorRegion(registros) {
+  const ultimos = new Map();
+  registros.forEach(registro => {
+    const actual = ultimos.get(registro.region);
+    const mes = MESES_ORDEN.indexOf(registro.mes);
+    const mesActual = actual ? MESES_ORDEN.indexOf(actual.mes) : -1;
+    if (!actual || registro.anio > actual.anio ||
+        (registro.anio === actual.anio && mes > mesActual)) {
+      ultimos.set(registro.region, registro);
+    }
+  });
+  return [...ultimos.values()];
 }
 
 function renderizarIndicadores() {
@@ -969,12 +988,12 @@ function renderizarIndicadores() {
     <div class="card-indicador">
       <div class="label">Establecimientos</div>
       <div class="valor">${ind.establecimientos.toLocaleString('es-CO')}</div>
-      <div class="sub">Suma de registros</div>
+      <div class="sub">Último dato disponible por región</div>
     </div>
     <div class="card-indicador">
       <div class="label">Habitaciones</div>
       <div class="valor">${ind.habitaciones.toLocaleString('es-CO')}</div>
-      <div class="sub">Suma de registros</div>
+      <div class="sub">Último dato disponible por región</div>
     </div>
   `;
 }
@@ -1159,12 +1178,21 @@ function renderizarTablas(filtrados) {
   const porRegion = {};
   filtrados.forEach(x => {
     if (!porRegion[x.region]) {
-      porRegion[x.region] = { ocupaciones: [], establecimientos: 0, habitaciones: 0, n: 0 };
+      porRegion[x.region] = {
+        ocupaciones: [], establecimientos: 0, habitaciones: 0, n: 0,
+        ultimoAnio: 0, ultimoMes: -1
+      };
     }
     porRegion[x.region].ocupaciones.push(x.ocupacion);
-    porRegion[x.region].establecimientos += (x.establecimientos || 0);
-    porRegion[x.region].habitaciones += (x.habitaciones || 0);
     porRegion[x.region].n++;
+    const mes = MESES_ORDEN.indexOf(x.mes);
+    if (x.anio > porRegion[x.region].ultimoAnio ||
+        (x.anio === porRegion[x.region].ultimoAnio && mes > porRegion[x.region].ultimoMes)) {
+      porRegion[x.region].establecimientos = x.establecimientos || 0;
+      porRegion[x.region].habitaciones = x.habitaciones || 0;
+      porRegion[x.region].ultimoAnio = x.anio;
+      porRegion[x.region].ultimoMes = mes;
+    }
   });
 
   const filasResumen = Object.keys(porRegion).sort().map(r => {
@@ -1224,7 +1252,7 @@ inputDataset.addEventListener('change', e => {
   e.target.value = '';
 });
 
-async function procesarDataset(file) {
+async function procesarDataset(file, fuente = 'Archivo subido por el usuario', persistir = true) {
   try {
     toast('Procesando ' + file.name + '...');
     const data = await file.arrayBuffer();
@@ -1326,21 +1354,23 @@ async function procesarDataset(file) {
         filas: normalizado.length,
         regiones: [...new Set(normalizado.map(x => x.region))].length,
         periodo: `${Math.min(...normalizado.map(x => x.anio))}-${Math.max(...normalizado.map(x => x.anio))}`,
-        fuente: 'Archivo subido por el usuario'
+        fuente
       },
       datos: normalizado
     };
 
-    try { localStorage.setItem('dataset_actual', JSON.stringify(datosActuales)); } catch(e) {}
+    if (persistir) localStorage.setItem('dataset_actual', JSON.stringify(datosActuales));
 
     cargarFiltros();
     renderizarTodo();
     renderizarListaDatasets();
     const avisoOmitidas = filasOmitidas ? ` · ${filasOmitidas} filas incompletas o inválidas omitidas` : '';
     toast(`✅ ${normalizado.length} registros cargados${avisoOmitidas}`, filasOmitidas ? 'info' : 'exito');
+    return true;
   } catch (err) {
     console.error(err);
     toast('❌ Error: ' + err.message, 'error');
+    return false;
   }
 }
 
@@ -1358,13 +1388,28 @@ function renderizarListaDatasets() {
   `;
 }
 
-$('#btnRestaurar').addEventListener('click', () => {
-  if (!confirm('¿Restaurar los datos originales del dataset_cruzado.xlsx?')) return;
-  datosActuales = JSON.parse(JSON.stringify(DATASET_PRECARGADO));
+async function cargarDatasetOriginal() {
+  try {
+    const response = await fetch(DATASET_INICIAL_URL);
+    if (!response.ok) throw new Error('No se pudo leer el dataset original (' + response.status + ').');
+    const data = await response.arrayBuffer();
+    return await procesarDataset(
+      { name: '02_turismo_colombia_limpio.xlsx', arrayBuffer: async () => data },
+      'Dataset original EMA-DANE + RNT',
+      false
+    );
+  } catch (err) {
+    console.error(err);
+    toast('❌ ' + err.message, 'error');
+    return false;
+  }
+}
+
+$('#btnRestaurar').addEventListener('click', async () => {
+  if (!confirm('¿Restaurar el dataset limpio EMA-DANE + RNT?')) return;
+  const restaurado = await cargarDatasetOriginal();
+  if (!restaurado) return;
   localStorage.removeItem('dataset_actual');
-  cargarFiltros();
-  renderizarTodo();
-  renderizarListaDatasets();
   toast('Datos originales restaurados', 'exito');
 });
 
@@ -1527,24 +1572,35 @@ if (buscadorRepo) {
 
 /* ===== INIT ===== */
 (function init() {
-  try {
-    const guardado = localStorage.getItem('dataset_actual');
-    if (guardado) {
-      const parsed = JSON.parse(guardado);
-      if (parsed && parsed.datos && parsed.datos.length) {
-        datosActuales = parsed;
+  (async () => {
+    let datasetGuardado = false;
+    try {
+      const guardado = localStorage.getItem('dataset_actual');
+      if (guardado) {
+        const parsed = JSON.parse(guardado);
+        if (parsed && parsed.datos && parsed.datos.length) {
+          datosActuales = parsed;
+          datasetGuardado = true;
+        }
+      }
+    } catch (err) {
+      console.error('No se pudo recuperar el dataset guardado.', err);
+    }
+
+    if (datasetGuardado) {
+      cargarFiltros();
+      renderizarTodo();
+      renderizarListaDatasets();
+    } else {
+      const cargado = await cargarDatasetOriginal();
+      if (!cargado) {
+        cargarFiltros();
+        renderizarTodo();
+        renderizarListaDatasets();
       }
     }
-  } catch(e) {}
-
-  cargarFiltros();
-  renderizarTodo();
-  renderizarListaDatosYListo();
-  cargarDocumentos();
-
-  function renderizarListaDatosYListo() {
-    renderizarListaDatasets();
-  }
+    cargarDocumentos();
+  })();
 })();
 </script>
 
