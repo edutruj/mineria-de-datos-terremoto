@@ -8,14 +8,15 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   :root {
-    --azul: #1a3a5c;
-    --azul-claro: #2c5f8a;
-    --gris: #f4f6f8;
-    --borde: #d9e2ec;
+    --azul: #075c38;
+    --azul-claro: #13834b;
+    --acento-azul: #1877bd;
+    --gris: #f2f7f3;
+    --borde: #d6e4da;
     --texto: #2d3748;
-    --verde: #38a169;
-    --rojo: #e53e3e;
-    --naranja: #ed8936;
+    --verde: #168846;
+    --rojo: #c43d63;
+    --naranja: #d19a12;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -112,7 +113,7 @@
     background: var(--gris); color: var(--azul);
   }
   .menu-desplegable button.active {
-    background: #eef4fa; color: var(--azul);
+    background: #e8f4ec; color: var(--azul);
     font-weight: 600;
     border-left: 3px solid var(--azul-claro);
     padding-left: calc(1.1rem - 3px);
@@ -130,15 +131,26 @@
   .menu-version .dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--verde);
-    box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
+    box-shadow: 0 0 0 3px rgba(22,136,70,0.2);
   }
 
   /* ===== HEADER PÁGINA ===== */
   header.page-header {
-    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%);
+    background: linear-gradient(120deg, #06492f 0%, #087c43 65%, #15934d 100%);
     color: #fff;
     padding: 2.5rem 1.5rem;
-    text-align: center;
+  }
+  .page-header-inner {
+    max-width: 1000px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    gap: 2rem;
+  }
+  .page-header-copy { max-width: 720px; }
+  .page-header-logo {
+    display: block; width: 176px; height: auto; flex: 0 0 auto;
+    border: 3px solid rgba(255,255,255,0.85);
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.22);
   }
   header.page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
   header.page-header p { opacity: 0.9; font-size: 0.95rem; }
@@ -158,12 +170,12 @@
   h3 { color: var(--azul-claro); margin: 1.5rem 0 0.75rem; font-size: 1.1rem; }
 
   .aviso {
-    background: #fffaf0; border-left: 4px solid var(--naranja);
+    background: #fff9e8; border-left: 4px solid var(--naranja);
     padding: 1rem 1.25rem; border-radius: 4px;
     margin: 1.5rem 0; font-size: 0.95rem;
   }
   .aviso.ok {
-    background: #f0fff4; border-left-color: var(--verde);
+    background: #edf8f0; border-left-color: var(--verde);
   }
 
   .btn {
@@ -176,9 +188,9 @@
   .btn-primary { background: var(--azul); color: #fff; }
   .btn-primary:hover { background: var(--azul-claro); }
   .btn-success { background: var(--verde); color: #fff; }
-  .btn-success:hover { background: #2f855a; }
+  .btn-success:hover { background: #0e6f38; }
   .btn-danger { background: var(--rojo); color: #fff; }
-  .btn-danger:hover { background: #c53030; }
+  .btn-danger:hover { background: #a92d50; }
   .btn-outline {
     background: transparent; color: var(--azul);
     border: 1px solid var(--borde);
@@ -214,7 +226,7 @@
   .card-indicador .sub {
     font-size: 0.75rem; color: #718096; margin-top: 0.3rem;
   }
-  .card-indicador.destacado { background: #fffaf0; border-color: var(--naranja); }
+  .card-indicador.destacado { background: #fff9e8; border-color: var(--naranja); }
   .card-indicador.destacado .valor { color: var(--naranja); }
 
   .charts-grid {
@@ -225,6 +237,9 @@
   .charts-grid.full { grid-template-columns: 1fr; }
   @media (max-width: 800px) {
     .charts-grid { grid-template-columns: 1fr; }
+    .page-header-inner { flex-direction: column-reverse; gap: 1.25rem; text-align: center; }
+    .page-header-logo { width: 152px; }
+    header.page-header { padding: 2rem 1rem; }
   }
   .chart-container {
     background: #fff; border: 1px solid var(--borde);
@@ -253,7 +268,7 @@
   }
   .filtros select:focus, .filtros input:focus {
     outline: none; border-color: var(--azul-claro);
-    box-shadow: 0 0 0 2px rgba(44,95,138,0.15);
+    box-shadow: 0 0 0 2px rgba(24,119,189,0.15);
   }
 
   .tabla-wrap { overflow-x: auto; margin: 1.5rem 0; }
@@ -284,7 +299,7 @@
   }
   .zona-drop:hover, .zona-drop.dragover {
     border-color: var(--azul-claro);
-    background: #eef4fa;
+    background: #e8f4ec;
   }
   .zona-drop .icono-grande { font-size: 2.5rem; margin-bottom: 0.5rem; }
   .zona-drop p { color: #4a5568; margin-bottom: 0.3rem; }
@@ -304,7 +319,7 @@
   }
   .doc-card:hover {
     border-color: var(--azul-claro);
-    box-shadow: 0 4px 12px rgba(26,58,92,0.12);
+    box-shadow: 0 4px 12px rgba(7,92,56,0.12);
     transform: translateY(-2px);
   }
   .doc-icon {
@@ -339,7 +354,7 @@
   }
   .buscador:focus {
     outline: none; border-color: var(--azul-claro);
-    box-shadow: 0 0 0 3px rgba(44,95,138,0.15);
+    box-shadow: 0 0 0 3px rgba(24,119,189,0.15);
   }
 
   .estado-carga {
@@ -393,7 +408,7 @@
     margin-left: 0.35rem; vertical-align: middle;
   }
   .badge-cdn { background: #e6fffa; color: #234e52; }
-  .badge-directo { background: #fffaf0; color: #7b341e; }
+  .badge-directo { background: #fff9e8; color: #6b5200; }
 
   footer {
     text-align: center; padding: 2rem 1rem;
@@ -442,10 +457,15 @@
 </header>
 
 <header class="page-header">
-  <h1>Ocupación hotelera en Colombia</h1>
-  <p>Enfoque del proyecto: Risaralda y el Eje Cafetero.</p>
-  <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
-  <span class="contexto">Contexto de estudio: terremoto de Pereira — agosto de 2026</span>
+  <div class="page-header-inner">
+    <div class="page-header-copy">
+      <h1>Ocupación hotelera en Colombia</h1>
+      <p>Enfoque del proyecto: Risaralda y el Eje Cafetero.</p>
+      <p>Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujillo Agudelo</p>
+      <span class="contexto">Contexto de estudio: terremoto de Pereira — agosto de 2026</span>
+    </div>
+    <img class="page-header-logo" src="logoturismo.png" alt="Colombia, destinos de paz" width="749" height="447">
+  </div>
 </header>
 
 <main>
@@ -1078,8 +1098,8 @@ function renderizarGraficas(filtrados) {
       datasets: [{
         label: 'Ocupación promedio (%)',
         data: dataEvo,
-        borderColor: '#2c5f8a',
-        backgroundColor: 'rgba(44,95,138,0.1)',
+        borderColor: '#1877bd',
+        backgroundColor: 'rgba(24,119,189,0.12)',
         borderWidth: 2, tension: 0.3, fill: true,
         pointRadius: 3, pointHoverRadius: 6
       }]
@@ -1087,7 +1107,7 @@ function renderizarGraficas(filtrados) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: 'Evolución mensual de ocupación (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        title: { display: true, text: 'Evolución mensual de ocupación (%)', color: '#075c38', font: { size: 14, weight: 'bold' } },
         legend: { display: false }
       },
       scales: {
@@ -1113,7 +1133,7 @@ function renderizarGraficas(filtrados) {
       datasets: [{
         label: 'Ocupación promedio (%)',
         data: dataReg,
-        backgroundColor: regs.map(r => r === 'Eje Cafetero' ? '#ed8936' : '#2c5f8a'),
+        backgroundColor: regs.map(r => r === 'Eje Cafetero' ? '#d19a12' : '#13834b'),
         borderRadius: 4
       }]
     },
@@ -1121,7 +1141,7 @@ function renderizarGraficas(filtrados) {
       indexAxis: 'y',
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: 'Ocupación promedio por región (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        title: { display: true, text: 'Ocupación promedio por región (%)', color: '#075c38', font: { size: 14, weight: 'bold' } },
         legend: { display: false }
       },
       scales: { x: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
@@ -1130,7 +1150,7 @@ function renderizarGraficas(filtrados) {
 
   const aniosUnicos = [...new Set(filtrados.map(x => x.anio))].sort();
   const regionesUnicas = [...new Set(filtrados.map(x => x.region))].sort();
-  const coloresBar = ['#2c5f8a','#ed8936','#38a169','#e53e3e','#805ad5','#d69e2e','#3182ce','#dd6b20','#319795','#b83280','#4a5568','#2f855a'];
+  const coloresBar = ['#13834b','#1877bd','#d19a12','#c43d63','#075c38','#35a85b','#e6b83f','#69ad48','#168f83','#71869a','#bd4a78','#367653'];
 
   const datasetsAnual = regionesUnicas.map((reg, i) => ({
     label: reg,
@@ -1149,7 +1169,7 @@ function renderizarGraficas(filtrados) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: 'Ocupación promedio anual por región (%)', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        title: { display: true, text: 'Ocupación promedio anual por región (%)', color: '#075c38', font: { size: 14, weight: 'bold' } },
         legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
       },
       scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
@@ -1165,9 +1185,9 @@ function renderizarGraficas(filtrados) {
         data: dataReg,
         backgroundColor: dataReg.map(v => {
           const n = parseFloat(v);
-          if (n >= 60) return '#38a169';
-          if (n >= 40) return '#ed8936';
-          return '#e53e3e';
+          if (n >= 60) return '#168846';
+          if (n >= 40) return '#d19a12';
+          return '#c43d63';
         }),
         borderRadius: 4
       }]
@@ -1175,7 +1195,7 @@ function renderizarGraficas(filtrados) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: 'Clasificación de regiones por ocupación', color: '#1a3a5c', font: { size: 14, weight: 'bold' } },
+        title: { display: true, text: 'Clasificación de regiones por ocupación', color: '#075c38', font: { size: 14, weight: 'bold' } },
         legend: { display: false }
       },
       scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }
@@ -1210,7 +1230,7 @@ function renderizarTablas(filtrados) {
     const prom = (o.reduce((a,b) => a+b, 0) / o.length).toFixed(1);
     const max = Math.max(...o).toFixed(1);
     const min = Math.min(...o).toFixed(1);
-    const destacado = r === 'Eje Cafetero' ? 'style="background:#fffaf0;font-weight:600;"' : '';
+    const destacado = r === 'Eje Cafetero' ? 'style="background:#fff9e8;font-weight:600;"' : '';
     return `<tr ${destacado}>
       <td>${r}</td><td>${prom}%</td><td>${max}%</td><td>${min}%</td>
       <td>${porRegion[r].establecimientos.toLocaleString('es-CO')}</td>
