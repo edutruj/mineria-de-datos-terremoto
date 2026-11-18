@@ -401,6 +401,52 @@
   }
   .paso .contenido p { font-size: 0.88rem; color: #4a5568; }
 
+  .guia-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem; margin: 1.25rem 0;
+  }
+  .guia-card {
+    background: #fff; border: 1px solid var(--borde);
+    border-radius: 12px; padding: 1.2rem;
+    box-shadow: 0 4px 14px rgba(7,92,56,0.07);
+  }
+  .guia-card-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.5rem; margin-bottom: 0.65rem;
+  }
+  .guia-num {
+    color: var(--azul); background: #e8f4ec;
+    border-radius: 999px; padding: 0.2rem 0.65rem;
+    font-size: 0.78rem; font-weight: 700;
+  }
+  .guia-estado {
+    color: #126a37; background: #edf8f0;
+    border-radius: 999px; padding: 0.2rem 0.65rem;
+    font-size: 0.72rem; font-weight: 700;
+  }
+  .guia-card h3 {
+    color: var(--azul); font-size: 1.02rem;
+    line-height: 1.35; margin: 0 0 0.45rem;
+  }
+  .guia-card p, .guia-card li {
+    color: #4a5568; font-size: 0.87rem;
+  }
+  .guia-card ul { padding-left: 1.15rem; margin-top: 0.65rem; }
+  .guia-card li { margin-bottom: 0.4rem; }
+  .guia-recursos {
+    display: flex; flex-wrap: wrap;
+    gap: 0.7rem; margin-top: 1.5rem;
+  }
+  @media (max-width: 800px) {
+    .guia-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .guia-grid { grid-template-columns: 1fr; }
+    .guia-recursos { align-items: stretch; flex-direction: column; }
+    .guia-recursos .btn { justify-content: center; }
+  }
+
   .badge {
     display: inline-block;
     padding: 0.1rem 0.5rem; border-radius: 10px;
@@ -444,6 +490,7 @@
     </button>
     <div class="menu-desplegable" id="menuDesplegable">
       <button class="tab-btn active" data-tab="datos"><span class="icono">📊</span> Datos</button>
+      <button class="tab-btn" data-tab="guias"><span class="icono">🧭</span> Resumen de guías</button>
       <button class="tab-btn" data-tab="documentos"><span class="icono">📁</span> Documentos</button>
       <button class="tab-btn" data-tab="codigos"><span class="icono">💻</span> Códigos cruces</button>
       <button class="tab-btn" data-tab="subir"><span class="icono">📤</span> Subir dataset</button>
@@ -572,6 +619,98 @@
     <input type="text" class="buscador" id="buscadorRepo" placeholder="🔍 Buscar documento...">
     <div id="listaDocsRepo">
       <div class="estado-carga">Cargando documentos desde GitHub...</div>
+    </div>
+  </section>
+
+  <section id="tab-guias" class="tab-panel">
+    <h2>Resumen de soluciones de las guías 1 a 6</h2>
+    <p>El proyecto aborda las seis guías con evidencia en la libreta reproducible y en los entregables técnicos.</p>
+
+    <div class="aviso ok">
+      <strong>Estado de las guías: 6 de 6 cubiertas.</strong>
+      La integración, calidad, exploración, preparación, segmentación y clasificación están documentadas y respaldadas por resultados del proyecto.
+    </div>
+
+    <div class="aviso" role="note">
+      <strong>Límite del pronóstico:</strong>
+      el backtest de agosto–octubre de 2025 obtuvo MAPE de 5,49%, pero la evaluación provisional de agosto–septiembre de 2026 da 19,21%, por encima del criterio de 15%. Falta octubre para evaluar el trimestre completo; por eso no se afirma que ese criterio esté cumplido para 2026.
+    </div>
+
+    <div class="guia-grid">
+      <article class="guia-card">
+        <div class="guia-card-top"><span class="guia-num">Guía 1</span><span class="guia-estado">Cubierta</span></div>
+        <h3>Integración y diccionario de datos</h3>
+        <p>Se unieron la ocupación mensual de EMA-DANE y la capacidad regional del RNT.</p>
+        <ul>
+          <li>1.092 claves mensuales de 12 regiones; el cruce encontró correspondencia para todas.</li>
+          <li>El diccionario describe variables, tipos, significado y fuente.</li>
+          <li>La capacidad RNT se agrega por región para no contarla repetidamente por mes.</li>
+        </ul>
+      </article>
+
+      <article class="guia-card">
+        <div class="guia-card-top"><span class="guia-num">Guía 2</span><span class="guia-estado">Cubierta</span></div>
+        <h3>Limpieza y calidad de datos</h3>
+        <p>Los controles hacen explícitas las decisiones de conservación y validación.</p>
+        <ul>
+          <li>El integrado tenía 1.188 filas: 1.092 mensuales y 96 filas de notas u otros contenidos.</li>
+          <li>Se conservan 5 ocupaciones nulas de San Andrés; no se imputan como cero.</li>
+          <li>Cero claves duplicadas y cero ocupaciones fuera de 0–100%.</li>
+          <li>Se inspeccionan extremos IQR de ocupación y capacidades RNT sin borrarlos automáticamente.</li>
+        </ul>
+      </article>
+
+      <article class="guia-card">
+        <div class="guia-card-top"><span class="guia-num">Guía 3</span><span class="guia-estado">Cubierta</span></div>
+        <h3>Exploración e interpretación</h3>
+        <p>Las gráficas se acompañan de lectura en lenguaje natural y contexto.</p>
+        <ul>
+          <li>Ocupación media 44,74% y mediana 43,00%; el boxplot señala 20 valores IQR concentrados en 2020.</li>
+          <li>San Andrés y Cartagena presentan los promedios regionales más altos; Central, el más bajo.</li>
+          <li>La serie muestra la caída de 2020 y la recuperación posterior, sin atribuir causalidad.</li>
+        </ul>
+      </article>
+
+      <article class="guia-card">
+        <div class="guia-card-top"><span class="guia-num">Guía 4</span><span class="guia-estado">Cubierta</span></div>
+        <h3>Ingeniería y transformación de variables</h3>
+        <p>La función <code class="inline">preparar_features</code> centraliza el procesamiento para reutilizarlo.</p>
+        <ul>
+          <li>Incluye variables derivadas, escalado numérico y codificación de categorías.</li>
+          <li>Dos ejecuciones producen resultados idénticos.</li>
+          <li>La salida modelada conserva 1.092 filas y 38 columnas.</li>
+        </ul>
+      </article>
+
+      <article class="guia-card">
+        <div class="guia-card-top"><span class="guia-num">Guía 5</span><span class="guia-estado">Cubierta</span></div>
+        <h3>Segmentación no supervisada</h3>
+        <p>Se comparan perfiles, tamaños y sensibilidad de los tres métodos.</p>
+        <ul>
+          <li>K-Means con 3 grupos: 433, 366 y 288 registros; el grupo de mayor ocupación promedia 57,31%.</li>
+          <li>Ward jerárquico genera grupos de 632, 273 y 182 registros.</li>
+          <li>DBSCAN (<code class="inline">eps=0,10</code>) identifica 4 grupos y 1 registro de ruido, contextualizado como observación inusual.</li>
+          <li>Apriori no aplica porque las fuentes no contienen transacciones.</li>
+        </ul>
+      </article>
+
+      <article class="guia-card">
+        <div class="guia-card-top"><span class="guia-num">Guía 6</span><span class="guia-estado">Cubierta</span></div>
+        <h3>Clasificación de ocupación alta</h3>
+        <p>El árbol clasifica como alta la ocupación igual o superior a 60%.</p>
+        <ul>
+          <li>Partición estratificada 70/30 con semilla 42; baseline de exactitud 84,71%.</li>
+          <li>Árbol de profundidad 4: exactitud 91,74%, precisión 76,74%, recall 66,00% y F1 70,97%.</li>
+          <li>De 50 casos altos en prueba, identifica 33 y omite 17.</li>
+          <li>Profundidad 8 logra mayor F1 exploratorio, con una brecha entrenamiento-prueba mayor.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="guia-recursos">
+      <a class="btn btn-primary" href="INFORME_TECNICO.md" target="_blank" rel="noopener">📄 Abrir informe técnico</a>
+      <a class="btn btn-outline" href="CHECKLIST_GUIAS.md" target="_blank" rel="noopener">☑️ Abrir lista de verificación</a>
+      <a class="btn btn-outline" href="Turismov1.2/Turismov1/notebooks/Mineria_Datos_Turismo_Colombia.ipynb" target="_blank" rel="noopener">📓 Abrir libreta reproducible</a>
     </div>
   </section>
 
