@@ -5,6 +5,8 @@ Proyecto de Minería de Datos — José Luis Brito Henao · Luis Eduardo Trujill
 ## Contenido principal
 
 - **Análisis reproducible:** `Turismov1.2/Turismov1/notebooks/Mineria_Datos_Turismo_Colombia.ipynb`
+- **Informe técnico:** `INFORME_TECNICO.md`
+- **Lista de verificación de guías:** `CHECKLIST_GUIAS.md`
 - **Dataset limpio de ocupación:** `Turismov1.2/Turismov1/data/02_turismo_colombia_limpio.xlsx`
 - **Fuente EMA de la base principal:** `Turismov1.2/Turismov1/data/anex-EMA-jul2026 (1).xlsx`
 - **Seguimiento EMA complementario:** `Turismov1.2/Turismov1/data/anex-EMA-sep2026.xlsx`
@@ -29,6 +31,8 @@ La ocupación media simple es 44.74% sobre 1,087 observaciones. Los cuadernos al
 1. Abrir la libreta principal en Jupyter y ejecutar sus celdas en orden. Las rutas de datos se resuelven desde el repositorio.
 2. Servir la raíz del proyecto por HTTP para usar el dashboard, que carga el dataset limpio al iniciar. Por ejemplo: `python -m http.server 8000`.
 3. Abrir `http://localhost:8000`. También se pueden cargar archivos Excel o CSV desde el dashboard; esos archivos permanecen en el almacenamiento local del navegador.
+
+La libreta incluye el diccionario de datos, controles de calidad y lectura en lenguaje natural de las visualizaciones, segmentaciones y métricas de clasificación. El informe y la lista resumen esos resultados y sus límites sin reemplazar la ejecución reproducible de la libreta.
 
 ## Alcance y limitaciones
 
