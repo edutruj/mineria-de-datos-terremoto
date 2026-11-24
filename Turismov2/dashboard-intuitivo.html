@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Tablero intuitivo para explorar la ocupación hotelera en Colombia por región, año y mes.">
+  <title>Tablero de turismo | Colombia</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --green-900: #06492f;
+      --green-700: #087c43;
+      --green-100: #e8f4ec;
+      --ink: #20302a;
+      --muted: #64736c;
+      --line: #dce7df;
+      --canvas: #f5f8f6;
+      --white: #fff;
+      --amber: #fff5d8;
+      --shadow: 0 8px 26px rgba(13, 61, 38, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--canvas); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    button, select { font: inherit; }
+    .masthead { background: linear-gradient(120deg, var(--green-900), var(--green-700)); color: var(--white); }
+    .masthead-inner { width: min(1120px, calc(100% - 2rem)); margin: auto; padding: 1.5rem 0 1.8rem; }
+    .topline { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .brand { font-weight: 700; letter-spacing: .02em; }
+    h1 { margin: 1.2rem 0 .35rem; font-size: clamp(1.7rem, 3.5vw, 2.45rem); line-height: 1.15; }
+    .masthead p { margin: .25rem 0 0; max-width: 720px; color: #e4f2e9; }
+    .content { width: min(1120px, calc(100% - 2rem)); margin: 1.5rem auto 3rem; }
+    .button { border: 0; border-radius: 9px; padding: .68rem 1rem; font-weight: 700; cursor: pointer; transition: transform .15s, background .15s; }
+    .button:hover { transform: translateY(-1px); }
+    .button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #f1c75b; outline-offset: 3px; }
+    .button-help { color: var(--green-900); background: var(--white); white-space: nowrap; }
+    .button-secondary { color: var(--green-900); background: var(--green-100); }
+    .status, .notice { padding: .9rem 1rem; margin: 0 0 1.2rem; background: var(--white); border: 1px solid var(--line); border-radius: 10px; }
+    .status { display: flex; align-items: center; gap: .65rem; }
+    .status-dot { width: .65rem; height: .65rem; border-radius: 50%; background: #e1a61a; flex: none; }
+    .status.loaded .status-dot { background: #168846; }
+    .notice { background: var(--amber); border-color: #f2df9e; color: #55471e; font-size: .92rem; }
+    .filters { display: flex; flex-wrap: wrap; align-items: end; gap: .9rem; padding: 1rem; background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+    .field { display: grid; gap: .35rem; min-width: 150px; }
+    .field label { color: var(--muted); font-size: .82rem; font-weight: 700; }
+    select { min-height: 42px; padding: .5rem .7rem; color: var(--ink); background: #fff; border: 1px solid #cbd9d0; border-radius: 8px; }
+    .filter-note { align-self: center; margin-left: auto; color: var(--muted); font-size: .85rem; }
+    h2 { margin: 1.8rem 0 .25rem; color: var(--green-900); font-size: 1.3rem; }
+    .section-note { margin: 0 0 1rem; color: var(--muted); font-size: .92rem; }
+    .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0 1.6rem; }
+    .kpi, .panel { background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+    .kpi { padding: 1.15rem; }
+    .kpi-label { color: var(--muted); font-size: .82rem; font-weight: 700; }
+    .kpi-value { margin-top: .2rem; color: var(--green-900); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; }
+    .kpi-detail { margin-top: .2rem; color: var(--muted); font-size: .82rem; }
+    .charts { display: grid; grid-template-columns: 1.35fr 1fr; gap: 1rem; }
+    .panel { min-width: 0; padding: 1rem; }
+    .panel h3 { margin: 0 0 .2rem; color: var(--green-900); font-size: 1rem; }
+    .panel p { margin: 0 0 .8rem; color: var(--muted); font-size: .82rem; }
+    .chart-area { position: relative; height: 300px; }
+    .table-wrap { overflow-x: auto; margin: 1rem 0; background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; min-width: 560px; }
+    th, td { padding: .7rem .85rem; border-bottom: 1px solid var(--line); text-align: left; }
+    th { color: #fff; background: var(--green-900); font-size: .8rem; }
+    td { font-size: .9rem; }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: var(--green-100); }
+    .empty { padding: 2rem 1rem; color: var(--muted); text-align: center; }
+    footer { padding: 1.5rem 1rem; color: var(--muted); text-align: center; font-size: .85rem; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1rem; background: rgba(15, 33, 24, .62); }
+    .modal-backdrop[hidden] { display: none; }
+    .modal { width: min(680px, 100%); max-height: min(88vh, 760px); overflow: auto; padding: 1.35rem; background: #fff; border-radius: 16px; box-shadow: 0 20px 70px rgba(0,0,0,.28); }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .modal h2 { margin: 0; }
+    .modal-intro { margin: .4rem 0 1rem; color: var(--muted); }
+    .close { width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--green-100); color: var(--green-900); font-size: 1.3rem; cursor: pointer; }
+    .tour-step { display: flex; gap: .85rem; padding: .9rem 0; border-top: 1px solid var(--line); }
+    .step-number { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; color: #fff; background: var(--green-700); border-radius: 50%; font-weight: 800; }
+    .tour-step h3 { margin: 0 0 .15rem; color: var(--green-900); font-size: .98rem; }
+    .tour-step p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .modal-actions { display: flex; justify-content: flex-end; margin-top: 1rem; }
+    @media (max-width: 760px) {
+      .charts { grid-template-columns: 1fr; }
+      .chart-area { height: 260px; }
+      .filter-note { width: 100%; margin-left: 0; }
+      .kpis { grid-template-columns: 1fr; gap: .65rem; }
+      .kpi { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0 .75rem; }
+      .kpi-value { grid-column: 2; grid-row: 1 / span 2; }
+      .kpi-detail { grid-column: 1; }
+    }
+    @media (max-width: 480px) {
+      .topline { align-items: flex-start; }
+      .button-help { padding: .55rem .65rem; font-size: .88rem; }
+      .field { flex: 1 1 100%; }
+      .filters .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="topline">
+        <div class="brand">📊 Turismo · Colombia</div>
+        <button class="button button-help" id="openTutorial" aria-haspopup="dialog" aria-controls="tutorial">🧭 ¿Cómo leer este tablero?</button>
+      </div>
+      <h1>Ocupación hotelera, clara y fácil de explorar</h1>
+      <p>Consulta la evolución mensual y compara regiones. Usa los filtros para enfocar los datos que te interesan.</p>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="status" id="status" role="status" aria-live="polite"><span class="status-dot"></span><span id="statusText">Cargando los datos del proyecto…</span></div>
+    <div class="notice"><strong>Cómo interpretar:</strong> la ocupación se expresa como porcentaje de habitaciones ocupadas. Los datos describen tendencias y comparaciones; por sí solos no prueban causas.</div>
+
+    <section aria-labelledby="filtersTitle">
+      <h2 id="filtersTitle">Encuentra lo que buscas</h2>
+      <p class="section-note">Selecciona año, región o mes. Las tarjetas, gráficas y tabla se actualizan con los filtros.</p>
+      <div class="filters">
+        <div class="field"><label for="yearFilter">Año</label><select id="yearFilter"><option value="">Todos los años</option></select></div>
+        <div class="field"><label for="regionFilter">Región</label><select id="regionFilter"><option value="">Todas las regiones</option></select></div>
+        <div class="field"><label for="monthFilter">Mes</label><select id="monthFilter"><option value="">Todos los meses</option></select></div>
+        <button class="button button-secondary" id="clearFilters" type="button">↺ Limpiar filtros</button>
+        <span class="filter-note" id="filterCount" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section aria-labelledby="summaryTitle">
+      <h2 id="summaryTitle">Resumen de la selección</h2>
+      <p class="section-note">Indicadores calculados únicamente con los registros que coinciden con tus filtros.</p>
+      <div class="kpis">
+        <article class="kpi"><div class="kpi-label">Ocupación promedio</div><div class="kpi-value" id="averageKpi">—</div><div class="kpi-detail">Promedio de valores disponibles</div></article>
+        <article class="kpi"><div class="kpi-label">Registros visibles</div><div class="kpi-value" id="recordsKpi">—</div><div class="kpi-detail">Filas incluidas en la selección</div></article>
+        <article class="kpi"><div class="kpi-label">Regiones visibles</div><div class="kpi-value" id="regionsKpi">—</div><div class="kpi-detail">Regiones con datos en el período filtrado</div></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="chartsTitle">
+      <h2 id="chartsTitle">Explora los resultados</h2>
+      <p class="section-note">Pasa el cursor o toca un punto/barra para consultar el valor exacto.</p>
+      <div class="charts">
+        <article class="panel"><h3>Evolución mensual</h3><p>Promedio de ocupación por mes para la selección actual.</p><div class="chart-area"><canvas id="trendChart" aria-label="Gráfica de evolución mensual" role="img"></canvas></div></article>
+        <article class="panel"><h3>Comparación por región</h3><p>Promedio de ocupación de cada región visible.</p><div class="chart-area"><canvas id="regionChart" aria-label="Gráfica de comparación regional" role="img"></canvas></div></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="tableTitle">
+      <h2 id="tableTitle">Detalle de los datos</h2>
+      <p class="section-note">La tabla muestra hasta 100 filas de la selección. Los valores faltantes se indican como “Sin dato”, no como cero.</p>
+      <div class="table-wrap" id="tableWrap"><div class="empty">Cargando datos…</div></div>
+    </section>
+  </main>
+  <footer>Fuente analítica: dataset limpio EMA-DANE + RNT del proyecto Turismov2. La disponibilidad puede variar según la conexión.</footer>
+
+  <div class="modal-backdrop" id="tutorial" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle" aria-describedby="tutorialIntro">
+      <div class="modal-head">
+        <div><h2 id="tutorialTitle">Guía rápida del tablero</h2><p class="modal-intro" id="tutorialIntro">En pocos pasos podrás ubicar y entender la información principal.</p></div>
+        <button class="close" id="closeTutorial" aria-label="Cerrar tutorial">×</button>
+      </div>
+      <div class="tour-step"><span class="step-number">1</span><div><h3>Empieza por los filtros</h3><p>Elige un año, una región o un mes para acotar la información. Puedes combinar los filtros.</p></div></div>
+      <div class="tour-step"><span class="step-number">2</span><div><h3>Lee las tarjetas de resumen</h3><p>El promedio resume la ocupación disponible; “Registros visibles” cuenta las filas seleccionadas y “Regiones visibles” indica cuántas regiones tienen datos.</p></div></div>
+      <div class="tour-step"><span class="step-number">3</span><div><h3>Compara las gráficas</h3><p>La línea muestra cómo cambia el promedio mensual y las barras comparan los promedios regionales. Selecciona una sola región para enfocarte en ella.</p></div></div>
+      <div class="tour-step"><span class="step-number">4</span><div><h3>Consulta el detalle</h3><p>La tabla permite revisar las observaciones filtradas. “Sin dato” significa que la fuente no reportó un valor; no significa 0%.</p></div></div>
+      <div class="tour-step"><span class="step-number">5</span><div><h3>Vuelve a empezar cuando quieras</h3><p>Usa “Limpiar filtros” para regresar a la vista completa. Puedes abrir esta guía desde el botón de la parte superior.</p></div></div>
+      <div class="modal-actions"><button class="button button-secondary" id="doneTutorial">Entendido</button></div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+      const DATA_URL = 'data/02_turismo_colombia_limpio.xlsx';
+      const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      const $ = (id) => document.getElementById(id);
+      let rows = [];
+      let trendChart = null;
+      let regionChart = null;
+      const norm = (value) => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      const firstValue = (obj, names) => {
+        const keys = Object.keys(obj);
+        const key = keys.find((candidate) => names.includes(norm(candidate)));
+        return key === undefined ? null : obj[key];
+      };
+      const asNumber = (value) => {
+        if (value === null || value === undefined || String(value).trim() === '') return null;
+        const parsed = Number(String(value).replace(',', '.'));
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+      const displayNumber = (value) => value === null || !Number.isFinite(value) ? '—' : `${value.toLocaleString('es-CO', { maximumFractionDigits: 2 })}%`;
+      const sortMonth = (month) => MONTHS.findIndex((item) => norm(item) === norm(month));
+
+      function normalizeRow(raw) {
+        const year = asNumber(firstValue(raw, ['anio', 'year']));
+        let month = firstValue(raw, ['meses', 'mes', 'month']);
+        if (typeof month === 'number' || /^\d+$/.test(String(month ?? ''))) month = MONTHS[Number(month) - 1] || String(month);
+        const region = firstValue(raw, ['region', 'regionturistica']);
+        const occupancy = asNumber(firstValue(raw, ['ocupacion', 'ocupacionporcentaje', 'porcentajeocupacion']));
+        return { year, month: String(month ?? '').trim(), region: String(region ?? '').trim(), occupancy,
+          establishments: asNumber(firstValue(raw, ['establecimientos'])), rooms: asNumber(firstValue(raw, ['habitaciones'])) };
+      }
+      function filteredRows() {
+        const year = $('yearFilter').value, region = $('regionFilter').value, month = $('monthFilter').value;
+        return rows.filter((row) => (!year || String(row.year) === year) && (!region || row.region === region) && (!month || norm(row.month) === norm(month)));
+      }
+      function setOptions(select, values, placeholder) {
+        const old = select.value;
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        values.forEach((value) => {
+          const option = document.createElement('option'); option.value = value; option.textContent = value; select.appendChild(option);
+        });
+        if (values.includes(old)) select.value = old;
+      }
+      function destroyCharts() {
+        if (trendChart) trendChart.destroy();
+        if (regionChart) regionChart.destroy();
+      }
+      function renderTable(data) {
+        const visible = data.slice(0, 100);
+        if (!visible.length) { $('tableWrap').innerHTML = '<div class="empty">No hay datos para los filtros seleccionados.</div>'; return; }
+        const body = visible.map((row) => `<tr><td>${row.year ?? '—'}</td><td>${escapeHtml(row.month || '—')}</td><td>${escapeHtml(row.region || '—')}</td><td>${row.occupancy === null ? 'Sin dato' : displayNumber(row.occupancy)}</td><td>${row.establishments ?? '—'}</td><td>${row.rooms ?? '—'}</td></tr>`).join('');
+        $('tableWrap').innerHTML = `<table><thead><tr><th>Año</th><th>Mes</th><th>Región</th><th>Ocupación</th><th>Establecimientos</th><th>Habitaciones</th></tr></thead><tbody>${body}</tbody></table>`;
+      }
+      function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char])); }
+      function render() {
+        const data = filteredRows();
+        const observed = data.filter((row) => row.occupancy !== null);
+        const avg = observed.length ? observed.reduce((sum, row) => sum + row.occupancy, 0) / observed.length : null;
+        $('averageKpi').textContent = displayNumber(avg);
+        $('recordsKpi').textContent = data.length.toLocaleString('es-CO');
+        $('regionsKpi').textContent = new Set(observed.map((row) => row.region)).size.toLocaleString('es-CO');
+        $('filterCount').textContent = `${observed.length.toLocaleString('es-CO')} observaciones con ocupación disponible`;
+        const monthly = MONTHS.map((month) => {
+          const values = observed.filter((row) => norm(row.month) === norm(month)).map((row) => row.occupancy);
+          return values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+        });
+        const byRegion = [...new Set(observed.map((row) => row.region))].sort((a,b) => a.localeCompare(b, 'es')).map((region) => {
+          const values = observed.filter((row) => row.region === region).map((row) => row.occupancy);
+          return { region, average: values.reduce((a,b) => a+b, 0) / values.length };
+        });
+        destroyCharts();
+        trendChart = new Chart($('trendChart'), { type: 'line', data: { labels: MONTHS, datasets: [{ label: 'Ocupación promedio', data: monthly, borderColor: '#087c43', backgroundColor: 'rgba(8,124,67,.12)', fill: true, tension: .28, pointRadius: 3, spanGaps: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ` ${displayNumber(ctx.parsed.y)}` } } }, scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Ocupación (%)' } }, x: { grid: { display: false } } } } });
+        regionChart = new Chart($('regionChart'), { type: 'bar', data: { labels: byRegion.map((item) => item.region), datasets: [{ label: 'Promedio de ocupación', data: byRegion.map((item) => item.average), backgroundColor: '#168846', borderRadius: 5 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ` ${displayNumber(ctx.parsed.x)}` } } }, scales: { x: { beginAtZero: true, max: 100, title: { display: true, text: 'Ocupación (%)' } }, y: { grid: { display: false } } } } });
+        renderTable(data);
+      }
+      async function loadData() {
+        try {
+          if (typeof XLSX === 'undefined') throw new Error('No se pudo cargar la librería para leer Excel.');
+          const response = await fetch(DATA_URL);
+          if (!response.ok) throw new Error(`No se encontró el archivo de datos (${response.status}).`);
+          const workbook = XLSX.read(await response.arrayBuffer(), { type: 'array' });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          rows = XLSX.utils.sheet_to_json(sheet, { defval: null }).map(normalizeRow).filter((row) => Number.isFinite(row.year) && row.month && row.region);
+          if (!rows.length) throw new Error('El archivo existe, pero no se encontraron filas con el formato esperado.');
+          setOptions($('yearFilter'), [...new Set(rows.map((row) => String(row.year)))].sort((a,b) => Number(a)-Number(b)), 'Todos los años');
+          setOptions($('regionFilter'), [...new Set(rows.map((row) => row.region))].sort((a,b) => a.localeCompare(b, 'es')), 'Todas las regiones');
+          setOptions($('monthFilter'), MONTHS.filter((month) => rows.some((row) => norm(row.month) === norm(month))), 'Todos los meses');
+          $('statusText').textContent = `Datos cargados: ${rows.length.toLocaleString('es-CO')} registros del archivo limpio de Turismov2.`;
+          $('status').classList.add('loaded');
+          render();
+        } catch (error) {
+          $('statusText').textContent = `No fue posible cargar los datos: ${error.message}`;
+          $('tableWrap').innerHTML = '<div class="empty">Abre este tablero desde GitHub Pages o sirve la carpeta por HTTP; el navegador puede bloquear la lectura de Excel al abrir el archivo directamente desde tu equipo.</div>';
+        }
+      }
+      [$('yearFilter'), $('regionFilter'), $('monthFilter')].forEach((select) => select.addEventListener('change', render));
+      $('clearFilters').addEventListener('click', () => { $('yearFilter').value = ''; $('regionFilter').value = ''; $('monthFilter').value = ''; render(); });
+      const modal = $('tutorial');
+      const openModal = () => { modal.hidden = false; $('closeTutorial').focus(); };
+      const closeModal = () => { modal.hidden = true; $('openTutorial').focus(); };
+      $('openTutorial').addEventListener('click', openModal);
+      $('closeTutorial').addEventListener('click', closeModal);
+      $('doneTutorial').addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !modal.hidden) closeModal(); });
+      loadData();
+    })();
+  </script>
+</body>
+</html>
